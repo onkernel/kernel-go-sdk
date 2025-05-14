@@ -11,12 +11,12 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"github.com/stainless-sdks/kernel-go/internal/apiform"
-	"github.com/stainless-sdks/kernel-go/internal/apijson"
-	"github.com/stainless-sdks/kernel-go/internal/requestconfig"
-	"github.com/stainless-sdks/kernel-go/option"
-	"github.com/stainless-sdks/kernel-go/packages/param"
-	"github.com/stainless-sdks/kernel-go/packages/respjson"
+	"github.com/onkernel/kernel-go-sdk/internal/apiform"
+	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
+	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
+	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 )
 
 // AppService contains methods and other services that help with interacting with
@@ -191,10 +191,10 @@ func (r *AppGetInvocationResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AppDeployParams struct {
+	// Relative path to the entrypoint of the application
+	EntrypointRelPath string `json:"entrypointRelPath,required"`
 	// ZIP file containing the application source directory
 	File io.Reader `json:"file,omitzero,required" format:"binary"`
-	// Relative path to the entrypoint of the application
-	EntrypointRelPath param.Opt[string] `json:"entrypointRelPath,omitzero"`
 	// Version of the application. Can be any string.
 	Version param.Opt[string] `json:"version,omitzero"`
 	// Allow overwriting an existing app version

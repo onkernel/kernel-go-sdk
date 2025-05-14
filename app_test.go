@@ -10,9 +10,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/kernel-go"
-	"github.com/stainless-sdks/kernel-go/internal/testutil"
-	"github.com/stainless-sdks/kernel-go/option"
+	"github.com/onkernel/kernel-go-sdk"
+	"github.com/onkernel/kernel-go-sdk/internal/testutil"
+	"github.com/onkernel/kernel-go-sdk/option"
 )
 
 func TestAppDeployWithOptionalParams(t *testing.T) {
@@ -29,8 +29,8 @@ func TestAppDeployWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
+		EntrypointRelPath: "app.py",
 		File:              io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		EntrypointRelPath: kernel.String("app.py"),
 		Force:             kernel.AppDeployParamsForceFalse,
 		Region:            kernel.AppDeployParamsRegionAwsUsEast1a,
 		Version:           kernel.String("1.0.0"),
