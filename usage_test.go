@@ -27,8 +27,9 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	response, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
-		File:    io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version: kernel.String("REPLACE_ME"),
+		EntrypointRelPath: "app.py",
+		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
+		Version:           kernel.String("REPLACE_ME"),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())

@@ -56,8 +56,9 @@ func main() {
 		option.WithEnvironmentDevelopment(), // defaults to option.WithEnvironmentProduction()
 	)
 	response, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
-		File:    io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version: kernel.String("REPLACE_ME"),
+		EntrypointRelPath: "app.py",
+		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
+		Version:           kernel.String("REPLACE_ME"),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -298,8 +299,9 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
-	File:    io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-	Version: kernel.String("REPLACE_ME"),
+	EntrypointRelPath: "app.py",
+	File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
+	Version:           kernel.String("REPLACE_ME"),
 })
 if err != nil {
 	var apierr *kernel.Error
@@ -328,8 +330,9 @@ defer cancel()
 client.Apps.Deploy(
 	ctx,
 	kernel.AppDeployParams{
-		File:    io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version: kernel.String("REPLACE_ME"),
+		EntrypointRelPath: "app.py",
+		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
+		Version:           kernel.String("REPLACE_ME"),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -353,17 +356,20 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 // A file from the file system
 file, err := os.Open("/path/to/file")
 kernel.AppDeployParams{
-	File: file,
+	EntrypointRelPath: "app.py",
+	File:              file,
 }
 
 // A file from a string
 kernel.AppDeployParams{
-	File: strings.NewReader("my file contents"),
+	EntrypointRelPath: "app.py",
+	File:              strings.NewReader("my file contents"),
 }
 
 // With a custom filename and contentType
 kernel.AppDeployParams{
-	File: kernel.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
+	EntrypointRelPath: "app.py",
+	File:              kernel.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
 ```
 
@@ -385,8 +391,9 @@ client := kernel.NewClient(
 client.Apps.Deploy(
 	context.TODO(),
 	kernel.AppDeployParams{
-		File:    io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version: kernel.String("REPLACE_ME"),
+		EntrypointRelPath: "app.py",
+		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
+		Version:           kernel.String("REPLACE_ME"),
 	},
 	option.WithMaxRetries(5),
 )
@@ -403,8 +410,9 @@ var response *http.Response
 response, err := client.Apps.Deploy(
 	context.TODO(),
 	kernel.AppDeployParams{
-		File:    io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version: kernel.String("REPLACE_ME"),
+		EntrypointRelPath: "app.py",
+		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
+		Version:           kernel.String("REPLACE_ME"),
 	},
 	option.WithResponseInto(&response),
 )

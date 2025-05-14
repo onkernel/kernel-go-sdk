@@ -29,8 +29,8 @@ func TestAppDeployWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
+		EntrypointRelPath: "app.py",
 		File:              io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		EntrypointRelPath: kernel.String("app.py"),
 		Force:             kernel.AppDeployParamsForceFalse,
 		Region:            kernel.AppDeployParamsRegionAwsUsEast1a,
 		Version:           kernel.String("1.0.0"),
