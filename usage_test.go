@@ -9,9 +9,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/kernel-go"
-	"github.com/stainless-sdks/kernel-go/internal/testutil"
-	"github.com/stainless-sdks/kernel-go/option"
+	"github.com/onkernel/kernel-go-sdk"
+	"github.com/onkernel/kernel-go-sdk/internal/testutil"
+	"github.com/onkernel/kernel-go-sdk/option"
 )
 
 func TestUsage(t *testing.T) {

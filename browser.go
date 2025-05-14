@@ -6,11 +6,11 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/stainless-sdks/kernel-go/internal/apijson"
-	"github.com/stainless-sdks/kernel-go/internal/requestconfig"
-	"github.com/stainless-sdks/kernel-go/option"
-	"github.com/stainless-sdks/kernel-go/packages/param"
-	"github.com/stainless-sdks/kernel-go/packages/respjson"
+	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
+	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
+	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 )
 
 // BrowserService contains methods and other services that help with interacting

@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/kernel-go/packages/param"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

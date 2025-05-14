@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/kernel-go/internal/apijson"
-	"github.com/stainless-sdks/kernel-go/packages/param"
+	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"reflect"
 	"testing"
 )
