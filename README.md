@@ -1,6 +1,6 @@
 # Kernel Go API Library
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/kernel-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/kernel-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk"><img src="https://pkg.go.dev/badge/github.com/onkernel/kernel-go-sdk.svg" alt="Go Reference"></a>
 
 The Kernel Go library provides convenient access to the [Kernel REST API](https://docs.onkernel.com)
 from applications written in Go.
@@ -9,17 +9,25 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/kernel-go" // imported as kernel
+	"github.com/onkernel/kernel-go-sdk" // imported as kernel
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/kernel-go@v0.0.1-alpha.0'
+go get -u 'github.com/onkernel/kernel-go-sdk@v0.0.1-alpha.0'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -38,8 +46,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/stainless-sdks/kernel-go"
-	"github.com/stainless-sdks/kernel-go/option"
+	"github.com/onkernel/kernel-go-sdk"
+	"github.com/onkernel/kernel-go-sdk/option"
 )
 
 func main() {
@@ -268,7 +276,7 @@ client.Apps.Deploy(context.TODO(), ...,
 )
 ```
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/kernel-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/option).
 
 ### Pagination
 
@@ -504,7 +512,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/kernel-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/onkernel/kernel-go-sdk/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

@@ -7,7 +7,7 @@ package apijson
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/kernel-go/packages/param"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"reflect"
 	"strconv"
 	"sync"

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/kernel-go/packages/param"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
 )
 
 type Struct struct {

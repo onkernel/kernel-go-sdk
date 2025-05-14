@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/kernel-go
+module github.com/onkernel/kernel-go-sdk
 
 go 1.21
 

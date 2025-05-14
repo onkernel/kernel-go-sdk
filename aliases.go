@@ -3,8 +3,8 @@
 package kernel
 
 import (
-	"github.com/stainless-sdks/kernel-go/internal/apierror"
-	"github.com/stainless-sdks/kernel-go/packages/param"
+	"github.com/onkernel/kernel-go-sdk/internal/apierror"
+	"github.com/onkernel/kernel-go-sdk/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding
