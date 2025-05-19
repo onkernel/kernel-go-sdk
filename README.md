@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/onkernel/kernel-go-sdk@v0.1.0-alpha.1'
+go get -u 'github.com/onkernel/kernel-go-sdk@v0.1.0-alpha.2'
 ```
 
 <!-- x-release-please-end -->
@@ -55,15 +55,18 @@ func main() {
 		option.WithAPIKey("My API Key"),     // defaults to os.LookupEnv("KERNEL_API_KEY")
 		option.WithEnvironmentDevelopment(), // defaults to option.WithEnvironmentProduction()
 	)
-	response, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
-		EntrypointRelPath: "app.py",
+	deployment, err := client.Apps.Deployments.New(context.TODO(), kernel.AppDeploymentNewParams{
+		EntrypointRelPath: "main.ts",
 		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version:           kernel.String("REPLACE_ME"),
+		EnvVars: map[string]string{
+			"OPENAI_API_KEY": "x",
+		},
+		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", response.Apps)
+	fmt.Printf("%+v\n", deployment.Apps)
 }
 
 ```
@@ -269,7 +272,7 @@ client := kernel.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Apps.Deploy(context.TODO(), ...,
+client.Browsers.New(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -298,10 +301,8 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
-	EntrypointRelPath: "app.py",
-	File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-	Version:           kernel.String("REPLACE_ME"),
+_, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
+	InvocationID: "REPLACE_ME",
 })
 if err != nil {
 	var apierr *kernel.Error
@@ -309,7 +310,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/apps/deploy": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/browsers": 400 Bad Request { ... }
 }
 ```
 
@@ -327,12 +328,10 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Apps.Deploy(
+client.Browsers.New(
 	ctx,
-	kernel.AppDeployParams{
-		EntrypointRelPath: "app.py",
-		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version:           kernel.String("REPLACE_ME"),
+	kernel.BrowserNewParams{
+		InvocationID: "REPLACE_ME",
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -355,20 +354,20 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-kernel.AppDeployParams{
-	EntrypointRelPath: "app.py",
+kernel.AppDeploymentNewParams{
+	EntrypointRelPath: "src/app.py",
 	File:              file,
 }
 
 // A file from a string
-kernel.AppDeployParams{
-	EntrypointRelPath: "app.py",
+kernel.AppDeploymentNewParams{
+	EntrypointRelPath: "src/app.py",
 	File:              strings.NewReader("my file contents"),
 }
 
 // With a custom filename and contentType
-kernel.AppDeployParams{
-	EntrypointRelPath: "app.py",
+kernel.AppDeploymentNewParams{
+	EntrypointRelPath: "src/app.py",
 	File:              kernel.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
 ```
@@ -388,12 +387,10 @@ client := kernel.NewClient(
 )
 
 // Override per-request:
-client.Apps.Deploy(
+client.Browsers.New(
 	context.TODO(),
-	kernel.AppDeployParams{
-		EntrypointRelPath: "app.py",
-		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version:           kernel.String("REPLACE_ME"),
+	kernel.BrowserNewParams{
+		InvocationID: "REPLACE_ME",
 	},
 	option.WithMaxRetries(5),
 )
@@ -407,19 +404,17 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-response, err := client.Apps.Deploy(
+browser, err := client.Browsers.New(
 	context.TODO(),
-	kernel.AppDeployParams{
-		EntrypointRelPath: "app.py",
-		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version:           kernel.String("REPLACE_ME"),
+	kernel.BrowserNewParams{
+		InvocationID: "REPLACE_ME",
 	},
 	option.WithResponseInto(&response),
 )
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", response)
+fmt.Printf("%+v\n", browser)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

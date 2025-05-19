@@ -26,13 +26,16 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	response, err := client.Apps.Deploy(context.TODO(), kernel.AppDeployParams{
-		EntrypointRelPath: "app.py",
+	deployment, err := client.Apps.Deployments.New(context.TODO(), kernel.AppDeploymentNewParams{
+		EntrypointRelPath: "main.ts",
 		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version:           kernel.String("REPLACE_ME"),
+		EnvVars: map[string]string{
+			"OPENAI_API_KEY": "x",
+		},
+		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", response.Apps)
+	t.Logf("%+v\n", deployment.Apps)
 }
