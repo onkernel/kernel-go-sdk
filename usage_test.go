@@ -29,7 +29,10 @@ func TestUsage(t *testing.T) {
 	deployment, err := client.Apps.Deployments.New(context.TODO(), kernel.AppDeploymentNewParams{
 		EntrypointRelPath: "main.ts",
 		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		Version:           kernel.String("1.0.0"),
+		EnvVars: map[string]string{
+			"OPENAI_API_KEY": "x",
+		},
+		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
