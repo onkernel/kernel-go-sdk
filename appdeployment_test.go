@@ -31,9 +31,12 @@ func TestAppDeploymentNewWithOptionalParams(t *testing.T) {
 	_, err := client.Apps.Deployments.New(context.TODO(), kernel.AppDeploymentNewParams{
 		EntrypointRelPath: "src/app.py",
 		File:              io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		Force:             kernel.Bool(false),
-		Region:            kernel.AppDeploymentNewParamsRegionAwsUsEast1a,
-		Version:           kernel.String("1.0.0"),
+		EnvVars: map[string]string{
+			"foo": "string",
+		},
+		Force:   kernel.Bool(false),
+		Region:  kernel.AppDeploymentNewParamsRegionAwsUsEast1a,
+		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
 		var apierr *kernel.Error

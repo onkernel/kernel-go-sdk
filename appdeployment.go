@@ -128,6 +128,9 @@ type AppDeploymentNewParams struct {
 	Force param.Opt[bool] `json:"force,omitzero"`
 	// Version of the application. Can be any string.
 	Version param.Opt[string] `json:"version,omitzero"`
+	// Map of environment variables to set for the deployed application. Each key-value
+	// pair represents an environment variable.
+	EnvVars map[string]string `json:"env_vars,omitzero"`
 	// Region for deployment. Currently we only support "aws.us-east-1a"
 	//
 	// Any of "aws.us-east-1a".
