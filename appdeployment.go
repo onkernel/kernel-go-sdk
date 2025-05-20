@@ -53,7 +53,7 @@ func (r *AppDeploymentService) New(ctx context.Context, body AppDeploymentNewPar
 // Establishes a Server-Sent Events (SSE) stream that delivers real-time logs and
 // status updates for a deployed application. The stream terminates automatically
 // once the application reaches a terminal state.
-func (r *AppDeploymentService) FollowStreaming(ctx context.Context, id string, opts ...option.RequestOption) (stream *ssestream.Stream[[]AppDeploymentFollowResponseUnion]) {
+func (r *AppDeploymentService) FollowStreaming(ctx context.Context, id string, opts ...option.RequestOption) (stream *ssestream.Stream[AppDeploymentFollowResponseUnion]) {
 	var (
 		raw *http.Response
 		err error
@@ -66,7 +66,7 @@ func (r *AppDeploymentService) FollowStreaming(ctx context.Context, id string, o
 	}
 	path := fmt.Sprintf("apps/%s/events", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &raw, opts...)
-	return ssestream.NewStream[[]AppDeploymentFollowResponseUnion](ssestream.NewDecoder(raw), err)
+	return ssestream.NewStream[AppDeploymentFollowResponseUnion](ssestream.NewDecoder(raw), err)
 }
 
 type AppDeploymentNewResponse struct {
