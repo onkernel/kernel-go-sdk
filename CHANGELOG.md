@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0-alpha.4 (2025-05-20)
+
+Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
+
+### Features
+
+* **api:** update via SDK Studio ([34dfea0](https://github.com/onkernel/kernel-go-sdk/commit/34dfea07fd8538b3a73f8ee7ea35f3a70e679b3b))
+
+
+### Bug Fixes
+
+* **client:** correctly set stream key for multipart ([2336290](https://github.com/onkernel/kernel-go-sdk/commit/23362905d1acb3616333407f70bdee259dc66ebe))
+* **client:** don't panic on marshal with extra null field ([4208ce7](https://github.com/onkernel/kernel-go-sdk/commit/4208ce7bb382ac9bfb2cefeb406be6302df6cd7a))
+* **client:** increase max stream buffer size ([eca7429](https://github.com/onkernel/kernel-go-sdk/commit/eca74291efed0e090b1a7437d832ee12a819f833))
+* **client:** use scanner for streaming ([6fad3f9](https://github.com/onkernel/kernel-go-sdk/commit/6fad3f9d43fbb49c718a53ae6736ac273e43b7b3))
+
 ## 0.1.0-alpha.3 (2025-05-19)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/onkernel/kernel-go-sdk/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
