@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2025-05-20)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/onkernel/kernel-go-sdk/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Features
+
+* **api:** update via SDK Studio ([2f5051e](https://github.com/onkernel/kernel-go-sdk/commit/2f5051e328b157c2836d93fcd1e957c315f9d4e7))
+* **api:** update via SDK Studio ([368ec0a](https://github.com/onkernel/kernel-go-sdk/commit/368ec0a4e3eb54fd5634327f6234d9b4f0a83a95))
+
 ## 0.1.0-alpha.4 (2025-05-20)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
