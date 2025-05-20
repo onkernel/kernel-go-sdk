@@ -1,13 +1,5 @@
 # Apps
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppListResponse">AppListResponse</a>
-
-Methods:
-
-- <code title="get /apps">client.Apps.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppListParams">AppListParams</a>) ([]<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppListResponse">AppListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 ## Deployments
 
 Response Types:
