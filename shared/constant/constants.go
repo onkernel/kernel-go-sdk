@@ -18,18 +18,6 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type Log string         // Always "log"
-type State string       // Always "state"
-type StateUpdate string // Always "state_update"
-
-func (c Log) Default() Log                 { return "log" }
-func (c State) Default() State             { return "state" }
-func (c StateUpdate) Default() StateUpdate { return "state_update" }
-
-func (c Log) MarshalJSON() ([]byte, error)         { return marshalString(c) }
-func (c State) MarshalJSON() ([]byte, error)       { return marshalString(c) }
-func (c StateUpdate) MarshalJSON() ([]byte, error) { return marshalString(c) }
-
 type constant[T any] interface {
 	Constant[T]
 	*T
