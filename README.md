@@ -60,7 +60,6 @@ func main() {
 		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
 		EnvVars: map[string]string{
 			"OPENAI_API_KEY": "x",
-			"LOG_LEVEL":      "debug",
 		},
 		Version: kernel.String("1.0.0"),
 	})
