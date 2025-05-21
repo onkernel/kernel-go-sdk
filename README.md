@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/onkernel/kernel-go-sdk@v0.1.0-alpha.6'
+go get -u 'github.com/onkernel/kernel-go-sdk@v0.1.0'
 ```
 
 <!-- x-release-please-end -->
@@ -60,6 +60,7 @@ func main() {
 		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
 		EnvVars: map[string]string{
 			"OPENAI_API_KEY": "x",
+			"LOG_LEVEL":      "debug",
 		},
 		Version: kernel.String("1.0.0"),
 	})
