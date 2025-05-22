@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.3.0 (2025-05-22)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** update via SDK Studio ([7c22f9e](https://github.com/onkernel/kernel-go-sdk/commit/7c22f9efecdb2548ce58f81454817a33fc249128))
+* **api:** update via SDK Studio ([7941c72](https://github.com/onkernel/kernel-go-sdk/commit/7941c7280d3cc6870947d59c96d5e1c55e0ade46))
+* **api:** update via SDK Studio ([470093a](https://github.com/onkernel/kernel-go-sdk/commit/470093adf03fc0b077d11f11f13ee802ae4557a6))
+* **api:** update via SDK Studio ([5c567c9](https://github.com/onkernel/kernel-go-sdk/commit/5c567c90794bfd2d997685e5102835d65de029e6))
+
+
+### Chores
+
+* **docs:** grammar improvements ([cb762f8](https://github.com/onkernel/kernel-go-sdk/commit/cb762f85ee2aef349829477128d84e63e41d4449))
+* improve devcontainer setup ([8b46076](https://github.com/onkernel/kernel-go-sdk/commit/8b46076b6e1145d9f4ff14e089aa57588f8ef613))
+
 ## 0.2.0 (2025-05-21)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.1.0...v0.2.0)
