@@ -61,11 +61,14 @@ type BrowserNewResponse struct {
 	CdpWsURL string `json:"cdp_ws_url,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Optional persistence configuration for the browser session.
+	Persistence BrowserNewResponsePersistence `json:"persistence"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrowserLiveViewURL respjson.Field
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
+		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -77,6 +80,24 @@ func (r *BrowserNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Optional persistence configuration for the browser session.
+type BrowserNewResponsePersistence struct {
+	// Unique identifier for the persistent browser session.
+	ID string `json:"id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrowserNewResponsePersistence) RawJSON() string { return r.JSON.raw }
+func (r *BrowserNewResponsePersistence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BrowserGetResponse struct {
 	// Remote URL for live viewing the browser session
 	BrowserLiveViewURL string `json:"browser_live_view_url,required"`
@@ -84,11 +105,14 @@ type BrowserGetResponse struct {
 	CdpWsURL string `json:"cdp_ws_url,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Optional persistence configuration for the browser session.
+	Persistence BrowserGetResponsePersistence `json:"persistence"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BrowserLiveViewURL respjson.Field
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
+		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -100,9 +124,29 @@ func (r *BrowserGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Optional persistence configuration for the browser session.
+type BrowserGetResponsePersistence struct {
+	// Unique identifier for the persistent browser session.
+	ID string `json:"id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrowserGetResponsePersistence) RawJSON() string { return r.JSON.raw }
+func (r *BrowserGetResponsePersistence) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BrowserNewParams struct {
 	// action invocation ID
 	InvocationID string `json:"invocation_id,required"`
+	// Optional persistence configuration for the browser session.
+	Persistence BrowserNewParamsPersistence `json:"persistence,omitzero"`
 	paramObj
 }
 
@@ -111,5 +155,22 @@ func (r BrowserNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional persistence configuration for the browser session.
+//
+// The property ID is required.
+type BrowserNewParamsPersistence struct {
+	// Unique identifier for the persistent browser session.
+	ID string `json:"id,required"`
+	paramObj
+}
+
+func (r BrowserNewParamsPersistence) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserNewParamsPersistence
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserNewParamsPersistence) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/option"
 )
 
-func TestBrowserNew(t *testing.T) {
+func TestBrowserNewWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,6 +28,9 @@ func TestBrowserNew(t *testing.T) {
 	)
 	_, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
 		InvocationID: "ckqwer3o20000jb9s7abcdef",
+		Persistence: kernel.BrowserNewParamsPersistence{
+			ID: "my-shared-browser",
+		},
 	})
 	if err != nil {
 		var apierr *kernel.Error
