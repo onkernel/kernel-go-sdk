@@ -41,6 +41,9 @@ func TestUserAgentHeader(t *testing.T) {
 	)
 	client.Browsers.New(context.Background(), kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if userAgent != fmt.Sprintf("Kernel/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
@@ -67,6 +70,9 @@ func TestRetryAfter(t *testing.T) {
 	)
 	_, err := client.Browsers.New(context.Background(), kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -104,6 +110,9 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 	)
 	_, err := client.Browsers.New(context.Background(), kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -136,6 +145,9 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 	)
 	_, err := client.Browsers.New(context.Background(), kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -167,6 +179,9 @@ func TestRetryAfterMs(t *testing.T) {
 	)
 	_, err := client.Browsers.New(context.Background(), kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -192,6 +207,9 @@ func TestContextCancel(t *testing.T) {
 	cancel()
 	_, err := client.Browsers.New(cancelCtx, kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -214,6 +232,9 @@ func TestContextCancelDelay(t *testing.T) {
 	defer cancel()
 	_, err := client.Browsers.New(cancelCtx, kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
@@ -242,6 +263,9 @@ func TestContextDeadline(t *testing.T) {
 		)
 		_, err := client.Browsers.New(deadlineCtx, kernel.BrowserNewParams{
 			InvocationID: "REPLACE_ME",
+			Persistence: kernel.BrowserPersistenceParam{
+				ID: "browser-for-user-1234",
+			},
 		})
 		if err == nil {
 			t.Error("expected there to be a deadline error")
