@@ -303,6 +303,9 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 ```go
 _, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
 	InvocationID: "REPLACE_ME",
+	Persistence: kernel.BrowserPersistenceParam{
+		ID: "browser-for-user-1234",
+	},
 })
 if err != nil {
 	var apierr *kernel.Error
@@ -332,6 +335,9 @@ client.Browsers.New(
 	ctx,
 	kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -391,6 +397,9 @@ client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	},
 	option.WithMaxRetries(5),
 )
@@ -408,6 +417,9 @@ browser, err := client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
 		InvocationID: "REPLACE_ME",
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
+		},
 	},
 	option.WithResponseInto(&response),
 )
