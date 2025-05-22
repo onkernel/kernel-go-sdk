@@ -27,9 +27,9 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-		InvocationID: "ckqwer3o20000jb9s7abcdef",
+		InvocationID: "rr33xuugxj9h0bkf1rdt2bet",
 		Persistence: kernel.BrowserPersistenceParam{
-			ID: "my-shared-browser",
+			ID: "my-awesome-browser-for-user-1234",
 		},
 	})
 	if err != nil {
@@ -54,7 +54,7 @@ func TestBrowserGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Browsers.Get(context.TODO(), "e5bf36fe-9247-4e2b-8b5a-2f594cc1c073")
+	_, err := client.Browsers.Get(context.TODO(), "htzv5orfit78e1m2biiifpbv")
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {
@@ -125,7 +125,7 @@ func TestBrowserDeleteByID(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Browsers.DeleteByID(context.TODO(), "e5bf36fe-9247-4e2b-8b5a-2f594cc1c073")
+	err := client.Browsers.DeleteByID(context.TODO(), "htzv5orfit78e1m2biiifpbv")
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {

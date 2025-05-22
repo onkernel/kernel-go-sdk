@@ -54,7 +54,7 @@ func TestAppInvocationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Apps.Invocations.Get(context.TODO(), "ckqwer3o20000jb9s7abcdef")
+	_, err := client.Apps.Invocations.Get(context.TODO(), "rr33xuugxj9h0bkf1rdt2bet")
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {
