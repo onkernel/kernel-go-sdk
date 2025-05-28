@@ -26,11 +26,13 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationNewResponse">AppInvocationNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationGetResponse">AppInvocationGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationUpdateResponse">AppInvocationUpdateResponse</a>
 
 Methods:
 
 - <code title="post /invocations">client.Apps.Invocations.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationNewParams">AppInvocationNewParams</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationNewResponse">AppInvocationNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /invocations/{id}">client.Apps.Invocations.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationGetResponse">AppInvocationGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /invocations/{id}">client.Apps.Invocations.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationUpdateParams">AppInvocationUpdateParams</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#AppInvocationUpdateResponse">AppInvocationUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Browsers
 
