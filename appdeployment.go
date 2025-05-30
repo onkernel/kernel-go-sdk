@@ -42,7 +42,7 @@ func NewAppDeploymentService(opts ...option.RequestOption) (r AppDeploymentServi
 	return
 }
 
-// Deploy a new application
+// Deploy a new application and associated actions to Kernel.
 func (r *AppDeploymentService) New(ctx context.Context, body AppDeploymentNewParams, opts ...option.RequestOption) (res *AppDeploymentNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "deploy"

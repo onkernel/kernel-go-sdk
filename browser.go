@@ -36,7 +36,7 @@ func NewBrowserService(opts ...option.RequestOption) (r BrowserService) {
 	return
 }
 
-// Create Browser Session
+// Create a new browser session from within an action.
 func (r *BrowserService) New(ctx context.Context, body BrowserNewParams, opts ...option.RequestOption) (res *BrowserNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "browsers"
@@ -44,7 +44,7 @@ func (r *BrowserService) New(ctx context.Context, body BrowserNewParams, opts ..
 	return
 }
 
-// Get Browser Session by ID
+// Get information about a browser session.
 func (r *BrowserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *BrowserGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
@@ -56,7 +56,7 @@ func (r *BrowserService) Get(ctx context.Context, id string, opts ...option.Requ
 	return
 }
 
-// List active browser sessions for the authenticated user
+// List active browser sessions
 func (r *BrowserService) List(ctx context.Context, opts ...option.RequestOption) (res *[]BrowserListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "browsers"
@@ -64,7 +64,7 @@ func (r *BrowserService) List(ctx context.Context, opts ...option.RequestOption)
 	return
 }
 
-// Delete a persistent browser session by persistent_id query parameter.
+// Delete a persistent browser session by its persistent_id.
 func (r *BrowserService) Delete(ctx context.Context, body BrowserDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -73,7 +73,7 @@ func (r *BrowserService) Delete(ctx context.Context, body BrowserDeleteParams, o
 	return
 }
 
-// Delete Browser Session by ID
+// Delete a browser session by ID
 func (r *BrowserService) DeleteByID(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
