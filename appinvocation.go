@@ -35,7 +35,7 @@ func NewAppInvocationService(opts ...option.RequestOption) (r AppInvocationServi
 	return
 }
 
-// Invoke an application
+// Invoke an action.
 func (r *AppInvocationService) New(ctx context.Context, body AppInvocationNewParams, opts ...option.RequestOption) (res *AppInvocationNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "invocations"
@@ -43,7 +43,7 @@ func (r *AppInvocationService) New(ctx context.Context, body AppInvocationNewPar
 	return
 }
 
-// Get an app invocation by id
+// Get details about an invocation's status and output.
 func (r *AppInvocationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *AppInvocationGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
@@ -55,7 +55,7 @@ func (r *AppInvocationService) Get(ctx context.Context, id string, opts ...optio
 	return
 }
 
-// Update invocation status or output
+// Update an invocation's status or output.
 func (r *AppInvocationService) Update(ctx context.Context, id string, body AppInvocationUpdateParams, opts ...option.RequestOption) (res *AppInvocationUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {

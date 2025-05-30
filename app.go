@@ -38,8 +38,7 @@ func NewAppService(opts ...option.RequestOption) (r AppService) {
 	return
 }
 
-// List application versions for the authenticated user. Optionally filter by app
-// name and/or version label.
+// List applications. Optionally filter by app name and/or version label.
 func (r *AppService) List(ctx context.Context, query AppListParams, opts ...option.RequestOption) (res *[]AppListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "apps"
