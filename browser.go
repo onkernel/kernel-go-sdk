@@ -211,6 +211,9 @@ func (r *BrowserListResponse) UnmarshalJSON(data []byte) error {
 type BrowserNewParams struct {
 	// action invocation ID
 	InvocationID string `json:"invocation_id,required"`
+	// If true, launches the browser in stealth mode to reduce detection by anti-bot
+	// mechanisms.
+	Stealth param.Opt[bool] `json:"stealth,omitzero"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`
 	paramObj

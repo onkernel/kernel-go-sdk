@@ -31,6 +31,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "my-awesome-browser-for-user-1234",
 		},
+		Stealth: kernel.Bool(true),
 	})
 	if err != nil {
 		var apierr *kernel.Error
