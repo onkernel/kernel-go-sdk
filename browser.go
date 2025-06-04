@@ -4,6 +4,7 @@ package kernel
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -110,7 +111,7 @@ func (r *BrowserPersistence) UnmarshalJSON(data []byte) error {
 // be used at the last possible moment before sending a request. Test for this with
 // BrowserPersistenceParam.Overrides()
 func (r BrowserPersistence) ToParam() BrowserPersistenceParam {
-	return param.Override[BrowserPersistenceParam](r.RawJSON())
+	return param.Override[BrowserPersistenceParam](json.RawMessage(r.RawJSON()))
 }
 
 // Optional persistence configuration for the browser session.
