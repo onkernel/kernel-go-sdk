@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.5.0 (2025-06-04)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* **api:** update via SDK Studio ([f0b66f8](https://github.com/onkernel/kernel-go-sdk/commit/f0b66f87541f4bc109f479906c3554bffb38c26f))
+* **api:** update via SDK Studio ([d60d333](https://github.com/onkernel/kernel-go-sdk/commit/d60d3337306d90c8c51a54c6abeece2731dd4834))
+* **client:** allow overriding unions ([51d877d](https://github.com/onkernel/kernel-go-sdk/commit/51d877d1ae7584b237fdb9238e97949b832c3cc8))
+
+
+### Bug Fixes
+
+* **client:** cast to raw message when converting to params ([de14358](https://github.com/onkernel/kernel-go-sdk/commit/de14358a78248e642c03bd669f9c361bf6b3c8ba))
+* fix error ([7d27985](https://github.com/onkernel/kernel-go-sdk/commit/7d2798511671e285d41943c51c3ac8ebc6a7d6d6))
+
+
+### Chores
+
+* make go mod tidy continue on error ([91b5021](https://github.com/onkernel/kernel-go-sdk/commit/91b50217a8a08dd06ba64e05d025386d91d586c8))
+
 ## 0.4.0 (2025-05-28)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.3.0...v0.4.0)

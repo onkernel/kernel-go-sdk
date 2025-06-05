@@ -4,6 +4,7 @@ package kernel
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -36,7 +37,7 @@ func NewBrowserService(opts ...option.RequestOption) (r BrowserService) {
 	return
 }
 
-// Create Browser Session
+// Create a new browser session from within an action.
 func (r *BrowserService) New(ctx context.Context, body BrowserNewParams, opts ...option.RequestOption) (res *BrowserNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "browsers"
@@ -44,7 +45,7 @@ func (r *BrowserService) New(ctx context.Context, body BrowserNewParams, opts ..
 	return
 }
 
-// Get Browser Session by ID
+// Get information about a browser session.
 func (r *BrowserService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *BrowserGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
@@ -56,7 +57,7 @@ func (r *BrowserService) Get(ctx context.Context, id string, opts ...option.Requ
 	return
 }
 
-// List active browser sessions for the authenticated user
+// List active browser sessions
 func (r *BrowserService) List(ctx context.Context, opts ...option.RequestOption) (res *[]BrowserListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "browsers"
@@ -64,7 +65,7 @@ func (r *BrowserService) List(ctx context.Context, opts ...option.RequestOption)
 	return
 }
 
-// Delete a persistent browser session by persistent_id query parameter.
+// Delete a persistent browser session by its persistent_id.
 func (r *BrowserService) Delete(ctx context.Context, body BrowserDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -73,7 +74,7 @@ func (r *BrowserService) Delete(ctx context.Context, body BrowserDeleteParams, o
 	return
 }
 
-// Delete Browser Session by ID
+// Delete a browser session by ID
 func (r *BrowserService) DeleteByID(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
@@ -110,7 +111,7 @@ func (r *BrowserPersistence) UnmarshalJSON(data []byte) error {
 // be used at the last possible moment before sending a request. Test for this with
 // BrowserPersistenceParam.Overrides()
 func (r BrowserPersistence) ToParam() BrowserPersistenceParam {
-	return param.Override[BrowserPersistenceParam](r.RawJSON())
+	return param.Override[BrowserPersistenceParam](json.RawMessage(r.RawJSON()))
 }
 
 // Optional persistence configuration for the browser session.
@@ -211,6 +212,9 @@ func (r *BrowserListResponse) UnmarshalJSON(data []byte) error {
 type BrowserNewParams struct {
 	// action invocation ID
 	InvocationID string `json:"invocation_id,required"`
+	// If true, launches the browser in stealth mode to reduce detection by anti-bot
+	// mechanisms.
+	Stealth param.Opt[bool] `json:"stealth,omitzero"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`
 	paramObj
