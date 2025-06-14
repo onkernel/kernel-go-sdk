@@ -206,11 +206,11 @@ type DeploymentFollowResponseUnion struct {
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	AppName string `json:"app_name"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
-	EnvVars map[string]string `json:"env_vars"`
-	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	Region string `json:"region"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	Version string `json:"version"`
+	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
+	EnvVars map[string]string `json:"env_vars"`
 	// This field is from variant [DeploymentFollowResponseErrorEvent].
 	Error DeploymentFollowResponseErrorEventError `json:"error"`
 	JSON  struct {
@@ -220,9 +220,9 @@ type DeploymentFollowResponseUnion struct {
 		Deployment respjson.Field
 		ID         respjson.Field
 		AppName    respjson.Field
-		EnvVars    respjson.Field
 		Region     respjson.Field
 		Version    respjson.Field
+		EnvVars    respjson.Field
 		Error      respjson.Field
 		raw        string
 	} `json:"-"`
@@ -262,7 +262,7 @@ type DeploymentFollowResponseLog struct {
 	// Log message text.
 	Message string `json:"message,required"`
 	// Time the log entry was produced.
-	Timestamp time.Time `json:"timestamp" format:"date-time"`
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Event       respjson.Field
@@ -286,7 +286,7 @@ type DeploymentFollowResponseDeploymentState struct {
 	// Event type identifier (always "deployment_state").
 	Event constant.DeploymentState `json:"event,required"`
 	// Time the state was reported.
-	Timestamp time.Time `json:"timestamp" format:"date-time"`
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Deployment  respjson.Field
@@ -347,27 +347,28 @@ func (r *DeploymentFollowResponseDeploymentStateDeployment) UnmarshalJSON(data [
 // Summary of an application version.
 type DeploymentFollowResponseAppVersionSummaryEvent struct {
 	// Unique identifier for the app version
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Name of the application
-	AppName string `json:"app_name"`
+	AppName string `json:"app_name,required"`
+	// Event type identifier (always "app_version_summary").
+	Event constant.AppVersionSummary `json:"event,required"`
+	// Deployment region code
+	Region string `json:"region,required"`
+	// Time the state was reported.
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	// Version label for the application
+	Version string `json:"version,required"`
 	// Environment variables configured for this app version
 	EnvVars map[string]string `json:"env_vars"`
-	// Event type identifier (always "app_version_summary").
-	//
-	// Any of "app_version_summary".
-	Event string `json:"event"`
-	// Deployment region code
-	Region string `json:"region"`
-	// Version label for the application
-	Version string `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		AppName     respjson.Field
-		EnvVars     respjson.Field
 		Event       respjson.Field
 		Region      respjson.Field
+		Timestamp   respjson.Field
 		Version     respjson.Field
+		EnvVars     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -381,15 +382,16 @@ func (r *DeploymentFollowResponseAppVersionSummaryEvent) UnmarshalJSON(data []by
 
 // An error event from the application.
 type DeploymentFollowResponseErrorEvent struct {
-	Error DeploymentFollowResponseErrorEventError `json:"error"`
+	Error DeploymentFollowResponseErrorEventError `json:"error,required"`
 	// Event type identifier (always "error").
-	//
-	// Any of "error".
-	Event string `json:"event"`
+	Event constant.Error `json:"event,required"`
+	// Time the error occurred.
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Error       respjson.Field
 		Event       respjson.Field
+		Timestamp   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
