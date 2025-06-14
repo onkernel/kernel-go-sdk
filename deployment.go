@@ -204,7 +204,7 @@ type DeploymentFollowResponseUnion struct {
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	ID string `json:"id"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
-	Actions []string `json:"actions"`
+	Actions []DeploymentFollowResponseAppVersionSummaryEventAction `json:"actions"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	AppName string `json:"app_name"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
@@ -352,7 +352,7 @@ type DeploymentFollowResponseAppVersionSummaryEvent struct {
 	// Unique identifier for the app version
 	ID string `json:"id,required"`
 	// List of actions available on the app
-	Actions []string `json:"actions,required"`
+	Actions []DeploymentFollowResponseAppVersionSummaryEventAction `json:"actions,required"`
 	// Name of the application
 	AppName string `json:"app_name,required"`
 	// Event type identifier (always "app_version_summary").
@@ -383,6 +383,23 @@ type DeploymentFollowResponseAppVersionSummaryEvent struct {
 // Returns the unmodified JSON received from the API
 func (r DeploymentFollowResponseAppVersionSummaryEvent) RawJSON() string { return r.JSON.raw }
 func (r *DeploymentFollowResponseAppVersionSummaryEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DeploymentFollowResponseAppVersionSummaryEventAction struct {
+	// Name of the action
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DeploymentFollowResponseAppVersionSummaryEventAction) RawJSON() string { return r.JSON.raw }
+func (r *DeploymentFollowResponseAppVersionSummaryEventAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
