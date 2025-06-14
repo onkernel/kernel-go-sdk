@@ -13,6 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
+	"github.com/onkernel/kernel-go-sdk/shared/constant"
 )
 
 // AppService contains methods and other services that help with interacting with
@@ -53,7 +54,7 @@ type AppListResponse struct {
 	// Name of the application
 	AppName string `json:"app_name,required"`
 	// Deployment region code
-	Region string `json:"region,required"`
+	Region constant.AwsUsEast1a `json:"region,required"`
 	// Version label for the application
 	Version string `json:"version,required"`
 	// Environment variables configured for this app version
