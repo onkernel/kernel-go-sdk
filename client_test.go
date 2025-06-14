@@ -311,7 +311,7 @@ func TestContextDeadlineStreaming(t *testing.T) {
 				},
 			}),
 		)
-		stream := client.Apps.Deployments.FollowStreaming(deadlineCtx, "id")
+		stream := client.Deployments.FollowStreaming(deadlineCtx, "id")
 		for stream.Next() {
 			_ = stream.Current()
 		}
@@ -356,7 +356,7 @@ func TestContextDeadlineStreamingWithRequestTimeout(t *testing.T) {
 				},
 			}),
 		)
-		stream := client.Apps.Deployments.FollowStreaming(
+		stream := client.Deployments.FollowStreaming(
 			context.Background(),
 			"id",
 			option.WithRequestTimeout((100 * time.Millisecond)),
