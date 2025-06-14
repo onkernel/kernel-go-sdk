@@ -389,7 +389,7 @@ func (r *DeploymentFollowResponseAppVersionSummaryEvent) UnmarshalJSON(data []by
 // An action available on the app
 type DeploymentFollowResponseAppVersionSummaryEventAction struct {
 	// Name of the action
-	Name string `json:"name"`
+	Name string `json:"name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
