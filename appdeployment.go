@@ -277,7 +277,7 @@ type AppDeploymentFollowResponseLog struct {
 	// Log message text.
 	Message string `json:"message,required"`
 	// Time the log entry was produced.
-	Timestamp time.Time `json:"timestamp" format:"date-time"`
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Event       respjson.Field
