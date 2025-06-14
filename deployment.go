@@ -88,7 +88,7 @@ type DeploymentNewResponse struct {
 	// Timestamp when the deployment was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Deployment region code
-	Region string `json:"region,required"`
+	Region constant.AwsUsEast1a `json:"region,required"`
 	// Current status of the deployment
 	//
 	// Any of "queued", "in_progress", "running", "failed", "stopped".
@@ -140,7 +140,7 @@ type DeploymentGetResponse struct {
 	// Timestamp when the deployment was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Deployment region code
-	Region string `json:"region,required"`
+	Region constant.AwsUsEast1a `json:"region,required"`
 	// Current status of the deployment
 	//
 	// Any of "queued", "in_progress", "running", "failed", "stopped".
@@ -206,7 +206,7 @@ type DeploymentFollowResponseUnion struct {
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	AppName string `json:"app_name"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
-	Region string `json:"region"`
+	Region constant.AwsUsEast1a `json:"region"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	Version string `json:"version"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
@@ -313,7 +313,7 @@ type DeploymentFollowResponseDeploymentStateDeployment struct {
 	// Timestamp when the deployment was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Deployment region code
-	Region string `json:"region,required"`
+	Region constant.AwsUsEast1a `json:"region,required"`
 	// Current status of the deployment
 	//
 	// Any of "queued", "in_progress", "running", "failed", "stopped".
@@ -356,7 +356,7 @@ type DeploymentFollowResponseAppVersionSummaryEvent struct {
 	// Event type identifier (always "app_version_summary").
 	Event constant.AppVersionSummary `json:"event,required"`
 	// Deployment region code
-	Region string `json:"region,required"`
+	Region constant.AwsUsEast1a `json:"region,required"`
 	// Time the state was reported.
 	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// Version label for the application

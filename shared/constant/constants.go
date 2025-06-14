@@ -19,6 +19,7 @@ func ValueOf[T Constant[T]]() T {
 }
 
 type AppVersionSummary string // Always "app_version_summary"
+type AwsUsEast1a string       // Always "aws.us-east-1a"
 type DeploymentState string   // Always "deployment_state"
 type Error string             // Always "error"
 type Log string               // Always "log"
@@ -26,6 +27,7 @@ type State string             // Always "state"
 type StateUpdate string       // Always "state_update"
 
 func (c AppVersionSummary) Default() AppVersionSummary { return "app_version_summary" }
+func (c AwsUsEast1a) Default() AwsUsEast1a             { return "aws.us-east-1a" }
 func (c DeploymentState) Default() DeploymentState     { return "deployment_state" }
 func (c Error) Default() Error                         { return "error" }
 func (c Log) Default() Log                             { return "log" }
@@ -33,6 +35,7 @@ func (c State) Default() State                         { return "state" }
 func (c StateUpdate) Default() StateUpdate             { return "state_update" }
 
 func (c AppVersionSummary) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c AwsUsEast1a) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c DeploymentState) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Error) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c Log) MarshalJSON() ([]byte, error)               { return marshalString(c) }
