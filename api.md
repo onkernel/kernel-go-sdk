@@ -1,3 +1,17 @@
+# Deployments
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentNewResponse">DeploymentNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentGetResponse">DeploymentGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentFollowResponseUnion">DeploymentFollowResponseUnion</a>
+
+Methods:
+
+- <code title="post /deployments">client.Deployments.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentNewParams">DeploymentNewParams</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentNewResponse">DeploymentNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /deployments/{id}">client.Deployments.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentGetResponse">DeploymentGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /deployments/{id}/events">client.Deployments.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentService.Follow">Follow</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#DeploymentFollowResponseUnion">DeploymentFollowResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Apps
 
 Response Types:
