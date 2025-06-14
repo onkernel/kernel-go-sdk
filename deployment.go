@@ -204,13 +204,13 @@ type DeploymentFollowResponseUnion struct {
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	ID string `json:"id"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
+	Actions []string `json:"actions"`
+	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	AppName string `json:"app_name"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	Region constant.AwsUsEast1a `json:"region"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	Version string `json:"version"`
-	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
-	Actions []string `json:"actions"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	EnvVars map[string]string `json:"env_vars"`
 	// This field is from variant [DeploymentFollowResponseErrorEvent].
@@ -221,10 +221,10 @@ type DeploymentFollowResponseUnion struct {
 		Timestamp  respjson.Field
 		Deployment respjson.Field
 		ID         respjson.Field
+		Actions    respjson.Field
 		AppName    respjson.Field
 		Region     respjson.Field
 		Version    respjson.Field
-		Actions    respjson.Field
 		EnvVars    respjson.Field
 		Error      respjson.Field
 		raw        string
@@ -351,6 +351,8 @@ func (r *DeploymentFollowResponseDeploymentStateDeployment) UnmarshalJSON(data [
 type DeploymentFollowResponseAppVersionSummaryEvent struct {
 	// Unique identifier for the app version
 	ID string `json:"id,required"`
+	// List of actions available on the app
+	Actions []string `json:"actions,required"`
 	// Name of the application
 	AppName string `json:"app_name,required"`
 	// Event type identifier (always "app_version_summary").
@@ -361,19 +363,17 @@ type DeploymentFollowResponseAppVersionSummaryEvent struct {
 	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// Version label for the application
 	Version string `json:"version,required"`
-	// List of actions available on the app
-	Actions []string `json:"actions"`
 	// Environment variables configured for this app version
 	EnvVars map[string]string `json:"env_vars"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		Actions     respjson.Field
 		AppName     respjson.Field
 		Event       respjson.Field
 		Region      respjson.Field
 		Timestamp   respjson.Field
 		Version     respjson.Field
-		Actions     respjson.Field
 		EnvVars     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
