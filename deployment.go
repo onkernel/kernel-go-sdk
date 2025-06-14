@@ -210,6 +210,8 @@ type DeploymentFollowResponseUnion struct {
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	Version string `json:"version"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
+	Actions []string `json:"actions"`
+	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	EnvVars map[string]string `json:"env_vars"`
 	// This field is from variant [DeploymentFollowResponseErrorEvent].
 	Error DeploymentFollowResponseErrorEventError `json:"error"`
@@ -222,6 +224,7 @@ type DeploymentFollowResponseUnion struct {
 		AppName    respjson.Field
 		Region     respjson.Field
 		Version    respjson.Field
+		Actions    respjson.Field
 		EnvVars    respjson.Field
 		Error      respjson.Field
 		raw        string
@@ -358,6 +361,8 @@ type DeploymentFollowResponseAppVersionSummaryEvent struct {
 	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
 	// Version label for the application
 	Version string `json:"version,required"`
+	// List of actions available on the app
+	Actions []string `json:"actions"`
 	// Environment variables configured for this app version
 	EnvVars map[string]string `json:"env_vars"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -368,6 +373,7 @@ type DeploymentFollowResponseAppVersionSummaryEvent struct {
 		Region      respjson.Field
 		Timestamp   respjson.Field
 		Version     respjson.Field
+		Actions     respjson.Field
 		EnvVars     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
