@@ -308,63 +308,41 @@ const (
 )
 
 // InvocationFollowResponseUnion contains all possible properties and values from
-// [shared.LogEvent], [InvocationStateEvent], [InvocationFollowResponseError].
+// [shared.LogEvent], [DeploymentStateEvent], [InvocationStateEvent],
+// [shared.ErrorEvent].
 //
 // Use the [InvocationFollowResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InvocationFollowResponseUnion struct {
-	// Any of "log", "invocation_state", "error".
+	// Any of "log", nil, "invocation_state", "error".
 	Event string `json:"event"`
 	// This field is from variant [shared.LogEvent].
 	Message   string    `json:"message"`
 	Timestamp time.Time `json:"timestamp"`
+	// This field is from variant [DeploymentStateEvent].
+	Deployment DeploymentStateEventDeployment `json:"deployment"`
 	// This field is from variant [InvocationStateEvent].
 	Invocation InvocationStateEventInvocation `json:"invocation"`
-	// This field is from variant [InvocationFollowResponseError].
-	Error InvocationFollowResponseErrorError `json:"error"`
+	// This field is from variant [shared.ErrorEvent].
+	Error shared.Error `json:"error"`
 	JSON  struct {
 		Event      respjson.Field
 		Message    respjson.Field
 		Timestamp  respjson.Field
+		Deployment respjson.Field
 		Invocation respjson.Field
 		Error      respjson.Field
 		raw        string
 	} `json:"-"`
 }
 
-// anyInvocationFollowResponse is implemented by each variant of
-// [InvocationFollowResponseUnion] to add type safety for the return type of
-// [InvocationFollowResponseUnion.AsAny]
-type anyInvocationFollowResponse interface {
-	ImplInvocationFollowResponseUnion()
-}
-
-func (InvocationStateEvent) ImplInvocationFollowResponseUnion()          {}
-func (InvocationFollowResponseError) ImplInvocationFollowResponseUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := InvocationFollowResponseUnion.AsAny().(type) {
-//	case shared.LogEvent:
-//	case kernel.InvocationStateEvent:
-//	case kernel.InvocationFollowResponseError:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u InvocationFollowResponseUnion) AsAny() anyInvocationFollowResponse {
-	switch u.Event {
-	case "log":
-		return u.AsLog()
-	case "invocation_state":
-		return u.AsInvocationState()
-	case "error":
-		return u.AsError()
-	}
-	return nil
-}
-
 func (u InvocationFollowResponseUnion) AsLog() (v shared.LogEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InvocationFollowResponseUnion) AsDeploymentStateEvent() (v DeploymentStateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -374,7 +352,7 @@ func (u InvocationFollowResponseUnion) AsInvocationState() (v InvocationStateEve
 	return
 }
 
-func (u InvocationFollowResponseUnion) AsError() (v InvocationFollowResponseError) {
+func (u InvocationFollowResponseUnion) AsError() (v shared.ErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -383,54 +361,6 @@ func (u InvocationFollowResponseUnion) AsError() (v InvocationFollowResponseErro
 func (u InvocationFollowResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *InvocationFollowResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An error event from the application.
-type InvocationFollowResponseError struct {
-	Error InvocationFollowResponseErrorError `json:"error,required"`
-	// Event type identifier (always "error").
-	Event constant.Error `json:"event,required"`
-	// Time the error occurred.
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		Event       respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InvocationFollowResponseError) RawJSON() string { return r.JSON.raw }
-func (r *InvocationFollowResponseError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InvocationFollowResponseErrorError struct {
-	// Application-specific error code (machine-readable)
-	Code string `json:"code,required"`
-	// Human-readable error description for debugging
-	Message string `json:"message,required"`
-	// Additional error details (for multiple errors)
-	Details    []shared.ErrorDetail `json:"details"`
-	InnerError shared.ErrorDetail   `json:"inner_error"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		Details     respjson.Field
-		InnerError  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InvocationFollowResponseErrorError) RawJSON() string { return r.JSON.raw }
-func (r *InvocationFollowResponseErrorError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -253,8 +253,7 @@ const (
 
 // DeploymentFollowResponseUnion contains all possible properties and values from
 // [shared.LogEvent], [DeploymentStateEvent],
-// [DeploymentFollowResponseAppVersionSummaryEvent],
-// [DeploymentFollowResponseErrorEvent].
+// [DeploymentFollowResponseAppVersionSummaryEvent], [shared.ErrorEvent].
 //
 // Use the [DeploymentFollowResponseUnion.AsAny] method to switch on the variant.
 //
@@ -279,8 +278,8 @@ type DeploymentFollowResponseUnion struct {
 	Version string `json:"version"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	EnvVars map[string]string `json:"env_vars"`
-	// This field is from variant [DeploymentFollowResponseErrorEvent].
-	Error DeploymentFollowResponseErrorEventError `json:"error"`
+	// This field is from variant [shared.ErrorEvent].
+	Error shared.Error `json:"error"`
 	JSON  struct {
 		Event      respjson.Field
 		Message    respjson.Field
@@ -312,7 +311,7 @@ func (u DeploymentFollowResponseUnion) AsDeploymentFollowResponseAppVersionSumma
 	return
 }
 
-func (u DeploymentFollowResponseUnion) AsDeploymentFollowResponseErrorEvent() (v DeploymentFollowResponseErrorEvent) {
+func (u DeploymentFollowResponseUnion) AsErrorEvent() (v shared.ErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -378,54 +377,6 @@ type DeploymentFollowResponseAppVersionSummaryEventAction struct {
 // Returns the unmodified JSON received from the API
 func (r DeploymentFollowResponseAppVersionSummaryEventAction) RawJSON() string { return r.JSON.raw }
 func (r *DeploymentFollowResponseAppVersionSummaryEventAction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An error event from the application.
-type DeploymentFollowResponseErrorEvent struct {
-	Error DeploymentFollowResponseErrorEventError `json:"error,required"`
-	// Event type identifier (always "error").
-	Event constant.Error `json:"event,required"`
-	// Time the error occurred.
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		Event       respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseErrorEvent) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseErrorEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DeploymentFollowResponseErrorEventError struct {
-	// Application-specific error code (machine-readable)
-	Code string `json:"code,required"`
-	// Human-readable error description for debugging
-	Message string `json:"message,required"`
-	// Additional error details (for multiple errors)
-	Details    []shared.ErrorDetail `json:"details"`
-	InnerError shared.ErrorDetail   `json:"inner_error"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		Details     respjson.Field
-		InnerError  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseErrorEventError) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseErrorEventError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
