@@ -1,6 +1,5 @@
 # Shared Response Types
 
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared#Error">Error</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared#ErrorDetail">ErrorDetail</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared#ErrorEvent">ErrorEvent</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared#LogEvent">LogEvent</a>

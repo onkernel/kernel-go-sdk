@@ -279,7 +279,7 @@ type DeploymentFollowResponseUnion struct {
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	EnvVars map[string]string `json:"env_vars"`
 	// This field is from variant [shared.ErrorEvent].
-	Error shared.Error `json:"error"`
+	Error shared.ErrorEventError `json:"error"`
 	JSON  struct {
 		Event      respjson.Field
 		Message    respjson.Field
