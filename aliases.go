@@ -5,6 +5,7 @@ package kernel
 import (
 	"github.com/onkernel/kernel-go-sdk/internal/apierror"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
+	"github.com/onkernel/kernel-go-sdk/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding
@@ -14,3 +15,11 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type Error = apierror.Error
+
+// This is an alias to an internal type.
+type ErrorDetail = shared.ErrorDetail
+
+// A log entry from the application.
+//
+// This is an alias to an internal type.
+type LogEvent = shared.LogEvent

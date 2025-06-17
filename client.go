@@ -18,6 +18,7 @@ type Client struct {
 	Options     []option.RequestOption
 	Deployments DeploymentService
 	Apps        AppService
+	Invocations InvocationService
 	Browsers    BrowserService
 }
 
@@ -45,6 +46,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.Deployments = NewDeploymentService(opts...)
 	r.Apps = NewAppService(opts...)
+	r.Invocations = NewInvocationService(opts...)
 	r.Browsers = NewBrowserService(opts...)
 
 	return
