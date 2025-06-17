@@ -20,6 +20,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 	"github.com/onkernel/kernel-go-sdk/packages/ssestream"
+	"github.com/onkernel/kernel-go-sdk/shared"
 	"github.com/onkernel/kernel-go-sdk/shared/constant"
 )
 
@@ -79,6 +80,71 @@ func (r *DeploymentService) FollowStreaming(ctx context.Context, id string, opts
 	path := fmt.Sprintf("deployments/%s/events", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &raw, opts...)
 	return ssestream.NewStream[DeploymentFollowResponseUnion](ssestream.NewDecoder(raw), err)
+}
+
+// An event representing the current state of a deployment.
+type DeploymentStateEvent struct {
+	// Deployment record information.
+	Deployment DeploymentStateEventDeployment `json:"deployment,required"`
+	// Event type identifier (always "deployment_state").
+	Event constant.DeploymentState `json:"event,required"`
+	// Time the state was reported.
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Deployment  respjson.Field
+		Event       respjson.Field
+		Timestamp   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DeploymentStateEvent) RawJSON() string { return r.JSON.raw }
+func (r *DeploymentStateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Deployment record information.
+type DeploymentStateEventDeployment struct {
+	// Unique identifier for the deployment
+	ID string `json:"id,required"`
+	// Timestamp when the deployment was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Deployment region code
+	Region constant.AwsUsEast1a `json:"region,required"`
+	// Current status of the deployment
+	//
+	// Any of "queued", "in_progress", "running", "failed", "stopped".
+	Status string `json:"status,required"`
+	// Relative path to the application entrypoint
+	EntrypointRelPath string `json:"entrypoint_rel_path"`
+	// Environment variables configured for this deployment
+	EnvVars map[string]string `json:"env_vars"`
+	// Status reason
+	StatusReason string `json:"status_reason"`
+	// Timestamp when the deployment was last updated
+	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                respjson.Field
+		CreatedAt         respjson.Field
+		Region            respjson.Field
+		Status            respjson.Field
+		EntrypointRelPath respjson.Field
+		EnvVars           respjson.Field
+		StatusReason      respjson.Field
+		UpdatedAt         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DeploymentStateEventDeployment) RawJSON() string { return r.JSON.raw }
+func (r *DeploymentStateEventDeployment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Deployment record information.
@@ -186,7 +252,7 @@ const (
 )
 
 // DeploymentFollowResponseUnion contains all possible properties and values from
-// [DeploymentFollowResponseLog], [DeploymentFollowResponseDeploymentState],
+// [shared.LogEvent], [DeploymentStateEvent],
 // [DeploymentFollowResponseAppVersionSummaryEvent],
 // [DeploymentFollowResponseErrorEvent].
 //
@@ -196,11 +262,11 @@ const (
 type DeploymentFollowResponseUnion struct {
 	// Any of "log", "deployment_state", nil, nil.
 	Event string `json:"event"`
-	// This field is from variant [DeploymentFollowResponseLog].
+	// This field is from variant [shared.LogEvent].
 	Message   string    `json:"message"`
 	Timestamp time.Time `json:"timestamp"`
-	// This field is from variant [DeploymentFollowResponseDeploymentState].
-	Deployment DeploymentFollowResponseDeploymentStateDeployment `json:"deployment"`
+	// This field is from variant [DeploymentStateEvent].
+	Deployment DeploymentStateEventDeployment `json:"deployment"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
 	ID string `json:"id"`
 	// This field is from variant [DeploymentFollowResponseAppVersionSummaryEvent].
@@ -231,12 +297,12 @@ type DeploymentFollowResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u DeploymentFollowResponseUnion) AsLog() (v DeploymentFollowResponseLog) {
+func (u DeploymentFollowResponseUnion) AsLog() (v shared.LogEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DeploymentFollowResponseUnion) AsDeploymentState() (v DeploymentFollowResponseDeploymentState) {
+func (u DeploymentFollowResponseUnion) AsDeploymentState() (v DeploymentStateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -255,95 +321,6 @@ func (u DeploymentFollowResponseUnion) AsDeploymentFollowResponseErrorEvent() (v
 func (u DeploymentFollowResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *DeploymentFollowResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A log entry from the application.
-type DeploymentFollowResponseLog struct {
-	// Event type identifier (always "log").
-	Event constant.Log `json:"event,required"`
-	// Log message text.
-	Message string `json:"message,required"`
-	// Time the log entry was produced.
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Event       respjson.Field
-		Message     respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseLog) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseLog) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An event representing the current state of a deployment.
-type DeploymentFollowResponseDeploymentState struct {
-	// Deployment record information.
-	Deployment DeploymentFollowResponseDeploymentStateDeployment `json:"deployment,required"`
-	// Event type identifier (always "deployment_state").
-	Event constant.DeploymentState `json:"event,required"`
-	// Time the state was reported.
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Deployment  respjson.Field
-		Event       respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseDeploymentState) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseDeploymentState) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Deployment record information.
-type DeploymentFollowResponseDeploymentStateDeployment struct {
-	// Unique identifier for the deployment
-	ID string `json:"id,required"`
-	// Timestamp when the deployment was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Deployment region code
-	Region constant.AwsUsEast1a `json:"region,required"`
-	// Current status of the deployment
-	//
-	// Any of "queued", "in_progress", "running", "failed", "stopped".
-	Status string `json:"status,required"`
-	// Relative path to the application entrypoint
-	EntrypointRelPath string `json:"entrypoint_rel_path"`
-	// Environment variables configured for this deployment
-	EnvVars map[string]string `json:"env_vars"`
-	// Status reason
-	StatusReason string `json:"status_reason"`
-	// Timestamp when the deployment was last updated
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		Region            respjson.Field
-		Status            respjson.Field
-		EntrypointRelPath respjson.Field
-		EnvVars           respjson.Field
-		StatusReason      respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseDeploymentStateDeployment) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseDeploymentStateDeployment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -433,8 +410,8 @@ type DeploymentFollowResponseErrorEventError struct {
 	// Human-readable error description for debugging
 	Message string `json:"message,required"`
 	// Additional error details (for multiple errors)
-	Details    []DeploymentFollowResponseErrorEventErrorDetail   `json:"details"`
-	InnerError DeploymentFollowResponseErrorEventErrorInnerError `json:"inner_error"`
+	Details    []shared.ErrorDetail `json:"details"`
+	InnerError shared.ErrorDetail   `json:"inner_error"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Code        respjson.Field
@@ -449,46 +426,6 @@ type DeploymentFollowResponseErrorEventError struct {
 // Returns the unmodified JSON received from the API
 func (r DeploymentFollowResponseErrorEventError) RawJSON() string { return r.JSON.raw }
 func (r *DeploymentFollowResponseErrorEventError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DeploymentFollowResponseErrorEventErrorDetail struct {
-	// Lower-level error code providing more specific detail
-	Code string `json:"code"`
-	// Further detail about the error
-	Message string `json:"message"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseErrorEventErrorDetail) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseErrorEventErrorDetail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DeploymentFollowResponseErrorEventErrorInnerError struct {
-	// Lower-level error code providing more specific detail
-	Code string `json:"code"`
-	// Further detail about the error
-	Message string `json:"message"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentFollowResponseErrorEventErrorInnerError) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentFollowResponseErrorEventErrorInnerError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
