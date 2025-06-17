@@ -85,6 +85,8 @@ func (r *ErrorEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (ErrorEvent) ImplInvocationFollowResponseUnion() {}
+
 // A log entry from the application.
 type LogEvent struct {
 	// Event type identifier (always "log").
@@ -110,3 +112,4 @@ func (r *LogEvent) UnmarshalJSON(data []byte) error {
 }
 
 func (LogEvent) ImplAppDeploymentFollowResponseUnion() {}
+func (LogEvent) ImplInvocationFollowResponseUnion()    {}
