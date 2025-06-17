@@ -13,7 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/option"
 )
 
-func TestAppInvocationNewWithOptionalParams(t *testing.T) {
+func TestInvocationNewWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestAppInvocationNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Apps.Invocations.New(context.TODO(), kernel.AppInvocationNewParams{
+	_, err := client.Invocations.New(context.TODO(), kernel.InvocationNewParams{
 		ActionName: "analyze",
 		AppName:    "my-app",
 		Version:    "1.0.0",
@@ -42,7 +42,7 @@ func TestAppInvocationNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAppInvocationGet(t *testing.T) {
+func TestInvocationGet(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,7 +55,7 @@ func TestAppInvocationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Apps.Invocations.Get(context.TODO(), "rr33xuugxj9h0bkf1rdt2bet")
+	_, err := client.Invocations.Get(context.TODO(), "rr33xuugxj9h0bkf1rdt2bet")
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {
@@ -65,7 +65,7 @@ func TestAppInvocationGet(t *testing.T) {
 	}
 }
 
-func TestAppInvocationUpdateWithOptionalParams(t *testing.T) {
+func TestInvocationUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -78,11 +78,11 @@ func TestAppInvocationUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Apps.Invocations.Update(
+	_, err := client.Invocations.Update(
 		context.TODO(),
 		"id",
-		kernel.AppInvocationUpdateParams{
-			Status: kernel.AppInvocationUpdateParamsStatusSucceeded,
+		kernel.InvocationUpdateParams{
+			Status: kernel.InvocationUpdateParamsStatusSucceeded,
 			Output: kernel.String("output"),
 		},
 	)

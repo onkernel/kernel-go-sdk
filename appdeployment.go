@@ -20,6 +20,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 	"github.com/onkernel/kernel-go-sdk/packages/ssestream"
+	"github.com/onkernel/kernel-go-sdk/shared"
 	"github.com/onkernel/kernel-go-sdk/shared/constant"
 )
 
@@ -146,7 +147,7 @@ const (
 
 // AppDeploymentFollowResponseUnion contains all possible properties and values
 // from [AppDeploymentFollowResponseState],
-// [AppDeploymentFollowResponseStateUpdate], [AppDeploymentFollowResponseLog].
+// [AppDeploymentFollowResponseStateUpdate], [shared.LogEvent].
 //
 // Use the [AppDeploymentFollowResponseUnion.AsAny] method to switch on the
 // variant.
@@ -157,7 +158,7 @@ type AppDeploymentFollowResponseUnion struct {
 	Event     string    `json:"event"`
 	State     string    `json:"state"`
 	Timestamp time.Time `json:"timestamp"`
-	// This field is from variant [AppDeploymentFollowResponseLog].
+	// This field is from variant [shared.LogEvent].
 	Message string `json:"message"`
 	JSON    struct {
 		Event     respjson.Field
@@ -172,19 +173,18 @@ type AppDeploymentFollowResponseUnion struct {
 // [AppDeploymentFollowResponseUnion] to add type safety for the return type of
 // [AppDeploymentFollowResponseUnion.AsAny]
 type anyAppDeploymentFollowResponse interface {
-	implAppDeploymentFollowResponseUnion()
+	ImplAppDeploymentFollowResponseUnion()
 }
 
-func (AppDeploymentFollowResponseState) implAppDeploymentFollowResponseUnion()       {}
-func (AppDeploymentFollowResponseStateUpdate) implAppDeploymentFollowResponseUnion() {}
-func (AppDeploymentFollowResponseLog) implAppDeploymentFollowResponseUnion()         {}
+func (AppDeploymentFollowResponseState) ImplAppDeploymentFollowResponseUnion()       {}
+func (AppDeploymentFollowResponseStateUpdate) ImplAppDeploymentFollowResponseUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := AppDeploymentFollowResponseUnion.AsAny().(type) {
 //	case kernel.AppDeploymentFollowResponseState:
 //	case kernel.AppDeploymentFollowResponseStateUpdate:
-//	case kernel.AppDeploymentFollowResponseLog:
+//	case shared.LogEvent:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -210,7 +210,7 @@ func (u AppDeploymentFollowResponseUnion) AsStateUpdate() (v AppDeploymentFollow
 	return
 }
 
-func (u AppDeploymentFollowResponseUnion) AsLog() (v AppDeploymentFollowResponseLog) {
+func (u AppDeploymentFollowResponseUnion) AsLog() (v shared.LogEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -267,30 +267,6 @@ type AppDeploymentFollowResponseStateUpdate struct {
 // Returns the unmodified JSON received from the API
 func (r AppDeploymentFollowResponseStateUpdate) RawJSON() string { return r.JSON.raw }
 func (r *AppDeploymentFollowResponseStateUpdate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A log entry from the application.
-type AppDeploymentFollowResponseLog struct {
-	// Event type identifier (always "log").
-	Event constant.Log `json:"event,required"`
-	// Log message text.
-	Message string `json:"message,required"`
-	// Time the log entry was produced.
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Event       respjson.Field
-		Message     respjson.Field
-		Timestamp   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AppDeploymentFollowResponseLog) RawJSON() string { return r.JSON.raw }
-func (r *AppDeploymentFollowResponseLog) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
