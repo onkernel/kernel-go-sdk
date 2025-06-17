@@ -25,7 +25,7 @@ type ErrorDetail = shared.ErrorDetail
 type ErrorEvent = shared.ErrorEvent
 
 // This is an alias to an internal type.
-type ErrorEventError = shared.ErrorEventError
+type ErrorModel = shared.ErrorModel
 
 // A log entry from the application.
 //

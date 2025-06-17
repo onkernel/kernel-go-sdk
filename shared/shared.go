@@ -39,7 +39,7 @@ func (r *ErrorDetail) UnmarshalJSON(data []byte) error {
 
 // An error event from the application.
 type ErrorEvent struct {
-	Error ErrorEventError `json:"error,required"`
+	Error ErrorModel `json:"error,required"`
 	// Event type identifier (always "error").
 	Event constant.Error `json:"event,required"`
 	// Time the error occurred.
@@ -62,7 +62,7 @@ func (r *ErrorEvent) UnmarshalJSON(data []byte) error {
 
 func (ErrorEvent) ImplInvocationFollowResponseUnion() {}
 
-type ErrorEventError struct {
+type ErrorModel struct {
 	// Application-specific error code (machine-readable)
 	Code string `json:"code,required"`
 	// Human-readable error description for debugging
@@ -82,8 +82,8 @@ type ErrorEventError struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ErrorEventError) RawJSON() string { return r.JSON.raw }
-func (r *ErrorEventError) UnmarshalJSON(data []byte) error {
+func (r ErrorModel) RawJSON() string { return r.JSON.raw }
+func (r *ErrorModel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

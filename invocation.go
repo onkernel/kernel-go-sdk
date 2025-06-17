@@ -322,7 +322,7 @@ type InvocationFollowResponseUnion struct {
 	// This field is from variant [InvocationStateEvent].
 	Invocation InvocationStateEventInvocation `json:"invocation"`
 	// This field is from variant [shared.ErrorEvent].
-	Error shared.ErrorEventError `json:"error"`
+	Error shared.ErrorModel `json:"error"`
 	JSON  struct {
 		Event      respjson.Field
 		Message    respjson.Field
