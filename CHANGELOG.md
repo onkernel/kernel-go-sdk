@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.6.0 (2025-06-17)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **api:** update via SDK Studio ([ee8e77a](https://github.com/onkernel/kernel-go-sdk/commit/ee8e77a653cc83084eec067e1060b80e8e99fc27))
+* **api:** update via SDK Studio ([1b2efd8](https://github.com/onkernel/kernel-go-sdk/commit/1b2efd8f083758e39ed2bd9bec8d5f6da0642ece))
+* **api:** update via SDK Studio ([3094578](https://github.com/onkernel/kernel-go-sdk/commit/3094578598220a1b837274b20e0dd4cb4f36fd2c))
+* **api:** update via SDK Studio ([0fec1e5](https://github.com/onkernel/kernel-go-sdk/commit/0fec1e5e8d6b426ade8030ec6836142ddd18cca4))
+* **api:** update via SDK Studio ([b44c90e](https://github.com/onkernel/kernel-go-sdk/commit/b44c90ed4698ca9c849bb20aa85579d0fcd36736))
+* **api:** update via SDK Studio ([d6e1cd6](https://github.com/onkernel/kernel-go-sdk/commit/d6e1cd618e324beb797495636a79016aa9cfe7b1))
+* **api:** update via SDK Studio ([0bc5b00](https://github.com/onkernel/kernel-go-sdk/commit/0bc5b008aad753e6b2a5bf2647b30b389e36c190))
+* **api:** update via SDK Studio ([db224f1](https://github.com/onkernel/kernel-go-sdk/commit/db224f133e8935217833037397839b771e901885))
+* **api:** update via SDK Studio ([3be7afb](https://github.com/onkernel/kernel-go-sdk/commit/3be7afb4985902b399ed45192a139b8f2a67bcf2))
+* **api:** update via SDK Studio ([562f248](https://github.com/onkernel/kernel-go-sdk/commit/562f248c183bc6bd908433c2920b63b596572711))
+* **api:** update via SDK Studio ([984cd7f](https://github.com/onkernel/kernel-go-sdk/commit/984cd7f8a9cbbb153e11895e5b8dd5ba79cc5548))
+* **api:** update via SDK Studio ([48d0b3d](https://github.com/onkernel/kernel-go-sdk/commit/48d0b3d6938a8e4e9db9148b7dc35d7440e43ae2))
+* **api:** update via SDK Studio ([8c6285b](https://github.com/onkernel/kernel-go-sdk/commit/8c6285b9dfff61a9f6b58053026ac18fbde1b66e))
+* **client:** add debug log helper ([5c92a71](https://github.com/onkernel/kernel-go-sdk/commit/5c92a71246d10274fa60eb84a0f42121cbca6e7b))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([72fd885](https://github.com/onkernel/kernel-go-sdk/commit/72fd885ebc2a949148fe7fbc5bc809b716a783fe))
+
 ## 0.5.0 (2025-06-04)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.4.0...v0.5.0)
