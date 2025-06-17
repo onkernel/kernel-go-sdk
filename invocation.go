@@ -308,20 +308,17 @@ const (
 )
 
 // InvocationFollowResponseUnion contains all possible properties and values from
-// [shared.LogEvent], [DeploymentStateEvent], [InvocationStateEvent],
-// [shared.ErrorEvent].
+// [shared.LogEvent], [InvocationStateEvent], [shared.ErrorEvent].
 //
 // Use the [InvocationFollowResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InvocationFollowResponseUnion struct {
-	// Any of "log", nil, "invocation_state", "error".
+	// Any of "log", "invocation_state", "error".
 	Event string `json:"event"`
 	// This field is from variant [shared.LogEvent].
 	Message   string    `json:"message"`
 	Timestamp time.Time `json:"timestamp"`
-	// This field is from variant [DeploymentStateEvent].
-	Deployment DeploymentStateEventDeployment `json:"deployment"`
 	// This field is from variant [InvocationStateEvent].
 	Invocation InvocationStateEventInvocation `json:"invocation"`
 	// This field is from variant [shared.ErrorEvent].
@@ -330,19 +327,43 @@ type InvocationFollowResponseUnion struct {
 		Event      respjson.Field
 		Message    respjson.Field
 		Timestamp  respjson.Field
-		Deployment respjson.Field
 		Invocation respjson.Field
 		Error      respjson.Field
 		raw        string
 	} `json:"-"`
 }
 
-func (u InvocationFollowResponseUnion) AsLog() (v shared.LogEvent) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
+// anyInvocationFollowResponse is implemented by each variant of
+// [InvocationFollowResponseUnion] to add type safety for the return type of
+// [InvocationFollowResponseUnion.AsAny]
+type anyInvocationFollowResponse interface {
+	ImplInvocationFollowResponseUnion()
 }
 
-func (u InvocationFollowResponseUnion) AsDeploymentStateEvent() (v DeploymentStateEvent) {
+func (InvocationStateEvent) ImplInvocationFollowResponseUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := InvocationFollowResponseUnion.AsAny().(type) {
+//	case shared.LogEvent:
+//	case kernel.InvocationStateEvent:
+//	case shared.ErrorEvent:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u InvocationFollowResponseUnion) AsAny() anyInvocationFollowResponse {
+	switch u.Event {
+	case "log":
+		return u.AsLog()
+	case "invocation_state":
+		return u.AsInvocationState()
+	case "error":
+		return u.AsError()
+	}
+	return nil
+}
+
+func (u InvocationFollowResponseUnion) AsLog() (v shared.LogEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
