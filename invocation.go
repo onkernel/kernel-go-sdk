@@ -71,6 +71,19 @@ func (r *InvocationService) Update(ctx context.Context, id string, body Invocati
 	return
 }
 
+// Delete all browser sessions created within the specified invocation.
+func (r *InvocationService) DeleteBrowsers(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("invocations/%s/browsers", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
 // Establishes a Server-Sent Events (SSE) stream that delivers real-time logs and
 // status updates for an invocation. The stream terminates automatically once the
 // invocation reaches a terminal state.
