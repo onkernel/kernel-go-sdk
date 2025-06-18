@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1 (2025-06-18)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.0...v0.6.1)
+
+### Features
+
+* **api:** add delete_browsers endpoint ([57fb070](https://github.com/onkernel/kernel-go-sdk/commit/57fb070819a948f64af4882595f99fa37f462c70))
+
 ## 0.6.0 (2025-06-17)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.5.0...v0.6.0)
