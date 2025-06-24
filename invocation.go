@@ -321,13 +321,14 @@ const (
 )
 
 // InvocationFollowResponseUnion contains all possible properties and values from
-// [shared.LogEvent], [InvocationStateEvent], [shared.ErrorEvent].
+// [shared.LogEvent], [InvocationStateEvent], [shared.ErrorEvent],
+// [shared.HeartbeatEvent].
 //
 // Use the [InvocationFollowResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InvocationFollowResponseUnion struct {
-	// Any of "log", "invocation_state", "error".
+	// Any of "log", "invocation_state", "error", "sse_heartbeat".
 	Event string `json:"event"`
 	// This field is from variant [shared.LogEvent].
 	Message   string    `json:"message"`
@@ -361,6 +362,7 @@ func (InvocationStateEvent) ImplInvocationFollowResponseUnion() {}
 //	case shared.LogEvent:
 //	case kernel.InvocationStateEvent:
 //	case shared.ErrorEvent:
+//	case shared.HeartbeatEvent:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -372,6 +374,8 @@ func (u InvocationFollowResponseUnion) AsAny() anyInvocationFollowResponse {
 		return u.AsInvocationState()
 	case "error":
 		return u.AsError()
+	case "sse_heartbeat":
+		return u.AsSseHeartbeat()
 	}
 	return nil
 }
@@ -387,6 +391,11 @@ func (u InvocationFollowResponseUnion) AsInvocationState() (v InvocationStateEve
 }
 
 func (u InvocationFollowResponseUnion) AsError() (v shared.ErrorEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u InvocationFollowResponseUnion) AsSseHeartbeat() (v shared.HeartbeatEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

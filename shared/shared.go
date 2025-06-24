@@ -87,6 +87,30 @@ func (r *ErrorModel) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Heartbeat event sent periodically to keep SSE connection alive.
+type HeartbeatEvent struct {
+	// Event type identifier (always "sse_heartbeat").
+	Event constant.SseHeartbeat `json:"event,required"`
+	// Time the heartbeat was sent.
+	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Event       respjson.Field
+		Timestamp   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HeartbeatEvent) RawJSON() string { return r.JSON.raw }
+func (r *HeartbeatEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (HeartbeatEvent) ImplAppDeploymentFollowResponseUnion() {}
+func (HeartbeatEvent) ImplInvocationFollowResponseUnion()    {}
+
 // A log entry from the application.
 type LogEvent struct {
 	// Event type identifier (always "log").

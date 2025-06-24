@@ -11,10 +11,12 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apiform"
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
@@ -66,7 +68,7 @@ func (r *DeploymentService) Get(ctx context.Context, id string, opts ...option.R
 // Establishes a Server-Sent Events (SSE) stream that delivers real-time logs and
 // status updates for a deployment. The stream terminates automatically once the
 // deployment reaches a terminal state.
-func (r *DeploymentService) FollowStreaming(ctx context.Context, id string, opts ...option.RequestOption) (stream *ssestream.Stream[DeploymentFollowResponseUnion]) {
+func (r *DeploymentService) FollowStreaming(ctx context.Context, id string, query DeploymentFollowParams, opts ...option.RequestOption) (stream *ssestream.Stream[DeploymentFollowResponseUnion]) {
 	var (
 		raw *http.Response
 		err error
@@ -78,7 +80,7 @@ func (r *DeploymentService) FollowStreaming(ctx context.Context, id string, opts
 		return
 	}
 	path := fmt.Sprintf("deployments/%s/events", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &raw, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &raw, opts...)
 	return ssestream.NewStream[DeploymentFollowResponseUnion](ssestream.NewDecoder(raw), err)
 }
 
@@ -253,13 +255,14 @@ const (
 
 // DeploymentFollowResponseUnion contains all possible properties and values from
 // [shared.LogEvent], [DeploymentStateEvent],
-// [DeploymentFollowResponseAppVersionSummaryEvent], [shared.ErrorEvent].
+// [DeploymentFollowResponseAppVersionSummaryEvent], [shared.ErrorEvent],
+// [shared.HeartbeatEvent].
 //
 // Use the [DeploymentFollowResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type DeploymentFollowResponseUnion struct {
-	// Any of "log", "deployment_state", nil, nil.
+	// Any of "log", "deployment_state", nil, nil, "sse_heartbeat".
 	Event string `json:"event"`
 	// This field is from variant [shared.LogEvent].
 	Message   string    `json:"message"`
@@ -312,6 +315,11 @@ func (u DeploymentFollowResponseUnion) AsDeploymentFollowResponseAppVersionSumma
 }
 
 func (u DeploymentFollowResponseUnion) AsErrorEvent() (v shared.ErrorEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DeploymentFollowResponseUnion) AsSseHeartbeat() (v shared.HeartbeatEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -423,3 +431,17 @@ type DeploymentNewParamsRegion string
 const (
 	DeploymentNewParamsRegionAwsUsEast1a DeploymentNewParamsRegion = "aws.us-east-1a"
 )
+
+type DeploymentFollowParams struct {
+	// Show logs since the given time (RFC timestamps or durations like 5m).
+	Since param.Opt[string] `query:"since,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [DeploymentFollowParams]'s query parameters as `url.Values`.
+func (r DeploymentFollowParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
