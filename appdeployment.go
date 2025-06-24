@@ -147,14 +147,15 @@ const (
 
 // AppDeploymentFollowResponseUnion contains all possible properties and values
 // from [AppDeploymentFollowResponseState],
-// [AppDeploymentFollowResponseStateUpdate], [shared.LogEvent].
+// [AppDeploymentFollowResponseStateUpdate], [shared.LogEvent],
+// [shared.HeartbeatEvent].
 //
 // Use the [AppDeploymentFollowResponseUnion.AsAny] method to switch on the
 // variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AppDeploymentFollowResponseUnion struct {
-	// Any of "state", "state_update", "log".
+	// Any of "state", "state_update", "log", "sse_heartbeat".
 	Event     string    `json:"event"`
 	State     string    `json:"state"`
 	Timestamp time.Time `json:"timestamp"`
@@ -185,6 +186,7 @@ func (AppDeploymentFollowResponseStateUpdate) ImplAppDeploymentFollowResponseUni
 //	case kernel.AppDeploymentFollowResponseState:
 //	case kernel.AppDeploymentFollowResponseStateUpdate:
 //	case shared.LogEvent:
+//	case shared.HeartbeatEvent:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -196,6 +198,8 @@ func (u AppDeploymentFollowResponseUnion) AsAny() anyAppDeploymentFollowResponse
 		return u.AsStateUpdate()
 	case "log":
 		return u.AsLog()
+	case "sse_heartbeat":
+		return u.AsSseHeartbeat()
 	}
 	return nil
 }
@@ -211,6 +215,11 @@ func (u AppDeploymentFollowResponseUnion) AsStateUpdate() (v AppDeploymentFollow
 }
 
 func (u AppDeploymentFollowResponseUnion) AsLog() (v shared.LogEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AppDeploymentFollowResponseUnion) AsSseHeartbeat() (v shared.HeartbeatEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

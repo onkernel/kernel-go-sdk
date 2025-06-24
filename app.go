@@ -51,6 +51,8 @@ type AppListResponse struct {
 	ID string `json:"id,required"`
 	// Name of the application
 	AppName string `json:"app_name,required"`
+	// Deployment ID
+	Deployment string `json:"deployment,required"`
 	// Deployment region code
 	Region constant.AwsUsEast1a `json:"region,required"`
 	// Version label for the application
@@ -61,6 +63,7 @@ type AppListResponse struct {
 	JSON struct {
 		ID          respjson.Field
 		AppName     respjson.Field
+		Deployment  respjson.Field
 		Region      respjson.Field
 		Version     respjson.Field
 		EnvVars     respjson.Field

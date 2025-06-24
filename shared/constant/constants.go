@@ -24,6 +24,7 @@ type DeploymentState string   // Always "deployment_state"
 type Error string             // Always "error"
 type InvocationState string   // Always "invocation_state"
 type Log string               // Always "log"
+type SseHeartbeat string      // Always "sse_heartbeat"
 type State string             // Always "state"
 type StateUpdate string       // Always "state_update"
 
@@ -33,6 +34,7 @@ func (c DeploymentState) Default() DeploymentState     { return "deployment_stat
 func (c Error) Default() Error                         { return "error" }
 func (c InvocationState) Default() InvocationState     { return "invocation_state" }
 func (c Log) Default() Log                             { return "log" }
+func (c SseHeartbeat) Default() SseHeartbeat           { return "sse_heartbeat" }
 func (c State) Default() State                         { return "state" }
 func (c StateUpdate) Default() StateUpdate             { return "state_update" }
 
@@ -42,6 +44,7 @@ func (c DeploymentState) MarshalJSON() ([]byte, error)   { return marshalString(
 func (c Error) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c InvocationState) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Log) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c SseHeartbeat) MarshalJSON() ([]byte, error)      { return marshalString(c) }
 func (c State) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c StateUpdate) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 
