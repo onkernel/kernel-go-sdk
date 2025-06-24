@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.2 (2025-06-24)
+
+Full Changelog: [v0.6.1...v0.6.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.1...v0.6.2)
+
+### Features
+
+* **api:** add `since` parameter to deployment logs endpoint ([dc72c81](https://github.com/onkernel/kernel-go-sdk/commit/dc72c81a2e45918d595c6c00843b1a1d0efffdd0))
+* **client:** add escape hatch for null slice & maps ([d5e1ad9](https://github.com/onkernel/kernel-go-sdk/commit/d5e1ad9087aecd6b67369b9ebbeb633ad808c129))
+
+
+### Chores
+
+* fix documentation of null map ([a62b964](https://github.com/onkernel/kernel-go-sdk/commit/a62b9647386501f43e70ad876dc5c0271c4c4709))
+
 ## 0.6.1 (2025-06-18)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.0...v0.6.1)
