@@ -27,6 +27,11 @@ type ErrorEvent = shared.ErrorEvent
 // This is an alias to an internal type.
 type ErrorModel = shared.ErrorModel
 
+// Heartbeat event sent periodically to keep SSE connection alive.
+//
+// This is an alias to an internal type.
+type HeartbeatEvent = shared.HeartbeatEvent
+
 // A log entry from the application.
 //
 // This is an alias to an internal type.
