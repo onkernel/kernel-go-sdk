@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.3 (2025-06-25)
+
+Full Changelog: [v0.6.2...v0.6.3](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.2...v0.6.3)
+
+### Features
+
+* **api:** /browsers no longer requires invocation id ([179da50](https://github.com/onkernel/kernel-go-sdk/commit/179da501250b0950198690bf54fabf046264c3f5))
+
 ## 0.6.2 (2025-06-24)
 
 Full Changelog: [v0.6.1...v0.6.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.1...v0.6.2)
