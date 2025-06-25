@@ -304,7 +304,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-	InvocationID: "REPLACE_ME",
+	InvocationID: kernel.String("REPLACE_ME"),
 	Persistence: kernel.BrowserPersistenceParam{
 		ID: "browser-for-user-1234",
 	},
@@ -336,7 +336,7 @@ defer cancel()
 client.Browsers.New(
 	ctx,
 	kernel.BrowserNewParams{
-		InvocationID: "REPLACE_ME",
+		InvocationID: kernel.String("REPLACE_ME"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "browser-for-user-1234",
 		},
@@ -398,7 +398,7 @@ client := kernel.NewClient(
 client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
-		InvocationID: "REPLACE_ME",
+		InvocationID: kernel.String("REPLACE_ME"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "browser-for-user-1234",
 		},
@@ -418,7 +418,7 @@ var response *http.Response
 browser, err := client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
-		InvocationID: "REPLACE_ME",
+		InvocationID: kernel.String("REPLACE_ME"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "browser-for-user-1234",
 		},
