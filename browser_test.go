@@ -27,7 +27,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-		InvocationID: "rr33xuugxj9h0bkf1rdt2bet",
+		InvocationID: kernel.String("rr33xuugxj9h0bkf1rdt2bet"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "my-awesome-browser-for-user-1234",
 		},
