@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.4 (2025-06-27)
+
+Full Changelog: [v0.6.3...v0.6.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.3...v0.6.4)
+
+### Features
+
+* **api:** add GET deployments endpoint ([e2c8f14](https://github.com/onkernel/kernel-go-sdk/commit/e2c8f14da32a692adbf18162ceab4b89e1bb2c4f))
+* **api:** deployments ([e0dc9c0](https://github.com/onkernel/kernel-go-sdk/commit/e0dc9c0fc621dabb383975656e58a19bbf8c0714))
+* **api:** manual updates ([f2ddf2c](https://github.com/onkernel/kernel-go-sdk/commit/f2ddf2c318eb1254e8c15fb5723a92b0ebd9cbb4))
+
 ## 0.6.3 (2025-06-25)
 
 Full Changelog: [v0.6.2...v0.6.3](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.2...v0.6.3)
