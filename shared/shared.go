@@ -17,6 +17,24 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+// An action available on the app
+type AppAction struct {
+	// Name of the action
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AppAction) RawJSON() string { return r.JSON.raw }
+func (r *AppAction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ErrorDetail struct {
 	// Lower-level error code providing more specific detail
 	Code string `json:"code"`
