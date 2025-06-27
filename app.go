@@ -13,7 +13,6 @@ import (
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
-	"github.com/onkernel/kernel-go-sdk/shared"
 	"github.com/onkernel/kernel-go-sdk/shared/constant"
 )
 
@@ -50,27 +49,24 @@ func (r *AppService) List(ctx context.Context, query AppListParams, opts ...opti
 type AppListResponse struct {
 	// Unique identifier for the app version
 	ID string `json:"id,required"`
-	// List of actions available on the app
-	Actions []shared.AppAction `json:"actions,required"`
 	// Name of the application
 	AppName string `json:"app_name,required"`
 	// Deployment ID
 	Deployment string `json:"deployment,required"`
-	// Environment variables configured for this app version
-	EnvVars map[string]string `json:"env_vars,required"`
 	// Deployment region code
 	Region constant.AwsUsEast1a `json:"region,required"`
 	// Version label for the application
 	Version string `json:"version,required"`
+	// Environment variables configured for this app version
+	EnvVars map[string]string `json:"env_vars"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		Actions     respjson.Field
 		AppName     respjson.Field
 		Deployment  respjson.Field
-		EnvVars     respjson.Field
 		Region      respjson.Field
 		Version     respjson.Field
+		EnvVars     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
