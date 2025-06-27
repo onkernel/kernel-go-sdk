@@ -99,7 +99,7 @@ type AppDeploymentNewResponseApp struct {
 	// ID for the app version deployed
 	ID string `json:"id,required"`
 	// List of actions available on the app
-	Actions []AppDeploymentNewResponseAppAction `json:"actions,required"`
+	Actions []shared.AppAction `json:"actions,required"`
 	// Name of the app
 	Name string `json:"name,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -115,23 +115,6 @@ type AppDeploymentNewResponseApp struct {
 // Returns the unmodified JSON received from the API
 func (r AppDeploymentNewResponseApp) RawJSON() string { return r.JSON.raw }
 func (r *AppDeploymentNewResponseApp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AppDeploymentNewResponseAppAction struct {
-	// Name of the action
-	Name string `json:"name,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AppDeploymentNewResponseAppAction) RawJSON() string { return r.JSON.raw }
-func (r *AppDeploymentNewResponseAppAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

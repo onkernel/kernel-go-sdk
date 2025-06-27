@@ -16,6 +16,11 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// An action available on the app
+//
+// This is an alias to an internal type.
+type AppAction = shared.AppAction
+
 // This is an alias to an internal type.
 type ErrorDetail = shared.ErrorDetail
 
