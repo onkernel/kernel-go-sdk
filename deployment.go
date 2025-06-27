@@ -65,14 +65,6 @@ func (r *DeploymentService) Get(ctx context.Context, id string, opts ...option.R
 	return
 }
 
-// List deployments. Optionally filter by application name.
-func (r *DeploymentService) List(ctx context.Context, query DeploymentListParams, opts ...option.RequestOption) (res *[]DeploymentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "deployments"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
 // Establishes a Server-Sent Events (SSE) stream that delivers real-time logs and
 // status updates for a deployment. The stream terminates automatically once the
 // deployment reaches a terminal state.
@@ -261,58 +253,6 @@ const (
 	DeploymentGetResponseStatusStopped    DeploymentGetResponseStatus = "stopped"
 )
 
-// Deployment record information.
-type DeploymentListResponse struct {
-	// Unique identifier for the deployment
-	ID string `json:"id,required"`
-	// Timestamp when the deployment was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Deployment region code
-	Region constant.AwsUsEast1a `json:"region,required"`
-	// Current status of the deployment
-	//
-	// Any of "queued", "in_progress", "running", "failed", "stopped".
-	Status DeploymentListResponseStatus `json:"status,required"`
-	// Relative path to the application entrypoint
-	EntrypointRelPath string `json:"entrypoint_rel_path"`
-	// Environment variables configured for this deployment
-	EnvVars map[string]string `json:"env_vars"`
-	// Status reason
-	StatusReason string `json:"status_reason"`
-	// Timestamp when the deployment was last updated
-	UpdatedAt time.Time `json:"updated_at,nullable" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                respjson.Field
-		CreatedAt         respjson.Field
-		Region            respjson.Field
-		Status            respjson.Field
-		EntrypointRelPath respjson.Field
-		EnvVars           respjson.Field
-		StatusReason      respjson.Field
-		UpdatedAt         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DeploymentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DeploymentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Current status of the deployment
-type DeploymentListResponseStatus string
-
-const (
-	DeploymentListResponseStatusQueued     DeploymentListResponseStatus = "queued"
-	DeploymentListResponseStatusInProgress DeploymentListResponseStatus = "in_progress"
-	DeploymentListResponseStatusRunning    DeploymentListResponseStatus = "running"
-	DeploymentListResponseStatusFailed     DeploymentListResponseStatus = "failed"
-	DeploymentListResponseStatusStopped    DeploymentListResponseStatus = "stopped"
-)
-
 // DeploymentFollowResponseUnion contains all possible properties and values from
 // [shared.LogEvent], [DeploymentStateEvent],
 // [DeploymentFollowResponseAppVersionSummaryEvent], [shared.ErrorEvent],
@@ -473,20 +413,6 @@ type DeploymentNewParamsRegion string
 const (
 	DeploymentNewParamsRegionAwsUsEast1a DeploymentNewParamsRegion = "aws.us-east-1a"
 )
-
-type DeploymentListParams struct {
-	// Filter results by application name.
-	AppName param.Opt[string] `query:"app_name,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [DeploymentListParams]'s query parameters as `url.Values`.
-func (r DeploymentListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
 
 type DeploymentFollowParams struct {
 	// Show logs since the given time (RFC timestamps or durations like 5m).
