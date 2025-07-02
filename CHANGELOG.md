@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 (2025-07-02)
+
+Full Changelog: [v0.6.5...v0.7.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.5...v0.7.0)
+
+### Features
+
+* **api:** headless browsers ([e7f85f9](https://github.com/onkernel/kernel-go-sdk/commit/e7f85f9432b053b513b1581cb2ece0dd78ad3613))
+
 ## 0.6.5 (2025-07-02)
 
 Full Changelog: [v0.6.4...v0.6.5](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.4...v0.6.5)
