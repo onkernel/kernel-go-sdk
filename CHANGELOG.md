@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.5 (2025-07-02)
+
+Full Changelog: [v0.6.4...v0.6.5](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.4...v0.6.5)
+
+### Bug Fixes
+
+* don't try to deserialize as json when ResponseBodyInto is []byte ([7865ba8](https://github.com/onkernel/kernel-go-sdk/commit/7865ba807c2766ccdd8cb3d59bb8855721b39769))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([a6b4ae7](https://github.com/onkernel/kernel-go-sdk/commit/a6b4ae749a0e11f8683dd3c354c1e3b3003d738e))
+
 ## 0.6.4 (2025-06-27)
 
 Full Changelog: [v0.6.3...v0.6.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.3...v0.6.4)
