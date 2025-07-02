@@ -132,19 +132,20 @@ func (r *BrowserPersistenceParam) UnmarshalJSON(data []byte) error {
 }
 
 type BrowserNewResponse struct {
-	// Remote URL for live viewing the browser session
-	BrowserLiveViewURL string `json:"browser_live_view_url,required"`
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Remote URL for live viewing the browser session. Only available for non-headless
+	// browsers.
+	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BrowserLiveViewURL respjson.Field
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
+		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -158,19 +159,20 @@ func (r *BrowserNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BrowserGetResponse struct {
-	// Remote URL for live viewing the browser session
-	BrowserLiveViewURL string `json:"browser_live_view_url,required"`
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Remote URL for live viewing the browser session. Only available for non-headless
+	// browsers.
+	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BrowserLiveViewURL respjson.Field
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
+		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -184,19 +186,20 @@ func (r *BrowserGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BrowserListResponse struct {
-	// Remote URL for live viewing the browser session
-	BrowserLiveViewURL string `json:"browser_live_view_url,required"`
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Remote URL for live viewing the browser session. Only available for non-headless
+	// browsers.
+	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BrowserLiveViewURL respjson.Field
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
+		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -210,6 +213,9 @@ func (r *BrowserListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BrowserNewParams struct {
+	// If true, launches the browser using a headless image (no VNC/GUI). Defaults to
+	// false.
+	Headless param.Opt[bool] `json:"headless,omitzero"`
 	// action invocation ID
 	InvocationID param.Opt[string] `json:"invocation_id,omitzero"`
 	// If true, launches the browser in stealth mode to reduce detection by anti-bot
