@@ -87,6 +87,19 @@ func (r *BrowserService) DeleteByID(ctx context.Context, id string, opts ...opti
 	return
 }
 
+// Get browser session replay.
+func (r *BrowserService) GetReplay(ctx context.Context, id string, opts ...option.RequestOption) (res *http.Response, err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "video/mp4")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("browsers/%s/replay", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // Optional persistence configuration for the browser session.
 type BrowserPersistence struct {
 	// Unique identifier for the persistent browser session.
@@ -141,12 +154,15 @@ type BrowserNewResponse struct {
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
+	// Remote URL for viewing the browser session replay if enabled
+	ReplayViewURL string `json:"replay_view_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
+		ReplayViewURL      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -168,12 +184,15 @@ type BrowserGetResponse struct {
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
+	// Remote URL for viewing the browser session replay if enabled
+	ReplayViewURL string `json:"replay_view_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
+		ReplayViewURL      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -195,12 +214,15 @@ type BrowserListResponse struct {
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
+	// Remote URL for viewing the browser session replay if enabled
+	ReplayViewURL string `json:"replay_view_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
 		SessionID          respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
+		ReplayViewURL      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -218,6 +240,8 @@ type BrowserNewParams struct {
 	Headless param.Opt[bool] `json:"headless,omitzero"`
 	// action invocation ID
 	InvocationID param.Opt[string] `json:"invocation_id,omitzero"`
+	// If true, enables replay recording of the browser session. Defaults to false.
+	Replay param.Opt[bool] `json:"replay,omitzero"`
 	// If true, launches the browser in stealth mode to reduce detection by anti-bot
 	// mechanisms.
 	Stealth param.Opt[bool] `json:"stealth,omitzero"`
