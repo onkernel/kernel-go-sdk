@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.1 (2025-07-08)
+
+Full Changelog: [v0.7.0...v0.7.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.7.0...v0.7.1)
+
+### Features
+
+* **api:** manual updates ([2162b0a](https://github.com/onkernel/kernel-go-sdk/commit/2162b0a2396b520acf176b8622b8728e51f8787d))
+
+
+### Chores
+
+* lint tests ([29d98ac](https://github.com/onkernel/kernel-go-sdk/commit/29d98ac8ec7d9fe704d07ac0bce4b60d0f2ed121))
+
 ## 0.7.0 (2025-07-02)
 
 Full Changelog: [v0.6.5...v0.7.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.6.5...v0.7.0)
