@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.0 (2025-07-16)
+
+Full Changelog: [v0.7.1...v0.8.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.7.1...v0.8.0)
+
+### Features
+
+* **api:** manual updates ([ba0a473](https://github.com/onkernel/kernel-go-sdk/commit/ba0a473799c2c9a00865112a22ae356c57d2c114))
+* **client:** expand max streaming buffer size ([41bdefe](https://github.com/onkernel/kernel-go-sdk/commit/41bdefed3d43cb52b431e8255a4a4faa0dfc46f0))
+
+
+### Chores
+
+* **internal:** fix lint script for tests ([5118fdf](https://github.com/onkernel/kernel-go-sdk/commit/5118fdf7e31a237e8def04c5a41cd0767900deef))
+* lint tests in subpackages ([71d9002](https://github.com/onkernel/kernel-go-sdk/commit/71d900220761ff811187d5c03236a0fc5d92fcc6))
+
 ## 0.7.1 (2025-07-08)
 
 Full Changelog: [v0.7.0...v0.7.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.7.0...v0.7.1)
