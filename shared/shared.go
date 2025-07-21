@@ -126,8 +126,7 @@ func (r *HeartbeatEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (HeartbeatEvent) ImplAppDeploymentFollowResponseUnion() {}
-func (HeartbeatEvent) ImplInvocationFollowResponseUnion()    {}
+func (HeartbeatEvent) ImplInvocationFollowResponseUnion() {}
 
 // A log entry from the application.
 type LogEvent struct {
@@ -153,5 +152,4 @@ func (r *LogEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (LogEvent) ImplAppDeploymentFollowResponseUnion() {}
-func (LogEvent) ImplInvocationFollowResponseUnion()    {}
+func (LogEvent) ImplInvocationFollowResponseUnion() {}

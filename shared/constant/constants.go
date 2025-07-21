@@ -25,8 +25,6 @@ type Error string             // Always "error"
 type InvocationState string   // Always "invocation_state"
 type Log string               // Always "log"
 type SseHeartbeat string      // Always "sse_heartbeat"
-type State string             // Always "state"
-type StateUpdate string       // Always "state_update"
 
 func (c AppVersionSummary) Default() AppVersionSummary { return "app_version_summary" }
 func (c AwsUsEast1a) Default() AwsUsEast1a             { return "aws.us-east-1a" }
@@ -35,8 +33,6 @@ func (c Error) Default() Error                         { return "error" }
 func (c InvocationState) Default() InvocationState     { return "invocation_state" }
 func (c Log) Default() Log                             { return "log" }
 func (c SseHeartbeat) Default() SseHeartbeat           { return "sse_heartbeat" }
-func (c State) Default() State                         { return "state" }
-func (c StateUpdate) Default() StateUpdate             { return "state_update" }
 
 func (c AppVersionSummary) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c AwsUsEast1a) MarshalJSON() ([]byte, error)       { return marshalString(c) }
@@ -45,8 +41,6 @@ func (c Error) MarshalJSON() ([]byte, error)             { return marshalString(
 func (c InvocationState) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Log) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c SseHeartbeat) MarshalJSON() ([]byte, error)      { return marshalString(c) }
-func (c State) MarshalJSON() ([]byte, error)             { return marshalString(c) }
-func (c StateUpdate) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

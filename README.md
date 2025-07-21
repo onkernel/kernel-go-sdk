@@ -41,10 +41,8 @@ The full API of this library can be found in [api.md](api.md).
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/onkernel/kernel-go-sdk"
 	"github.com/onkernel/kernel-go-sdk/option"
@@ -55,18 +53,15 @@ func main() {
 		option.WithAPIKey("My API Key"),     // defaults to os.LookupEnv("KERNEL_API_KEY")
 		option.WithEnvironmentDevelopment(), // defaults to option.WithEnvironmentProduction()
 	)
-	deployment, err := client.Apps.Deployments.New(context.TODO(), kernel.AppDeploymentNewParams{
-		EntrypointRelPath: "main.ts",
-		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		EnvVars: map[string]string{
-			"OPENAI_API_KEY": "x",
+	browser, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
 		},
-		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", deployment.Apps)
+	fmt.Printf("%+v\n", browser.SessionID)
 }
 
 ```
@@ -304,7 +299,6 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-	InvocationID: kernel.String("REPLACE_ME"),
 	Persistence: kernel.BrowserPersistenceParam{
 		ID: "browser-for-user-1234",
 	},
@@ -336,7 +330,6 @@ defer cancel()
 client.Browsers.New(
 	ctx,
 	kernel.BrowserNewParams{
-		InvocationID: kernel.String("REPLACE_ME"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "browser-for-user-1234",
 		},
@@ -362,19 +355,19 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-kernel.AppDeploymentNewParams{
+kernel.DeploymentNewParams{
 	EntrypointRelPath: "src/app.py",
 	File:              file,
 }
 
 // A file from a string
-kernel.AppDeploymentNewParams{
+kernel.DeploymentNewParams{
 	EntrypointRelPath: "src/app.py",
 	File:              strings.NewReader("my file contents"),
 }
 
 // With a custom filename and contentType
-kernel.AppDeploymentNewParams{
+kernel.DeploymentNewParams{
 	EntrypointRelPath: "src/app.py",
 	File:              kernel.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
@@ -398,7 +391,6 @@ client := kernel.NewClient(
 client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
-		InvocationID: kernel.String("REPLACE_ME"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "browser-for-user-1234",
 		},
@@ -418,7 +410,6 @@ var response *http.Response
 browser, err := client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
-		InvocationID: kernel.String("REPLACE_ME"),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "browser-for-user-1234",
 		},
