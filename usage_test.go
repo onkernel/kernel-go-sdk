@@ -3,9 +3,7 @@
 package kernel_test
 
 import (
-	"bytes"
 	"context"
-	"io"
 	"os"
 	"testing"
 
@@ -26,16 +24,13 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	deployment, err := client.Apps.Deployments.New(context.TODO(), kernel.AppDeploymentNewParams{
-		EntrypointRelPath: "main.ts",
-		File:              io.Reader(bytes.NewBuffer([]byte("REPLACE_ME"))),
-		EnvVars: map[string]string{
-			"OPENAI_API_KEY": "x",
+	browser, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
+		Persistence: kernel.BrowserPersistenceParam{
+			ID: "browser-for-user-1234",
 		},
-		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", deployment.Apps)
+	t.Logf("%+v\n", browser.SessionID)
 }
