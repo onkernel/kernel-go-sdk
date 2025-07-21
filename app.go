@@ -24,8 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAppService] method instead.
 type AppService struct {
-	Options     []option.RequestOption
-	Deployments AppDeploymentService
+	Options []option.RequestOption
 }
 
 // NewAppService generates a new service that applies the given options to each
@@ -34,7 +33,6 @@ type AppService struct {
 func NewAppService(opts ...option.RequestOption) (r AppService) {
 	r = AppService{}
 	r.Options = opts
-	r.Deployments = NewAppDeploymentService(opts...)
 	return
 }
 
