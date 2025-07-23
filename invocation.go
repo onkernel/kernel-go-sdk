@@ -174,6 +174,8 @@ func (r *InvocationStateEventInvocation) UnmarshalJSON(data []byte) error {
 type InvocationNewResponse struct {
 	// ID of the invocation
 	ID string `json:"id,required"`
+	// Name of the action invoked
+	ActionName string `json:"action_name,required"`
 	// Status of the invocation
 	//
 	// Any of "queued", "running", "succeeded", "failed".
@@ -186,6 +188,7 @@ type InvocationNewResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
+		ActionName   respjson.Field
 		Status       respjson.Field
 		Output       respjson.Field
 		StatusReason respjson.Field
