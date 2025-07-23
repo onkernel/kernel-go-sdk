@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.8.2 (2025-07-23)
+
+Full Changelog: [v0.8.1...v0.8.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.8.1...v0.8.2)
+
+### Features
+
+* **api:** add action name to the response to invoke ([e1bfb1d](https://github.com/onkernel/kernel-go-sdk/commit/e1bfb1d1874a0ad1dbb61c035e3f728b9406df5a))
+
+
+### Bug Fixes
+
+* **client:** process custom base url ahead of time ([4bef9af](https://github.com/onkernel/kernel-go-sdk/commit/4bef9afe3097d7d07596799efae41ca2acbff038))
+
 ## 0.8.1 (2025-07-21)
 
 Full Changelog: [v0.8.0...v0.8.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.8.0...v0.8.1)
