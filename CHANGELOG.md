@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0 (2025-08-07)
+
+Full Changelog: [v0.8.2...v0.9.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.8.2...v0.9.0)
+
+### Features
+
+* **api:** browser instance file i/o ([7308fb8](https://github.com/onkernel/kernel-go-sdk/commit/7308fb8acdcb2d10fb9d09612854a18f18083bcc))
+* **client:** support optional json html escaping ([7fb83d1](https://github.com/onkernel/kernel-go-sdk/commit/7fb83d1f154d9502833b4f0a17c9912aa9643c65))
+
 ## 0.8.2 (2025-07-23)
 
 Full Changelog: [v0.8.1...v0.8.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.8.1...v0.8.2)
