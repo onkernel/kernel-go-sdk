@@ -138,8 +138,14 @@ func (r *BrowserPersistenceParam) UnmarshalJSON(data []byte) error {
 type BrowserNewResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
+	// Indicates whether the browser session is headless.
+	Headless bool `json:"headless,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Indicates whether the browser session is stealth.
+	Stealth bool `json:"stealth,required"`
+	// The number of seconds of inactivity before the browser session is terminated.
+	TimeoutSeconds int64 `json:"timeout_seconds,required"`
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
@@ -148,7 +154,10 @@ type BrowserNewResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
+		Headless           respjson.Field
 		SessionID          respjson.Field
+		Stealth            respjson.Field
+		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
@@ -165,8 +174,14 @@ func (r *BrowserNewResponse) UnmarshalJSON(data []byte) error {
 type BrowserGetResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
+	// Indicates whether the browser session is headless.
+	Headless bool `json:"headless,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Indicates whether the browser session is stealth.
+	Stealth bool `json:"stealth,required"`
+	// The number of seconds of inactivity before the browser session is terminated.
+	TimeoutSeconds int64 `json:"timeout_seconds,required"`
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
@@ -175,7 +190,10 @@ type BrowserGetResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
+		Headless           respjson.Field
 		SessionID          respjson.Field
+		Stealth            respjson.Field
+		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
@@ -192,8 +210,14 @@ func (r *BrowserGetResponse) UnmarshalJSON(data []byte) error {
 type BrowserListResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
+	// Indicates whether the browser session is headless.
+	Headless bool `json:"headless,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
+	// Indicates whether the browser session is stealth.
+	Stealth bool `json:"stealth,required"`
+	// The number of seconds of inactivity before the browser session is terminated.
+	TimeoutSeconds int64 `json:"timeout_seconds,required"`
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
@@ -202,7 +226,10 @@ type BrowserListResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
+		Headless           respjson.Field
 		SessionID          respjson.Field
+		Stealth            respjson.Field
+		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		ExtraFields        map[string]respjson.Field
@@ -225,6 +252,10 @@ type BrowserNewParams struct {
 	// If true, launches the browser in stealth mode to reduce detection by anti-bot
 	// mechanisms.
 	Stealth param.Opt[bool] `json:"stealth,omitzero"`
+	// The number of seconds of inactivity before the browser session is terminated.
+	// Only applicable to non-persistent browsers. Activity includes CDP connections
+	// and live view connections. Defaults to 60 seconds.
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`
 	paramObj
