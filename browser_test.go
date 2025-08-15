@@ -14,7 +14,7 @@ import (
 )
 
 func TestBrowserNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -32,7 +32,8 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "my-awesome-browser-for-user-1234",
 		},
-		Stealth: kernel.Bool(true),
+		Stealth:        kernel.Bool(true),
+		TimeoutSeconds: kernel.Int(0),
 	})
 	if err != nil {
 		var apierr *kernel.Error
@@ -44,7 +45,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 }
 
 func TestBrowserGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,7 +68,7 @@ func TestBrowserGet(t *testing.T) {
 }
 
 func TestBrowserList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,7 +91,7 @@ func TestBrowserList(t *testing.T) {
 }
 
 func TestBrowserDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -115,7 +116,7 @@ func TestBrowserDelete(t *testing.T) {
 }
 
 func TestBrowserDeleteByID(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
