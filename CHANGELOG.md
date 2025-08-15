@@ -7,8 +7,6 @@ Full Changelog: [v0.9.0...v0.9.1](https://github.com/onkernel/kernel-go-sdk/comp
 ### Features
 
 * **api:** add browser timeouts ([6c7b47f](https://github.com/onkernel/kernel-go-sdk/commit/6c7b47f69ccc4e12d9e21340c543d57b7fc6d314))
-* **api:** add browser ttls ([dbbb546](https://github.com/onkernel/kernel-go-sdk/commit/dbbb546f62ebc0347c276214c1cfd9602c71d39a))
-
 
 ### Chores
 
