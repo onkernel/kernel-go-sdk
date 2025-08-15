@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
@@ -138,11 +139,13 @@ func (r *BrowserPersistenceParam) UnmarshalJSON(data []byte) error {
 type BrowserNewResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
-	// Indicates whether the browser session is headless.
+	// When the browser session was created.
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Whether the browser session is running in headless mode.
 	Headless bool `json:"headless,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
-	// Indicates whether the browser session is stealth.
+	// Whether the browser session is running in stealth mode.
 	Stealth bool `json:"stealth,required"`
 	// The number of seconds of inactivity before the browser session is terminated.
 	TimeoutSeconds int64 `json:"timeout_seconds,required"`
@@ -154,6 +157,7 @@ type BrowserNewResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
+		CreatedAt          respjson.Field
 		Headless           respjson.Field
 		SessionID          respjson.Field
 		Stealth            respjson.Field
@@ -174,11 +178,13 @@ func (r *BrowserNewResponse) UnmarshalJSON(data []byte) error {
 type BrowserGetResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
-	// Indicates whether the browser session is headless.
+	// When the browser session was created.
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Whether the browser session is running in headless mode.
 	Headless bool `json:"headless,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
-	// Indicates whether the browser session is stealth.
+	// Whether the browser session is running in stealth mode.
 	Stealth bool `json:"stealth,required"`
 	// The number of seconds of inactivity before the browser session is terminated.
 	TimeoutSeconds int64 `json:"timeout_seconds,required"`
@@ -190,6 +196,7 @@ type BrowserGetResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
+		CreatedAt          respjson.Field
 		Headless           respjson.Field
 		SessionID          respjson.Field
 		Stealth            respjson.Field
@@ -210,11 +217,13 @@ func (r *BrowserGetResponse) UnmarshalJSON(data []byte) error {
 type BrowserListResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
-	// Indicates whether the browser session is headless.
+	// When the browser session was created.
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Whether the browser session is running in headless mode.
 	Headless bool `json:"headless,required"`
 	// Unique identifier for the browser session
 	SessionID string `json:"session_id,required"`
-	// Indicates whether the browser session is stealth.
+	// Whether the browser session is running in stealth mode.
 	Stealth bool `json:"stealth,required"`
 	// The number of seconds of inactivity before the browser session is terminated.
 	TimeoutSeconds int64 `json:"timeout_seconds,required"`
@@ -226,6 +235,7 @@ type BrowserListResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
+		CreatedAt          respjson.Field
 		Headless           respjson.Field
 		SessionID          respjson.Field
 		Stealth            respjson.Field
