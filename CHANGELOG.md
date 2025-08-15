@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.9.1 (2025-08-15)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.9.0...v0.9.1)
+
+### Features
+
+* **api:** add browser timeouts ([6c7b47f](https://github.com/onkernel/kernel-go-sdk/commit/6c7b47f69ccc4e12d9e21340c543d57b7fc6d314))
+* **api:** add browser ttls ([dbbb546](https://github.com/onkernel/kernel-go-sdk/commit/dbbb546f62ebc0347c276214c1cfd9602c71d39a))
+
+
+### Chores
+
+* **internal:** codegen related update ([e4ca558](https://github.com/onkernel/kernel-go-sdk/commit/e4ca55843e4dbb9b7e71821ca58080a5bf25f025))
+* **internal:** update comment in script ([9542333](https://github.com/onkernel/kernel-go-sdk/commit/9542333108abb522bae00b266c89cc3917884b35))
+* update @stainless-api/prism-cli to v5.15.0 ([625476c](https://github.com/onkernel/kernel-go-sdk/commit/625476c16f8298f7fa1c18318f67231906d89a56))
+
 ## 0.9.0 (2025-08-07)
 
 Full Changelog: [v0.8.2...v0.9.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.8.2...v0.9.0)
