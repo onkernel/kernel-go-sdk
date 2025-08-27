@@ -29,6 +29,8 @@ type BrowserService struct {
 	Options []option.RequestOption
 	Replays BrowserReplayService
 	Fs      BrowserFService
+	Process BrowserProcessService
+	Logs    BrowserLogService
 }
 
 // NewBrowserService generates a new service that applies the given options to each
@@ -39,6 +41,8 @@ func NewBrowserService(opts ...option.RequestOption) (r BrowserService) {
 	r.Options = opts
 	r.Replays = NewBrowserReplayService(opts...)
 	r.Fs = NewBrowserFService(opts...)
+	r.Process = NewBrowserProcessService(opts...)
+	r.Logs = NewBrowserLogService(opts...)
 	return
 }
 

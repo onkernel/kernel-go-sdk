@@ -82,6 +82,19 @@ func (r *BrowserFService) DeleteFile(ctx context.Context, id string, body Browse
 	return
 }
 
+// Returns a ZIP file containing the contents of the specified directory.
+func (r *BrowserFService) DownloadDirZip(ctx context.Context, id string, query BrowserFDownloadDirZipParams, opts ...option.RequestOption) (res *http.Response, err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("browsers/%s/fs/download_dir_zip", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
 // Get information about a file or directory
 func (r *BrowserFService) FileInfo(ctx context.Context, id string, query BrowserFFileInfoParams, opts ...option.RequestOption) (res *BrowserFFileInfoResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -142,6 +155,32 @@ func (r *BrowserFService) SetFilePermissions(ctx context.Context, id string, bod
 	}
 	path := fmt.Sprintf("browsers/%s/fs/set_file_permissions", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
+	return
+}
+
+// Allows uploading single or multiple files to the remote filesystem.
+func (r *BrowserFService) Upload(ctx context.Context, id string, body BrowserFUploadParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("browsers/%s/fs/upload", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return
+}
+
+// Upload a zip file and extract its contents to the specified destination path.
+func (r *BrowserFService) UploadZip(ctx context.Context, id string, body BrowserFUploadZipParams, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("browsers/%s/fs/upload_zip", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
 
@@ -266,6 +305,21 @@ func (r *BrowserFDeleteFileParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type BrowserFDownloadDirZipParams struct {
+	// Absolute directory path to archive and download.
+	Path string `query:"path,required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BrowserFDownloadDirZipParams]'s query parameters as
+// `url.Values`.
+func (r BrowserFDownloadDirZipParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type BrowserFFileInfoParams struct {
 	// Absolute path of the file or directory.
 	Path string `query:"path,required" json:"-"`
@@ -343,6 +397,70 @@ func (r BrowserFSetFilePermissionsParams) MarshalJSON() (data []byte, err error)
 }
 func (r *BrowserFSetFilePermissionsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type BrowserFUploadParams struct {
+	Files []BrowserFUploadParamsFile `json:"files,omitzero,required"`
+	paramObj
+}
+
+func (r BrowserFUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err == nil {
+		err = apiform.WriteExtras(writer, r.ExtraFields())
+	}
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
+}
+
+// The properties DestPath, File are required.
+type BrowserFUploadParamsFile struct {
+	// Absolute destination path to write the file.
+	DestPath string    `json:"dest_path,required"`
+	File     io.Reader `json:"file,omitzero,required" format:"binary"`
+	paramObj
+}
+
+func (r BrowserFUploadParamsFile) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserFUploadParamsFile
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserFUploadParamsFile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BrowserFUploadZipParams struct {
+	// Absolute destination directory to extract the archive to.
+	DestPath string    `json:"dest_path,required"`
+	ZipFile  io.Reader `json:"zip_file,omitzero,required" format:"binary"`
+	paramObj
+}
+
+func (r BrowserFUploadZipParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err == nil {
+		err = apiform.WriteExtras(writer, r.ExtraFields())
+	}
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }
 
 type BrowserFWriteFileParams struct {
