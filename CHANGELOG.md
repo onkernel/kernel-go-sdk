@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (2025-08-27)
+
+Full Changelog: [v0.9.1...v0.10.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.9.1...v0.10.0)
+
+### Features
+
+* **api:** new process, fs, and log endpoints ([fa85f19](https://github.com/onkernel/kernel-go-sdk/commit/fa85f19a8f4c664696d8839539a6ce6172a78e98))
+
 ## 0.9.1 (2025-08-15)
 
 Full Changelog: [v0.9.0...v0.9.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.9.0...v0.9.1)
