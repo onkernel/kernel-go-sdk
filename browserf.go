@@ -193,7 +193,7 @@ func (r *BrowserFService) WriteFile(ctx context.Context, id string, contents io.
 		return
 	}
 	path := fmt.Sprintf("browsers/%s/fs/write_file", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, nil, opts...)
 	return
 }
 
