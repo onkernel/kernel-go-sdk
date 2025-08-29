@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.1 (2025-08-29)
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.10.0...v0.10.1)
+
+### Bug Fixes
+
+* close body before retrying ([a6a2e40](https://github.com/onkernel/kernel-go-sdk/commit/a6a2e4054c629d6ee85997ed81a1b14e70e594dc))
+
 ## 0.10.0 (2025-08-27)
 
 Full Changelog: [v0.9.1...v0.10.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.9.1...v0.10.0)
