@@ -1,6 +1,10 @@
 # Kernel Go API Library
 
+<!-- x-release-please-start-version -->
+
 <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk"><img src="https://pkg.go.dev/badge/github.com/onkernel/kernel-go-sdk.svg" alt="Go Reference"></a>
+
+<!-- x-release-please-end -->
 
 The Kernel Go library provides convenient access to the [Kernel REST API](https://docs.onkernel.com)
 from applications written in Go.
