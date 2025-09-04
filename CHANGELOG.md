@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.11.0 (2025-09-04)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **api:** adding support for browser profiles ([481cdb3](https://github.com/onkernel/kernel-go-sdk/commit/481cdb3500744c9e4ec050e340a920302d8fea19))
+
+
+### Bug Fixes
+
+* close body before retrying ([a6a2e40](https://github.com/onkernel/kernel-go-sdk/commit/a6a2e4054c629d6ee85997ed81a1b14e70e594dc))
+
+
+### Chores
+
+* **internal:** codegen related update ([a7030ab](https://github.com/onkernel/kernel-go-sdk/commit/a7030abb99c06c675f60a4f2afde43d376d9981f))
+
 ## 0.10.0 (2025-08-27)
 
 Full Changelog: [v0.9.1...v0.10.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.9.1...v0.10.0)
