@@ -140,6 +140,36 @@ func (r *BrowserPersistenceParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Browser profile metadata.
+type Profile struct {
+	// Unique identifier for the profile
+	ID string `json:"id,required"`
+	// Timestamp when the profile was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Timestamp when the profile was last used
+	LastUsedAt time.Time `json:"last_used_at" format:"date-time"`
+	// Optional, easier-to-reference name for the profile
+	Name string `json:"name,nullable"`
+	// Timestamp when the profile was last updated
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		LastUsedAt  respjson.Field
+		Name        respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Profile) RawJSON() string { return r.JSON.raw }
+func (r *Profile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BrowserNewResponse struct {
 	// Websocket URL for Chrome DevTools Protocol connections to the browser session
 	CdpWsURL string `json:"cdp_ws_url,required"`
@@ -158,6 +188,8 @@ type BrowserNewResponse struct {
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
+	// Browser profile metadata.
+	Profile Profile `json:"profile"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -168,6 +200,7 @@ type BrowserNewResponse struct {
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
+		Profile            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -197,6 +230,8 @@ type BrowserGetResponse struct {
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
+	// Browser profile metadata.
+	Profile Profile `json:"profile"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -207,6 +242,7 @@ type BrowserGetResponse struct {
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
+		Profile            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -236,6 +272,8 @@ type BrowserListResponse struct {
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
+	// Browser profile metadata.
+	Profile Profile `json:"profile"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -246,6 +284,7 @@ type BrowserListResponse struct {
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
+		Profile            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -272,6 +311,10 @@ type BrowserNewParams struct {
 	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`
+	// Profile selection for the browser session. Provide either id or name. If
+	// specified, the matching profile will be loaded into the browser session.
+	// Profiles must be created beforehand.
+	Profile BrowserNewParamsProfile `json:"profile,omitzero"`
 	paramObj
 }
 
@@ -280,6 +323,29 @@ func (r BrowserNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Profile selection for the browser session. Provide either id or name. If
+// specified, the matching profile will be loaded into the browser session.
+// Profiles must be created beforehand.
+type BrowserNewParamsProfile struct {
+	// Profile ID to load for this browser session
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Profile name to load for this browser session (instead of id). Must be 1-255
+	// characters, using letters, numbers, dots, underscores, or hyphens.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// If true, save changes made during the session back to the profile when the
+	// session ends.
+	SaveChanges param.Opt[bool] `json:"save_changes,omitzero"`
+	paramObj
+}
+
+func (r BrowserNewParamsProfile) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserNewParamsProfile
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserNewParamsProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
