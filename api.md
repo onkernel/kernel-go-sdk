@@ -61,6 +61,7 @@ Params Types:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPersistence">BrowserPersistence</a>
+- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#Profile">Profile</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserNewResponse">BrowserNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserGetResponse">BrowserGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserListResponse">BrowserListResponse</a>
@@ -147,3 +148,13 @@ Methods:
 Methods:
 
 - <code title="get /browsers/{id}/logs/stream">client.Browsers.Logs.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserLogService.Stream">Stream</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserLogStreamParams">BrowserLogStreamParams</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk/shared#LogEvent">LogEvent</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Profiles
+
+Methods:
+
+- <code title="post /profiles">client.Profiles.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#ProfileService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#ProfileNewParams">ProfileNewParams</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#Profile">Profile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /profiles/{id_or_name}">client.Profiles.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#ProfileService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#Profile">Profile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /profiles">client.Profiles.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#ProfileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) ([]<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#Profile">Profile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /profiles/{id_or_name}">client.Profiles.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#ProfileService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /profiles/{id_or_name}/download">client.Profiles.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#ProfileService.Download">Download</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>) (http.Response, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
