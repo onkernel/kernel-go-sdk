@@ -25,7 +25,7 @@ func TestManualPagination(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	page, err := client.Deployments.List(context.TODO(), kernel.DeploymentListParams{
-		AppName: "YOUR_APP",
+		AppName: kernel.String("YOUR_APP"),
 		Limit:   kernel.Int(2),
 	})
 	if err != nil {
