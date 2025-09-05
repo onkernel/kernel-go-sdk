@@ -492,7 +492,7 @@ const (
 
 type DeploymentListParams struct {
 	// Filter results by application name.
-	AppName string `query:"app_name,required" json:"-"`
+	AppName param.Opt[string] `query:"app_name,omitzero" json:"-"`
 	// Limit the number of deployments to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Offset the number of deployments to return.
