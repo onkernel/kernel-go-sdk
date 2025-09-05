@@ -25,7 +25,7 @@ func TestAutoPagination(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	iter := client.Deployments.ListAutoPaging(context.TODO(), kernel.DeploymentListParams{
-		AppName: "YOUR_APP",
+		AppName: kernel.String("YOUR_APP"),
 		Limit:   kernel.Int(2),
 	})
 	// Prism mock isn't going to give us real pagination

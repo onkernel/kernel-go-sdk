@@ -291,7 +291,7 @@ You can use `.ListAutoPaging()` methods to iterate through items across all page
 
 ```go
 iter := client.Deployments.ListAutoPaging(context.TODO(), kernel.DeploymentListParams{
-	AppName: "YOUR_APP",
+	AppName: kernel.String("YOUR_APP"),
 	Limit:   kernel.Int(2),
 })
 // Automatically fetches more pages as needed.
@@ -309,7 +309,7 @@ with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
 page, err := client.Deployments.List(context.TODO(), kernel.DeploymentListParams{
-	AppName: "YOUR_APP",
+	AppName: kernel.String("YOUR_APP"),
 	Limit:   kernel.Int(2),
 })
 for page != nil {
