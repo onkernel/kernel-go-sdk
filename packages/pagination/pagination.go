@@ -46,7 +46,11 @@ func (r *OffsetPagination[T]) GetNextPage() (res *OffsetPagination[T], err error
 	}
 	cfg := r.cfg.Clone(r.cfg.Context)
 
-	next := r.res.Header.Get("X-Next-Offset")
+	nextStr := r.res.Header.Get("X-Next-Offset")
+	next, err := strconv.ParseInt(nextStr, 10, 64)
+	if err != nil {
+		return nil, err
+	}
 	length := int64(len(r.Items))
 
 	if length > 0 && next != 0 {
