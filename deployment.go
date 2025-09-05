@@ -19,6 +19,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/pagination"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 	"github.com/onkernel/kernel-go-sdk/packages/ssestream"
@@ -66,11 +67,26 @@ func (r *DeploymentService) Get(ctx context.Context, id string, opts ...option.R
 }
 
 // List deployments. Optionally filter by application name.
-func (r *DeploymentService) List(ctx context.Context, query DeploymentListParams, opts ...option.RequestOption) (res *[]DeploymentListResponse, err error) {
+func (r *DeploymentService) List(ctx context.Context, query DeploymentListParams, opts ...option.RequestOption) (res *pagination.OffsetPagination[DeploymentListResponse], err error) {
+	var raw *http.Response
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "deployments"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List deployments. Optionally filter by application name.
+func (r *DeploymentService) ListAutoPaging(ctx context.Context, query DeploymentListParams, opts ...option.RequestOption) *pagination.OffsetPaginationAutoPager[DeploymentListResponse] {
+	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Establishes a Server-Sent Events (SSE) stream that delivers real-time logs and
@@ -476,7 +492,11 @@ const (
 
 type DeploymentListParams struct {
 	// Filter results by application name.
-	AppName param.Opt[string] `query:"app_name,omitzero" json:"-"`
+	AppName string `query:"app_name,required" json:"-"`
+	// Limit the number of deployments to return.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset the number of deployments to return.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
 
