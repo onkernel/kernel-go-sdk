@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.11.1 (2025-09-06)
+
+Full Changelog: [v0.11.0...v0.11.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.0...v0.11.1)
+
+### Features
+
+* **api:** add pagination to the deployments endpoint ([9130f8c](https://github.com/onkernel/kernel-go-sdk/commit/9130f8c40783560bc02d5b494c60549dbe092dcd))
+* **api:** pagination properties added to response (has_more, next_offset) ([65c5342](https://github.com/onkernel/kernel-go-sdk/commit/65c53429690169c3ca5068b94991af6eba3832ff))
+* **api:** update API spec with pagination headers ([ad37eb2](https://github.com/onkernel/kernel-go-sdk/commit/ad37eb2bdc92a4145e5dba9d8ef8b4ad26c9b64a))
+
+
+### Bug Fixes
+
+* **client:** correctly convert header pagination value to int ([d42bd8a](https://github.com/onkernel/kernel-go-sdk/commit/d42bd8a79dc3f64ea6aa8c3f4239b8cfa8545d82))
+* **internal:** unmarshal correctly when there are multiple discriminators ([649203d](https://github.com/onkernel/kernel-go-sdk/commit/649203d6621f6850ac4cb414b04b78c9693d1923))
+
 ## 0.11.0 (2025-09-04)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.10.0...v0.11.0)
