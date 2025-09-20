@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
@@ -41,7 +42,7 @@ func (r *BrowserFWatchService) EventsStreaming(ctx context.Context, watchID stri
 		raw *http.Response
 		err error
 	)
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
@@ -58,7 +59,7 @@ func (r *BrowserFWatchService) EventsStreaming(ctx context.Context, watchID stri
 
 // Watch a directory for changes
 func (r *BrowserFWatchService) Start(ctx context.Context, id string, body BrowserFWatchStartParams, opts ...option.RequestOption) (res *BrowserFWatchStartResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *BrowserFWatchService) Start(ctx context.Context, id string, body Browse
 
 // Stop watching a directory
 func (r *BrowserFWatchService) Stop(ctx context.Context, watchID string, body BrowserFWatchStopParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")

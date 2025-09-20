@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
@@ -37,7 +38,7 @@ func NewBrowserReplayService(opts ...option.RequestOption) (r BrowserReplayServi
 
 // List all replays for the specified browser session.
 func (r *BrowserReplayService) List(ctx context.Context, id string, opts ...option.RequestOption) (res *[]BrowserReplayListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *BrowserReplayService) List(ctx context.Context, id string, opts ...opti
 
 // Download or stream the specified replay recording.
 func (r *BrowserReplayService) Download(ctx context.Context, replayID string, query BrowserReplayDownloadParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "video/mp4")}, opts...)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
@@ -66,7 +67,7 @@ func (r *BrowserReplayService) Download(ctx context.Context, replayID string, qu
 
 // Start recording the browser session and return a replay ID.
 func (r *BrowserReplayService) Start(ctx context.Context, id string, body BrowserReplayStartParams, opts ...option.RequestOption) (res *BrowserReplayStartResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *BrowserReplayService) Start(ctx context.Context, id string, body Browse
 
 // Stop the specified replay recording and persist the video.
 func (r *BrowserReplayService) Stop(ctx context.Context, replayID string, body BrowserReplayStopParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
