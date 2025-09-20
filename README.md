@@ -35,7 +35,7 @@ go get -u 'github.com/onkernel/kernel-go-sdk@v0.11.1'
 
 ## Requirements
 
-This library requires Go 1.18+.
+This library requires Go 1.22+.
 
 ## Usage
 
