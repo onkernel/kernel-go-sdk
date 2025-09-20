@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewProfileService(opts ...option.RequestOption) (r ProfileService) {
 // Create a browser profile that can be used to load state into future browser
 // sessions.
 func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ...option.RequestOption) (res *Profile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *ProfileService) New(ctx context.Context, body ProfileNewParams, opts ..
 
 // Retrieve details for a single profile by its ID or name.
 func (r *ProfileService) Get(ctx context.Context, idOrName string, opts ...option.RequestOption) (res *Profile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if idOrName == "" {
 		err = errors.New("missing required id_or_name parameter")
 		return
@@ -56,7 +57,7 @@ func (r *ProfileService) Get(ctx context.Context, idOrName string, opts ...optio
 
 // List profiles with optional filtering and pagination.
 func (r *ProfileService) List(ctx context.Context, opts ...option.RequestOption) (res *[]Profile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "profiles"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *ProfileService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Delete a profile by its ID or by its name.
 func (r *ProfileService) Delete(ctx context.Context, idOrName string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if idOrName == "" {
 		err = errors.New("missing required id_or_name parameter")
@@ -78,7 +79,7 @@ func (r *ProfileService) Delete(ctx context.Context, idOrName string, opts ...op
 // Download the profile. Profiles are JSON files containing the pieces of state
 // that we save.
 func (r *ProfileService) Download(ctx context.Context, idOrName string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if idOrName == "" {
 		err = errors.New("missing required id_or_name parameter")

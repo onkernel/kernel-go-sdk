@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
@@ -41,7 +42,7 @@ func NewInvocationService(opts ...option.RequestOption) (r InvocationService) {
 
 // Invoke an action.
 func (r *InvocationService) New(ctx context.Context, body InvocationNewParams, opts ...option.RequestOption) (res *InvocationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "invocations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *InvocationService) New(ctx context.Context, body InvocationNewParams, o
 
 // Get details about an invocation's status and output.
 func (r *InvocationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *InvocationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *InvocationService) Get(ctx context.Context, id string, opts ...option.R
 
 // Update an invocation's status or output.
 func (r *InvocationService) Update(ctx context.Context, id string, body InvocationUpdateParams, opts ...option.RequestOption) (res *InvocationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *InvocationService) Update(ctx context.Context, id string, body Invocati
 
 // Delete all browser sessions created within the specified invocation.
 func (r *InvocationService) DeleteBrowsers(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -92,7 +93,7 @@ func (r *InvocationService) FollowStreaming(ctx context.Context, id string, opts
 		raw *http.Response
 		err error
 	)
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

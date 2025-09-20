@@ -12,6 +12,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apiform"
@@ -48,7 +49,7 @@ func NewDeploymentService(opts ...option.RequestOption) (r DeploymentService) {
 
 // Create a new deployment.
 func (r *DeploymentService) New(ctx context.Context, body DeploymentNewParams, opts ...option.RequestOption) (res *DeploymentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "deployments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *DeploymentService) New(ctx context.Context, body DeploymentNewParams, o
 
 // Get information about a deployment's status.
 func (r *DeploymentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DeploymentGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *DeploymentService) Get(ctx context.Context, id string, opts ...option.R
 // List deployments. Optionally filter by application name.
 func (r *DeploymentService) List(ctx context.Context, query DeploymentListParams, opts ...option.RequestOption) (res *pagination.OffsetPagination[DeploymentListResponse], err error) {
 	var raw *http.Response
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "deployments"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -97,7 +98,7 @@ func (r *DeploymentService) FollowStreaming(ctx context.Context, id string, quer
 		raw *http.Response
 		err error
 	)
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

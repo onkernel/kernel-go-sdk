@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAppService(opts ...option.RequestOption) (r AppService) {
 
 // List applications. Optionally filter by app name and/or version label.
 func (r *AppService) List(ctx context.Context, query AppListParams, opts ...option.RequestOption) (res *[]AppListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "apps"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
