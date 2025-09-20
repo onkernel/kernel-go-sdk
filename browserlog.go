@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
@@ -42,7 +43,7 @@ func (r *BrowserLogService) StreamStreaming(ctx context.Context, id string, quer
 		raw *http.Response
 		err error
 	)
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
@@ -38,7 +39,7 @@ func NewBrowserProcessService(opts ...option.RequestOption) (r BrowserProcessSer
 
 // Execute a command synchronously
 func (r *BrowserProcessService) Exec(ctx context.Context, id string, body BrowserProcessExecParams, opts ...option.RequestOption) (res *BrowserProcessExecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *BrowserProcessService) Exec(ctx context.Context, id string, body Browse
 
 // Send signal to process
 func (r *BrowserProcessService) Kill(ctx context.Context, processID string, params BrowserProcessKillParams, opts ...option.RequestOption) (res *BrowserProcessKillResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *BrowserProcessService) Kill(ctx context.Context, processID string, para
 
 // Execute a command asynchronously
 func (r *BrowserProcessService) Spawn(ctx context.Context, id string, body BrowserProcessSpawnParams, opts ...option.RequestOption) (res *BrowserProcessSpawnResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *BrowserProcessService) Spawn(ctx context.Context, id string, body Brows
 
 // Get process status
 func (r *BrowserProcessService) Status(ctx context.Context, processID string, query BrowserProcessStatusParams, opts ...option.RequestOption) (res *BrowserProcessStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *BrowserProcessService) Status(ctx context.Context, processID string, qu
 
 // Write to process stdin
 func (r *BrowserProcessService) Stdin(ctx context.Context, processID string, params BrowserProcessStdinParams, opts ...option.RequestOption) (res *BrowserProcessStdinResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *BrowserProcessService) StdoutStreamStreaming(ctx context.Context, proce
 		raw *http.Response
 		err error
 	)
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/event-stream")}, opts...)
 	if query.ID == "" {
 		err = errors.New("missing required id parameter")

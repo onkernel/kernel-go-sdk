@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apiform"
@@ -45,7 +46,7 @@ func NewBrowserFService(opts ...option.RequestOption) (r BrowserFService) {
 
 // Create a new directory
 func (r *BrowserFService) NewDirectory(ctx context.Context, id string, body BrowserFNewDirectoryParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -58,7 +59,7 @@ func (r *BrowserFService) NewDirectory(ctx context.Context, id string, body Brow
 
 // Delete a directory
 func (r *BrowserFService) DeleteDirectory(ctx context.Context, id string, body BrowserFDeleteDirectoryParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -71,7 +72,7 @@ func (r *BrowserFService) DeleteDirectory(ctx context.Context, id string, body B
 
 // Delete a file
 func (r *BrowserFService) DeleteFile(ctx context.Context, id string, body BrowserFDeleteFileParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -84,7 +85,7 @@ func (r *BrowserFService) DeleteFile(ctx context.Context, id string, body Browse
 
 // Returns a ZIP file containing the contents of the specified directory.
 func (r *BrowserFService) DownloadDirZip(ctx context.Context, id string, query BrowserFDownloadDirZipParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -97,7 +98,7 @@ func (r *BrowserFService) DownloadDirZip(ctx context.Context, id string, query B
 
 // Get information about a file or directory
 func (r *BrowserFService) FileInfo(ctx context.Context, id string, query BrowserFFileInfoParams, opts ...option.RequestOption) (res *BrowserFFileInfoResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *BrowserFService) FileInfo(ctx context.Context, id string, query Browser
 
 // List files in a directory
 func (r *BrowserFService) ListFiles(ctx context.Context, id string, query BrowserFListFilesParams, opts ...option.RequestOption) (res *[]BrowserFListFilesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -121,7 +122,7 @@ func (r *BrowserFService) ListFiles(ctx context.Context, id string, query Browse
 
 // Move or rename a file or directory
 func (r *BrowserFService) Move(ctx context.Context, id string, body BrowserFMoveParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -134,7 +135,7 @@ func (r *BrowserFService) Move(ctx context.Context, id string, body BrowserFMove
 
 // Read file contents
 func (r *BrowserFService) ReadFile(ctx context.Context, id string, query BrowserFReadFileParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -147,7 +148,7 @@ func (r *BrowserFService) ReadFile(ctx context.Context, id string, query Browser
 
 // Set file or directory permissions/ownership
 func (r *BrowserFService) SetFilePermissions(ctx context.Context, id string, body BrowserFSetFilePermissionsParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -160,7 +161,7 @@ func (r *BrowserFService) SetFilePermissions(ctx context.Context, id string, bod
 
 // Allows uploading single or multiple files to the remote filesystem.
 func (r *BrowserFService) Upload(ctx context.Context, id string, body BrowserFUploadParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -173,7 +174,7 @@ func (r *BrowserFService) Upload(ctx context.Context, id string, body BrowserFUp
 
 // Upload a zip file and extract its contents to the specified destination path.
 func (r *BrowserFService) UploadZip(ctx context.Context, id string, body BrowserFUploadZipParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -186,7 +187,7 @@ func (r *BrowserFService) UploadZip(ctx context.Context, id string, body Browser
 
 // Write or create a file
 func (r *BrowserFService) WriteFile(ctx context.Context, id string, contents io.Reader, body BrowserFWriteFileParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", ""), option.WithRequestBody("application/octet-stream", contents)}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
