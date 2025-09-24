@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.11.2 (2025-09-24)
+
+Full Changelog: [v0.11.1...v0.11.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.1...v0.11.2)
+
+### Features
+
+* Add stainless CI ([ac377ec](https://github.com/onkernel/kernel-go-sdk/commit/ac377ecde22bf08aa41dbddf77cbfd686354c1ea))
+
+
+### Bug Fixes
+
+* use slices.Concat instead of sometimes modifying r.Options ([e893e50](https://github.com/onkernel/kernel-go-sdk/commit/e893e50418d4dcbd11b910f12fad79f53ca5eb85))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([8f9a2ac](https://github.com/onkernel/kernel-go-sdk/commit/8f9a2ac0e091826c5ed578e568a250b4f11cc05a))
+* do not install brew dependencies in ./scripts/bootstrap by default ([856b62a](https://github.com/onkernel/kernel-go-sdk/commit/856b62a529e4bed1ae8205065dc6c0e6e50e5f6d))
+* update more docs for 1.22 ([f38538f](https://github.com/onkernel/kernel-go-sdk/commit/f38538f4031a5d8045b949d6e9b06f5c76cecde9))
+
 ## 0.11.1 (2025-09-06)
 
 Full Changelog: [v0.11.0...v0.11.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.0...v0.11.1)
