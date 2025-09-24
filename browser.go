@@ -303,12 +303,18 @@ type BrowserNewParams struct {
 	Headless param.Opt[bool] `json:"headless,omitzero"`
 	// action invocation ID
 	InvocationID param.Opt[string] `json:"invocation_id,omitzero"`
+	// Optional proxy to associate to the browser session. Must reference a proxy
+	// belonging to the caller's org.
+	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
 	// If true, launches the browser in stealth mode to reduce detection by anti-bot
 	// mechanisms.
 	Stealth param.Opt[bool] `json:"stealth,omitzero"`
 	// The number of seconds of inactivity before the browser session is terminated.
 	// Only applicable to non-persistent browsers. Activity includes CDP connections
-	// and live view connections. Defaults to 60 seconds.
+	// and live view connections. Defaults to 60 seconds. Minimum allowed is 10
+	// seconds. Maximum allowed is 86400 (24 hours). We check for inactivity every 5
+	// seconds, so the actual timeout behavior you will see is +/- 5 seconds around the
+	// specified value.
 	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`

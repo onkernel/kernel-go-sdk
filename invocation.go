@@ -60,7 +60,8 @@ func (r *InvocationService) Get(ctx context.Context, id string, opts ...option.R
 	return
 }
 
-// Update an invocation's status or output.
+// Update an invocation's status or output. This can used to cancel an invocation
+// by setting the status to "failed".
 func (r *InvocationService) Update(ctx context.Context, id string, body InvocationUpdateParams, opts ...option.RequestOption) (res *InvocationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
