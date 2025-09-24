@@ -13,7 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/option"
 )
 
-func TestBrowserNewWithOptionalParams(t *testing.T) {
+func TestProxyNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,20 +26,14 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-		Headless:     kernel.Bool(false),
-		InvocationID: kernel.String("rr33xuugxj9h0bkf1rdt2bet"),
-		Persistence: kernel.BrowserPersistenceParam{
-			ID: "my-awesome-browser-for-user-1234",
+	_, err := client.Proxies.New(context.TODO(), kernel.ProxyNewParams{
+		Type: kernel.ProxyNewParamsTypeDatacenter,
+		Config: kernel.ProxyNewParamsConfigUnion{
+			OfProxyNewsConfigDatacenterProxyConfig: &kernel.ProxyNewParamsConfigDatacenterProxyConfig{
+				Country: "US",
+			},
 		},
-		Profile: kernel.BrowserNewParamsProfile{
-			ID:          kernel.String("id"),
-			Name:        kernel.String("name"),
-			SaveChanges: kernel.Bool(true),
-		},
-		ProxyID:        kernel.String("proxy_id"),
-		Stealth:        kernel.Bool(true),
-		TimeoutSeconds: kernel.Int(10),
+		Name: kernel.String("name"),
 	})
 	if err != nil {
 		var apierr *kernel.Error
@@ -50,7 +44,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBrowserGet(t *testing.T) {
+func TestProxyGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -63,7 +57,7 @@ func TestBrowserGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Browsers.Get(context.TODO(), "htzv5orfit78e1m2biiifpbv")
+	_, err := client.Proxies.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {
@@ -73,7 +67,7 @@ func TestBrowserGet(t *testing.T) {
 	}
 }
 
-func TestBrowserList(t *testing.T) {
+func TestProxyList(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -86,7 +80,7 @@ func TestBrowserList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Browsers.List(context.TODO())
+	_, err := client.Proxies.List(context.TODO())
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {
@@ -96,7 +90,7 @@ func TestBrowserList(t *testing.T) {
 	}
 }
 
-func TestBrowserDelete(t *testing.T) {
+func TestProxyDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -109,32 +103,7 @@ func TestBrowserDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Browsers.Delete(context.TODO(), kernel.BrowserDeleteParams{
-		PersistentID: "persistent_id",
-	})
-	if err != nil {
-		var apierr *kernel.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestBrowserDeleteByID(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := kernel.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.Browsers.DeleteByID(context.TODO(), "htzv5orfit78e1m2biiifpbv")
+	err := client.Proxies.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *kernel.Error
 		if errors.As(err, &apierr) {
