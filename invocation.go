@@ -8,10 +8,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
@@ -89,7 +91,7 @@ func (r *InvocationService) DeleteBrowsers(ctx context.Context, id string, opts 
 // Establishes a Server-Sent Events (SSE) stream that delivers real-time logs and
 // status updates for an invocation. The stream terminates automatically once the
 // invocation reaches a terminal state.
-func (r *InvocationService) FollowStreaming(ctx context.Context, id string, opts ...option.RequestOption) (stream *ssestream.Stream[InvocationFollowResponseUnion]) {
+func (r *InvocationService) FollowStreaming(ctx context.Context, id string, query InvocationFollowParams, opts ...option.RequestOption) (stream *ssestream.Stream[InvocationFollowResponseUnion]) {
 	var (
 		raw *http.Response
 		err error
@@ -101,7 +103,7 @@ func (r *InvocationService) FollowStreaming(ctx context.Context, id string, opts
 		return
 	}
 	path := fmt.Sprintf("invocations/%s/events", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &raw, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &raw, opts...)
 	return ssestream.NewStream[InvocationFollowResponseUnion](ssestream.NewDecoder(raw), err)
 }
 
@@ -460,3 +462,17 @@ const (
 	InvocationUpdateParamsStatusSucceeded InvocationUpdateParamsStatus = "succeeded"
 	InvocationUpdateParamsStatusFailed    InvocationUpdateParamsStatus = "failed"
 )
+
+type InvocationFollowParams struct {
+	// Show logs since the given time (RFC timestamps or durations like 5m).
+	Since param.Opt[string] `query:"since,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InvocationFollowParams]'s query parameters as `url.Values`.
+func (r InvocationFollowParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
