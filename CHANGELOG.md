@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.3 (2025-09-24)
+
+Full Changelog: [v0.11.2...v0.11.3](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.2...v0.11.3)
+
+### Features
+
+* Per Invocation Logs ([f1241f2](https://github.com/onkernel/kernel-go-sdk/commit/f1241f2d66a097bfb11a2cbd9fda9495b54b0690))
+
 ## 0.11.2 (2025-09-24)
 
 Full Changelog: [v0.11.1...v0.11.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.1...v0.11.2)
