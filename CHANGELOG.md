@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.4 (2025-09-25)
+
+Full Changelog: [v0.11.3...v0.11.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.3...v0.11.4)
+
+### Features
+
+* getInvocations endpoint ([b9a983c](https://github.com/onkernel/kernel-go-sdk/commit/b9a983c1cf96d2aa6d22f57aaf98ded129e8d4d4))
+
 ## 0.11.3 (2025-09-24)
 
 Full Changelog: [v0.11.2...v0.11.3](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.2...v0.11.3)
