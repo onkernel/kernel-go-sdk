@@ -16,6 +16,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/pagination"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 	"github.com/onkernel/kernel-go-sdk/packages/ssestream"
@@ -73,6 +74,31 @@ func (r *InvocationService) Update(ctx context.Context, id string, body Invocati
 	path := fmt.Sprintf("invocations/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
+}
+
+// List invocations. Optionally filter by application name, action name, status,
+// deployment ID, or start time.
+func (r *InvocationService) List(ctx context.Context, query InvocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPagination[InvocationListResponse], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "invocations"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List invocations. Optionally filter by application name, action name, status,
+// deployment ID, or start time.
+func (r *InvocationService) ListAutoPaging(ctx context.Context, query InvocationListParams, opts ...option.RequestOption) *pagination.OffsetPaginationAutoPager[InvocationListResponse] {
+	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete all browser sessions created within the specified invocation.
@@ -327,6 +353,61 @@ const (
 	InvocationUpdateResponseStatusFailed    InvocationUpdateResponseStatus = "failed"
 )
 
+type InvocationListResponse struct {
+	// ID of the invocation
+	ID string `json:"id,required"`
+	// Name of the action invoked
+	ActionName string `json:"action_name,required"`
+	// Name of the application
+	AppName string `json:"app_name,required"`
+	// RFC 3339 Nanoseconds timestamp when the invocation started
+	StartedAt time.Time `json:"started_at,required" format:"date-time"`
+	// Status of the invocation
+	//
+	// Any of "queued", "running", "succeeded", "failed".
+	Status InvocationListResponseStatus `json:"status,required"`
+	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
+	// running)
+	FinishedAt time.Time `json:"finished_at,nullable" format:"date-time"`
+	// Output produced by the action, rendered as a JSON string. This could be: string,
+	// number, boolean, array, object, or null.
+	Output string `json:"output"`
+	// Payload provided to the invocation. This is a string that can be parsed as JSON.
+	Payload string `json:"payload"`
+	// Status reason
+	StatusReason string `json:"status_reason"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		ActionName   respjson.Field
+		AppName      respjson.Field
+		StartedAt    respjson.Field
+		Status       respjson.Field
+		FinishedAt   respjson.Field
+		Output       respjson.Field
+		Payload      respjson.Field
+		StatusReason respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InvocationListResponse) RawJSON() string { return r.JSON.raw }
+func (r *InvocationListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Status of the invocation
+type InvocationListResponseStatus string
+
+const (
+	InvocationListResponseStatusQueued    InvocationListResponseStatus = "queued"
+	InvocationListResponseStatusRunning   InvocationListResponseStatus = "running"
+	InvocationListResponseStatusSucceeded InvocationListResponseStatus = "succeeded"
+	InvocationListResponseStatusFailed    InvocationListResponseStatus = "failed"
+)
+
 // InvocationFollowResponseUnion contains all possible properties and values from
 // [shared.LogEvent], [InvocationStateEvent], [shared.ErrorEvent],
 // [shared.HeartbeatEvent].
@@ -461,6 +542,45 @@ type InvocationUpdateParamsStatus string
 const (
 	InvocationUpdateParamsStatusSucceeded InvocationUpdateParamsStatus = "succeeded"
 	InvocationUpdateParamsStatusFailed    InvocationUpdateParamsStatus = "failed"
+)
+
+type InvocationListParams struct {
+	// Filter results by action name.
+	ActionName param.Opt[string] `query:"action_name,omitzero" json:"-"`
+	// Filter results by application name.
+	AppName param.Opt[string] `query:"app_name,omitzero" json:"-"`
+	// Filter results by deployment ID.
+	DeploymentID param.Opt[string] `query:"deployment_id,omitzero" json:"-"`
+	// Limit the number of invocations to return.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset the number of invocations to return.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Show invocations that have started since the given time (RFC timestamps or
+	// durations like 5m).
+	Since param.Opt[string] `query:"since,omitzero" json:"-"`
+	// Filter results by invocation status.
+	//
+	// Any of "queued", "running", "succeeded", "failed".
+	Status InvocationListParamsStatus `query:"status,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InvocationListParams]'s query parameters as `url.Values`.
+func (r InvocationListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter results by invocation status.
+type InvocationListParamsStatus string
+
+const (
+	InvocationListParamsStatusQueued    InvocationListParamsStatus = "queued"
+	InvocationListParamsStatusRunning   InvocationListParamsStatus = "running"
+	InvocationListParamsStatusSucceeded InvocationListParamsStatus = "succeeded"
+	InvocationListParamsStatusFailed    InvocationListParamsStatus = "failed"
 )
 
 type InvocationFollowParams struct {
