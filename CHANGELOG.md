@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.0 (2025-09-26)
+
+Full Changelog: [v0.11.4...v0.12.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.4...v0.12.0)
+
+### Features
+
+* Fix my incorrect grammer ([f04186f](https://github.com/onkernel/kernel-go-sdk/commit/f04186fd786d47e49c42028c0237e02fd08d03b1))
+
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([32304ba](https://github.com/onkernel/kernel-go-sdk/commit/32304baca3b01de677fd705da2b03787b56fdf35))
+
 ## 0.11.4 (2025-09-25)
 
 Full Changelog: [v0.11.3...v0.11.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.3...v0.11.4)
