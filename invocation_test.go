@@ -116,6 +116,7 @@ func TestInvocationListWithOptionalParams(t *testing.T) {
 		Offset:       kernel.Int(0),
 		Since:        kernel.String("2025-06-20T12:00:00Z"),
 		Status:       kernel.InvocationListParamsStatusQueued,
+		Version:      kernel.String("version"),
 	})
 	if err != nil {
 		var apierr *kernel.Error
