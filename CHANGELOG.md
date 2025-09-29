@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.11.5 (2025-09-29)
+
+Full Changelog: [v0.11.4...v0.11.5](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.4...v0.11.5)
+
+### Features
+
+* Add App Version to Invocation and add filtering on App Version ([81f87e2](https://github.com/onkernel/kernel-go-sdk/commit/81f87e27ae242be9f7cfc75a6147e9eac669d4c4))
+* Fix my incorrect grammer ([f04186f](https://github.com/onkernel/kernel-go-sdk/commit/f04186fd786d47e49c42028c0237e02fd08d03b1))
+
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([32304ba](https://github.com/onkernel/kernel-go-sdk/commit/32304baca3b01de677fd705da2b03787b56fdf35))
+
 ## 0.11.4 (2025-09-25)
 
 Full Changelog: [v0.11.3...v0.11.4](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.3...v0.11.4)
