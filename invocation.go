@@ -169,6 +169,8 @@ type InvocationStateEventInvocation struct {
 	//
 	// Any of "queued", "running", "succeeded", "failed".
 	Status string `json:"status,required"`
+	// Version label for the application
+	Version string `json:"version,required"`
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at,nullable" format:"date-time"`
@@ -186,6 +188,7 @@ type InvocationStateEventInvocation struct {
 		AppName      respjson.Field
 		StartedAt    respjson.Field
 		Status       respjson.Field
+		Version      respjson.Field
 		FinishedAt   respjson.Field
 		Output       respjson.Field
 		Payload      respjson.Field
@@ -256,6 +259,8 @@ type InvocationGetResponse struct {
 	//
 	// Any of "queued", "running", "succeeded", "failed".
 	Status InvocationGetResponseStatus `json:"status,required"`
+	// Version label for the application
+	Version string `json:"version,required"`
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at,nullable" format:"date-time"`
@@ -273,6 +278,7 @@ type InvocationGetResponse struct {
 		AppName      respjson.Field
 		StartedAt    respjson.Field
 		Status       respjson.Field
+		Version      respjson.Field
 		FinishedAt   respjson.Field
 		Output       respjson.Field
 		Payload      respjson.Field
@@ -311,6 +317,8 @@ type InvocationUpdateResponse struct {
 	//
 	// Any of "queued", "running", "succeeded", "failed".
 	Status InvocationUpdateResponseStatus `json:"status,required"`
+	// Version label for the application
+	Version string `json:"version,required"`
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at,nullable" format:"date-time"`
@@ -328,6 +336,7 @@ type InvocationUpdateResponse struct {
 		AppName      respjson.Field
 		StartedAt    respjson.Field
 		Status       respjson.Field
+		Version      respjson.Field
 		FinishedAt   respjson.Field
 		Output       respjson.Field
 		Payload      respjson.Field
@@ -366,6 +375,8 @@ type InvocationListResponse struct {
 	//
 	// Any of "queued", "running", "succeeded", "failed".
 	Status InvocationListResponseStatus `json:"status,required"`
+	// Version label for the application
+	Version string `json:"version,required"`
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at,nullable" format:"date-time"`
@@ -383,6 +394,7 @@ type InvocationListResponse struct {
 		AppName      respjson.Field
 		StartedAt    respjson.Field
 		Status       respjson.Field
+		Version      respjson.Field
 		FinishedAt   respjson.Field
 		Output       respjson.Field
 		Payload      respjson.Field
@@ -558,6 +570,8 @@ type InvocationListParams struct {
 	// Show invocations that have started since the given time (RFC timestamps or
 	// durations like 5m).
 	Since param.Opt[string] `query:"since,omitzero" json:"-"`
+	// Filter results by application version.
+	Version param.Opt[string] `query:"version,omitzero" json:"-"`
 	// Filter results by invocation status.
 	//
 	// Any of "queued", "running", "succeeded", "failed".
