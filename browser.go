@@ -191,6 +191,8 @@ type BrowserNewResponse struct {
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
+	// ID of the proxy associated with this browser session, if any.
+	ProxyID string `json:"proxy_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -202,6 +204,7 @@ type BrowserNewResponse struct {
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
+		ProxyID            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -233,6 +236,8 @@ type BrowserGetResponse struct {
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
+	// ID of the proxy associated with this browser session, if any.
+	ProxyID string `json:"proxy_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -244,6 +249,7 @@ type BrowserGetResponse struct {
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
+		ProxyID            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -275,6 +281,8 @@ type BrowserListResponse struct {
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
+	// ID of the proxy associated with this browser session, if any.
+	ProxyID string `json:"proxy_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -286,6 +294,7 @@ type BrowserListResponse struct {
 		BrowserLiveViewURL respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
+		ProxyID            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
