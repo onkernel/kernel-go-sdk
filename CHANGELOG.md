@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0 (2025-09-30)
+
+Full Changelog: [v0.11.5...v0.12.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.5...v0.12.0)
+
+### Features
+
+* Return proxy ID in browsers response ([711c52f](https://github.com/onkernel/kernel-go-sdk/commit/711c52facea0f2170938a0a68040c6781f2c19ee))
+
 ## 0.11.5 (2025-09-29)
 
 Full Changelog: [v0.11.4...v0.11.5](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.4...v0.11.5)
