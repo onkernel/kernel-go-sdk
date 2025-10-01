@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
@@ -87,14 +88,22 @@ type ProxyNewResponse struct {
 	ID   string               `json:"id"`
 	// Configuration specific to the selected proxy `type`.
 	Config ProxyNewResponseConfigUnion `json:"config"`
+	// Timestamp of the last health check performed on this proxy.
+	LastChecked time.Time `json:"last_checked" format:"date-time"`
 	// Readable name of the proxy.
 	Name string `json:"name"`
+	// Current health status of the proxy.
+	//
+	// Any of "available", "unavailable".
+	Status ProxyNewResponseStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
 		ID          respjson.Field
 		Config      respjson.Field
+		LastChecked respjson.Field
 		Name        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -336,6 +345,14 @@ func (r *ProxyNewResponseConfigCustomProxyConfig) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Current health status of the proxy.
+type ProxyNewResponseStatus string
+
+const (
+	ProxyNewResponseStatusAvailable   ProxyNewResponseStatus = "available"
+	ProxyNewResponseStatusUnavailable ProxyNewResponseStatus = "unavailable"
+)
+
 // Configuration for routing traffic through a proxy.
 type ProxyGetResponse struct {
 	// Proxy type to use. In terms of quality for avoiding bot-detection, from best to
@@ -346,14 +363,22 @@ type ProxyGetResponse struct {
 	ID   string               `json:"id"`
 	// Configuration specific to the selected proxy `type`.
 	Config ProxyGetResponseConfigUnion `json:"config"`
+	// Timestamp of the last health check performed on this proxy.
+	LastChecked time.Time `json:"last_checked" format:"date-time"`
 	// Readable name of the proxy.
 	Name string `json:"name"`
+	// Current health status of the proxy.
+	//
+	// Any of "available", "unavailable".
+	Status ProxyGetResponseStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
 		ID          respjson.Field
 		Config      respjson.Field
+		LastChecked respjson.Field
 		Name        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -595,6 +620,14 @@ func (r *ProxyGetResponseConfigCustomProxyConfig) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Current health status of the proxy.
+type ProxyGetResponseStatus string
+
+const (
+	ProxyGetResponseStatusAvailable   ProxyGetResponseStatus = "available"
+	ProxyGetResponseStatusUnavailable ProxyGetResponseStatus = "unavailable"
+)
+
 // Configuration for routing traffic through a proxy.
 type ProxyListResponse struct {
 	// Proxy type to use. In terms of quality for avoiding bot-detection, from best to
@@ -605,14 +638,22 @@ type ProxyListResponse struct {
 	ID   string                `json:"id"`
 	// Configuration specific to the selected proxy `type`.
 	Config ProxyListResponseConfigUnion `json:"config"`
+	// Timestamp of the last health check performed on this proxy.
+	LastChecked time.Time `json:"last_checked" format:"date-time"`
 	// Readable name of the proxy.
 	Name string `json:"name"`
+	// Current health status of the proxy.
+	//
+	// Any of "available", "unavailable".
+	Status ProxyListResponseStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
 		ID          respjson.Field
 		Config      respjson.Field
+		LastChecked respjson.Field
 		Name        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -853,6 +894,14 @@ func (r ProxyListResponseConfigCustomProxyConfig) RawJSON() string { return r.JS
 func (r *ProxyListResponseConfigCustomProxyConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Current health status of the proxy.
+type ProxyListResponseStatus string
+
+const (
+	ProxyListResponseStatusAvailable   ProxyListResponseStatus = "available"
+	ProxyListResponseStatusUnavailable ProxyListResponseStatus = "unavailable"
+)
 
 type ProxyNewParams struct {
 	// Proxy type to use. In terms of quality for avoiding bot-detection, from best to
