@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.0 (2025-10-01)
+
+Full Changelog: [v0.12.0...v0.13.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.12.0...v0.13.0)
+
+### Features
+
+* Update oAPI and data model for proxy status ([87b8365](https://github.com/onkernel/kernel-go-sdk/commit/87b8365a941544eaf38b09ca66d6f9a97e3b050b))
+
 ## 0.12.0 (2025-09-30)
 
 Full Changelog: [v0.11.5...v0.12.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.11.5...v0.12.0)
