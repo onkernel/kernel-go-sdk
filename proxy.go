@@ -92,6 +92,10 @@ type ProxyNewResponse struct {
 	LastChecked time.Time `json:"last_checked" format:"date-time"`
 	// Readable name of the proxy.
 	Name string `json:"name"`
+	// Protocol to use for the proxy connection.
+	//
+	// Any of "http", "https".
+	Protocol ProxyNewResponseProtocol `json:"protocol"`
 	// Current health status of the proxy.
 	//
 	// Any of "available", "unavailable".
@@ -103,6 +107,7 @@ type ProxyNewResponse struct {
 		Config      respjson.Field
 		LastChecked respjson.Field
 		Name        respjson.Field
+		Protocol    respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -345,6 +350,14 @@ func (r *ProxyNewResponseConfigCustomProxyConfig) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Protocol to use for the proxy connection.
+type ProxyNewResponseProtocol string
+
+const (
+	ProxyNewResponseProtocolHTTP  ProxyNewResponseProtocol = "http"
+	ProxyNewResponseProtocolHTTPS ProxyNewResponseProtocol = "https"
+)
+
 // Current health status of the proxy.
 type ProxyNewResponseStatus string
 
@@ -367,6 +380,10 @@ type ProxyGetResponse struct {
 	LastChecked time.Time `json:"last_checked" format:"date-time"`
 	// Readable name of the proxy.
 	Name string `json:"name"`
+	// Protocol to use for the proxy connection.
+	//
+	// Any of "http", "https".
+	Protocol ProxyGetResponseProtocol `json:"protocol"`
 	// Current health status of the proxy.
 	//
 	// Any of "available", "unavailable".
@@ -378,6 +395,7 @@ type ProxyGetResponse struct {
 		Config      respjson.Field
 		LastChecked respjson.Field
 		Name        respjson.Field
+		Protocol    respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -620,6 +638,14 @@ func (r *ProxyGetResponseConfigCustomProxyConfig) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Protocol to use for the proxy connection.
+type ProxyGetResponseProtocol string
+
+const (
+	ProxyGetResponseProtocolHTTP  ProxyGetResponseProtocol = "http"
+	ProxyGetResponseProtocolHTTPS ProxyGetResponseProtocol = "https"
+)
+
 // Current health status of the proxy.
 type ProxyGetResponseStatus string
 
@@ -642,6 +668,10 @@ type ProxyListResponse struct {
 	LastChecked time.Time `json:"last_checked" format:"date-time"`
 	// Readable name of the proxy.
 	Name string `json:"name"`
+	// Protocol to use for the proxy connection.
+	//
+	// Any of "http", "https".
+	Protocol ProxyListResponseProtocol `json:"protocol"`
 	// Current health status of the proxy.
 	//
 	// Any of "available", "unavailable".
@@ -653,6 +683,7 @@ type ProxyListResponse struct {
 		Config      respjson.Field
 		LastChecked respjson.Field
 		Name        respjson.Field
+		Protocol    respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -895,6 +926,14 @@ func (r *ProxyListResponseConfigCustomProxyConfig) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Protocol to use for the proxy connection.
+type ProxyListResponseProtocol string
+
+const (
+	ProxyListResponseProtocolHTTP  ProxyListResponseProtocol = "http"
+	ProxyListResponseProtocolHTTPS ProxyListResponseProtocol = "https"
+)
+
 // Current health status of the proxy.
 type ProxyListResponseStatus string
 
@@ -913,6 +952,10 @@ type ProxyNewParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Configuration specific to the selected proxy `type`.
 	Config ProxyNewParamsConfigUnion `json:"config,omitzero"`
+	// Protocol to use for the proxy connection.
+	//
+	// Any of "http", "https".
+	Protocol ProxyNewParamsProtocol `json:"protocol,omitzero"`
 	paramObj
 }
 
@@ -1209,3 +1252,11 @@ func (r ProxyNewParamsConfigCreateCustomProxyConfig) MarshalJSON() (data []byte,
 func (r *ProxyNewParamsConfigCreateCustomProxyConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Protocol to use for the proxy connection.
+type ProxyNewParamsProtocol string
+
+const (
+	ProxyNewParamsProtocolHTTP  ProxyNewParamsProtocol = "http"
+	ProxyNewParamsProtocolHTTPS ProxyNewParamsProtocol = "https"
+)
