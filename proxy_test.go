@@ -33,7 +33,8 @@ func TestProxyNewWithOptionalParams(t *testing.T) {
 				Country: "US",
 			},
 		},
-		Name: kernel.String("name"),
+		Name:     kernel.String("name"),
+		Protocol: kernel.ProxyNewParamsProtocolHTTP,
 	})
 	if err != nil {
 		var apierr *kernel.Error
