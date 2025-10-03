@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.0 (2025-10-03)
+
+Full Changelog: [v0.13.0...v0.14.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.13.0...v0.14.0)
+
+### Features
+
+* Http proxy ([0ebe5f1](https://github.com/onkernel/kernel-go-sdk/commit/0ebe5f1f007fd53267ac096e044f9fd513c28d7b))
+
 ## 0.13.0 (2025-10-01)
 
 Full Changelog: [v0.12.0...v0.13.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.12.0...v0.13.0)
