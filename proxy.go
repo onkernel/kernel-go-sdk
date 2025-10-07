@@ -208,7 +208,7 @@ func (r *ProxyNewResponseConfigUnion) UnmarshalJSON(data []byte) error {
 
 // Configuration for a datacenter proxy.
 type ProxyNewResponseConfigDatacenterProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -226,7 +226,7 @@ func (r *ProxyNewResponseConfigDatacenterProxyConfig) UnmarshalJSON(data []byte)
 
 // Configuration for an ISP proxy.
 type ProxyNewResponseConfigIspProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -249,12 +249,13 @@ type ProxyNewResponseConfigResidentialProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
 	// Any of "windows", "macos", "android".
+	//
+	// Deprecated: deprecated
 	Os string `json:"os"`
 	// Two-letter state code.
 	State string `json:"state"`
@@ -297,8 +298,7 @@ type ProxyNewResponseConfigMobileProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code
 	Country string `json:"country"`
 	// Two-letter state code.
 	State string `json:"state"`
@@ -496,7 +496,7 @@ func (r *ProxyGetResponseConfigUnion) UnmarshalJSON(data []byte) error {
 
 // Configuration for a datacenter proxy.
 type ProxyGetResponseConfigDatacenterProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -514,7 +514,7 @@ func (r *ProxyGetResponseConfigDatacenterProxyConfig) UnmarshalJSON(data []byte)
 
 // Configuration for an ISP proxy.
 type ProxyGetResponseConfigIspProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -537,12 +537,13 @@ type ProxyGetResponseConfigResidentialProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
 	// Any of "windows", "macos", "android".
+	//
+	// Deprecated: deprecated
 	Os string `json:"os"`
 	// Two-letter state code.
 	State string `json:"state"`
@@ -585,8 +586,7 @@ type ProxyGetResponseConfigMobileProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code
 	Country string `json:"country"`
 	// Two-letter state code.
 	State string `json:"state"`
@@ -784,7 +784,7 @@ func (r *ProxyListResponseConfigUnion) UnmarshalJSON(data []byte) error {
 
 // Configuration for a datacenter proxy.
 type ProxyListResponseConfigDatacenterProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -802,7 +802,7 @@ func (r *ProxyListResponseConfigDatacenterProxyConfig) UnmarshalJSON(data []byte
 
 // Configuration for an ISP proxy.
 type ProxyListResponseConfigIspProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -825,12 +825,13 @@ type ProxyListResponseConfigResidentialProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
 	// Any of "windows", "macos", "android".
+	//
+	// Deprecated: deprecated
 	Os string `json:"os"`
 	// Two-letter state code.
 	State string `json:"state"`
@@ -873,8 +874,7 @@ type ProxyListResponseConfigMobileProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code
 	Country string `json:"country"`
 	// Two-letter state code.
 	State string `json:"state"`
@@ -1123,7 +1123,7 @@ func (u ProxyNewParamsConfigUnion) GetZip() *string {
 //
 // The property Country is required.
 type ProxyNewParamsConfigDatacenterProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	paramObj
 }
@@ -1140,7 +1140,7 @@ func (r *ProxyNewParamsConfigDatacenterProxyConfig) UnmarshalJSON(data []byte) e
 //
 // The property Country is required.
 type ProxyNewParamsConfigIspProxyConfig struct {
-	// ISO 3166 country code or EU for the proxy exit node.
+	// ISO 3166 country code.
 	Country string `json:"country,required"`
 	paramObj
 }
@@ -1160,8 +1160,7 @@ type ProxyNewParamsConfigResidentialProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City param.Opt[string] `json:"city,omitzero"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code.
 	Country param.Opt[string] `json:"country,omitzero"`
 	// Two-letter state code.
 	State param.Opt[string] `json:"state,omitzero"`
@@ -1170,6 +1169,8 @@ type ProxyNewParamsConfigResidentialProxyConfig struct {
 	// Operating system of the residential device.
 	//
 	// Any of "windows", "macos", "android".
+	//
+	// Deprecated: deprecated
 	Os string `json:"os,omitzero"`
 	paramObj
 }
@@ -1195,8 +1196,7 @@ type ProxyNewParamsConfigMobileProxyConfig struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City param.Opt[string] `json:"city,omitzero"`
-	// ISO 3166 country code or EU for the proxy exit node. Required if `city` is
-	// provided.
+	// ISO 3166 country code
 	Country param.Opt[string] `json:"country,omitzero"`
 	// Two-letter state code.
 	State param.Opt[string] `json:"state,omitzero"`
