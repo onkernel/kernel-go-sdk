@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.0 (2025-10-07)
+
+Full Changelog: [v0.14.1...v0.15.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.1...v0.15.0)
+
+### Features
+
+* Hide and deprecate mobile proxy type ([0775dfb](https://github.com/onkernel/kernel-go-sdk/commit/0775dfbadceda532968a0bfc24b40e13eb991b41))
+
 ## 0.14.1 (2025-10-07)
 
 Full Changelog: [v0.14.0...v0.14.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.0...v0.14.1)
