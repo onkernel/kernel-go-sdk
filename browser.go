@@ -3,15 +3,19 @@
 package kernel
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"slices"
 	"time"
 
+	"github.com/onkernel/kernel-go-sdk/internal/apiform"
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
@@ -94,6 +98,20 @@ func (r *BrowserService) DeleteByID(ctx context.Context, id string, opts ...opti
 	}
 	path := fmt.Sprintf("browsers/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
+// Loads one or more unpacked extensions and restarts Chromium on the browser
+// instance.
+func (r *BrowserService) UploadExtensions(ctx context.Context, id string, body BrowserUploadExtensionsParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("browsers/%s/extensions", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
 
@@ -325,6 +343,8 @@ type BrowserNewParams struct {
 	// seconds, so the actual timeout behavior you will see is +/- 5 seconds around the
 	// specified value.
 	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// List of browser extensions to load into the session. Provide each by id or name.
+	Extensions []BrowserNewParamsExtension `json:"extensions,omitzero"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`
 	// Profile selection for the browser session. Provide either id or name. If
@@ -339,6 +359,25 @@ func (r BrowserNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Extension selection for the browser session. Provide either id or name of an
+// extension uploaded to Kernel.
+type BrowserNewParamsExtension struct {
+	// Extension ID to load for this browser session
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Extension name to load for this browser session (instead of id). Must be 1-255
+	// characters, using letters, numbers, dots, underscores, or hyphens.
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r BrowserNewParamsExtension) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserNewParamsExtension
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserNewParamsExtension) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -377,4 +416,46 @@ func (r BrowserDeleteParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type BrowserUploadExtensionsParams struct {
+	// List of extensions to upload and activate
+	Extensions []BrowserUploadExtensionsParamsExtension `json:"extensions,omitzero,required"`
+	paramObj
+}
+
+func (r BrowserUploadExtensionsParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err == nil {
+		err = apiform.WriteExtras(writer, r.ExtraFields())
+	}
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
+}
+
+// The properties Name, ZipFile are required.
+type BrowserUploadExtensionsParamsExtension struct {
+	// Folder name to place the extension under /home/kernel/extensions/<name>
+	Name string `json:"name,required"`
+	// Zip archive containing an unpacked Chromium extension (must include
+	// manifest.json)
+	ZipFile io.Reader `json:"zip_file,omitzero,required" format:"binary"`
+	paramObj
+}
+
+func (r BrowserUploadExtensionsParamsExtension) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserUploadExtensionsParamsExtension
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserUploadExtensionsParamsExtension) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
