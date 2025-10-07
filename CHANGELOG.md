@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.1 (2025-10-07)
+
+Full Changelog: [v0.14.0...v0.14.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.0...v0.14.1)
+
+### Features
+
+* WIP browser extensions ([22323cd](https://github.com/onkernel/kernel-go-sdk/commit/22323cdf2376bf2016cf1ebd1384f4c1b5ca6752))
+
 ## 0.14.0 (2025-10-03)
 
 Full Changelog: [v0.13.0...v0.14.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.13.0...v0.14.0)
