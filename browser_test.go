@@ -46,6 +46,11 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		ProxyID:        kernel.String("proxy_id"),
 		Stealth:        kernel.Bool(true),
 		TimeoutSeconds: kernel.Int(10),
+		Viewport: kernel.BrowserNewParamsViewport{
+			Height:      800,
+			Width:       1280,
+			RefreshRate: kernel.Int(60),
+		},
 	})
 	if err != nil {
 		var apierr *kernel.Error
@@ -150,7 +155,7 @@ func TestBrowserDeleteByID(t *testing.T) {
 	}
 }
 
-func TestBrowserUploadExtensions(t *testing.T) {
+func TestBrowserLoadExtensions(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -163,11 +168,11 @@ func TestBrowserUploadExtensions(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Browsers.UploadExtensions(
+	err := client.Browsers.LoadExtensions(
 		context.TODO(),
 		"id",
-		kernel.BrowserUploadExtensionsParams{
-			Extensions: []kernel.BrowserUploadExtensionsParamsExtension{{
+		kernel.BrowserLoadExtensionsParams{
+			Extensions: []kernel.BrowserLoadExtensionsParamsExtension{{
 				Name:    "name",
 				ZipFile: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 			}},
