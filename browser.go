@@ -103,7 +103,7 @@ func (r *BrowserService) DeleteByID(ctx context.Context, id string, opts ...opti
 
 // Loads one or more unpacked extensions and restarts Chromium on the browser
 // instance.
-func (r *BrowserService) UploadExtensions(ctx context.Context, id string, body BrowserUploadExtensionsParams, opts ...option.RequestOption) (err error) {
+func (r *BrowserService) LoadExtensions(ctx context.Context, id string, body BrowserLoadExtensionsParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
@@ -211,6 +211,15 @@ type BrowserNewResponse struct {
 	Profile Profile `json:"profile"`
 	// ID of the proxy associated with this browser session, if any.
 	ProxyID string `json:"proxy_id"`
+	// Initial browser window size in pixels with optional refresh rate. If omitted,
+	// image defaults apply (commonly 1024x768@60). Only specific viewport
+	// configurations are supported. The server will reject unsupported combinations.
+	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+	// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
+	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+	// live view browser
+	Viewport BrowserNewResponseViewport `json:"viewport"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -223,6 +232,7 @@ type BrowserNewResponse struct {
 		Persistence        respjson.Field
 		Profile            respjson.Field
 		ProxyID            respjson.Field
+		Viewport           respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -231,6 +241,38 @@ type BrowserNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r BrowserNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *BrowserNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Initial browser window size in pixels with optional refresh rate. If omitted,
+// image defaults apply (commonly 1024x768@60). Only specific viewport
+// configurations are supported. The server will reject unsupported combinations.
+// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+// automatically determined from the width and height if they match a supported
+// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+// live view browser
+type BrowserNewResponseViewport struct {
+	// Browser window height in pixels.
+	Height int64 `json:"height,required"`
+	// Browser window width in pixels.
+	Width int64 `json:"width,required"`
+	// Display refresh rate in Hz. If omitted, automatically determined from width and
+	// height.
+	RefreshRate int64 `json:"refresh_rate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Width       respjson.Field
+		RefreshRate respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrowserNewResponseViewport) RawJSON() string { return r.JSON.raw }
+func (r *BrowserNewResponseViewport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -256,6 +298,15 @@ type BrowserGetResponse struct {
 	Profile Profile `json:"profile"`
 	// ID of the proxy associated with this browser session, if any.
 	ProxyID string `json:"proxy_id"`
+	// Initial browser window size in pixels with optional refresh rate. If omitted,
+	// image defaults apply (commonly 1024x768@60). Only specific viewport
+	// configurations are supported. The server will reject unsupported combinations.
+	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+	// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
+	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+	// live view browser
+	Viewport BrowserGetResponseViewport `json:"viewport"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -268,6 +319,7 @@ type BrowserGetResponse struct {
 		Persistence        respjson.Field
 		Profile            respjson.Field
 		ProxyID            respjson.Field
+		Viewport           respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -276,6 +328,38 @@ type BrowserGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r BrowserGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *BrowserGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Initial browser window size in pixels with optional refresh rate. If omitted,
+// image defaults apply (commonly 1024x768@60). Only specific viewport
+// configurations are supported. The server will reject unsupported combinations.
+// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+// automatically determined from the width and height if they match a supported
+// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+// live view browser
+type BrowserGetResponseViewport struct {
+	// Browser window height in pixels.
+	Height int64 `json:"height,required"`
+	// Browser window width in pixels.
+	Width int64 `json:"width,required"`
+	// Display refresh rate in Hz. If omitted, automatically determined from width and
+	// height.
+	RefreshRate int64 `json:"refresh_rate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Width       respjson.Field
+		RefreshRate respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrowserGetResponseViewport) RawJSON() string { return r.JSON.raw }
+func (r *BrowserGetResponseViewport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -301,6 +385,15 @@ type BrowserListResponse struct {
 	Profile Profile `json:"profile"`
 	// ID of the proxy associated with this browser session, if any.
 	ProxyID string `json:"proxy_id"`
+	// Initial browser window size in pixels with optional refresh rate. If omitted,
+	// image defaults apply (commonly 1024x768@60). Only specific viewport
+	// configurations are supported. The server will reject unsupported combinations.
+	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+	// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
+	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+	// live view browser
+	Viewport BrowserListResponseViewport `json:"viewport"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CdpWsURL           respjson.Field
@@ -313,6 +406,7 @@ type BrowserListResponse struct {
 		Persistence        respjson.Field
 		Profile            respjson.Field
 		ProxyID            respjson.Field
+		Viewport           respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -321,6 +415,38 @@ type BrowserListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r BrowserListResponse) RawJSON() string { return r.JSON.raw }
 func (r *BrowserListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Initial browser window size in pixels with optional refresh rate. If omitted,
+// image defaults apply (commonly 1024x768@60). Only specific viewport
+// configurations are supported. The server will reject unsupported combinations.
+// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+// automatically determined from the width and height if they match a supported
+// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+// live view browser
+type BrowserListResponseViewport struct {
+	// Browser window height in pixels.
+	Height int64 `json:"height,required"`
+	// Browser window width in pixels.
+	Width int64 `json:"width,required"`
+	// Display refresh rate in Hz. If omitted, automatically determined from width and
+	// height.
+	RefreshRate int64 `json:"refresh_rate"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Height      respjson.Field
+		Width       respjson.Field
+		RefreshRate respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrowserListResponseViewport) RawJSON() string { return r.JSON.raw }
+func (r *BrowserListResponseViewport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -351,6 +477,15 @@ type BrowserNewParams struct {
 	// specified, the matching profile will be loaded into the browser session.
 	// Profiles must be created beforehand.
 	Profile BrowserNewParamsProfile `json:"profile,omitzero"`
+	// Initial browser window size in pixels with optional refresh rate. If omitted,
+	// image defaults apply (commonly 1024x768@60). Only specific viewport
+	// configurations are supported. The server will reject unsupported combinations.
+	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+	// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
+	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+	// live view browser
+	Viewport BrowserNewParamsViewport `json:"viewport,omitzero"`
 	paramObj
 }
 
@@ -404,6 +539,35 @@ func (r *BrowserNewParamsProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Initial browser window size in pixels with optional refresh rate. If omitted,
+// image defaults apply (commonly 1024x768@60). Only specific viewport
+// configurations are supported. The server will reject unsupported combinations.
+// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
+// 1440x900@25, 1024x768@60 If refresh_rate is not provided, it will be
+// automatically determined from the width and height if they match a supported
+// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+// live view browser
+//
+// The properties Height, Width are required.
+type BrowserNewParamsViewport struct {
+	// Browser window height in pixels.
+	Height int64 `json:"height,required"`
+	// Browser window width in pixels.
+	Width int64 `json:"width,required"`
+	// Display refresh rate in Hz. If omitted, automatically determined from width and
+	// height.
+	RefreshRate param.Opt[int64] `json:"refresh_rate,omitzero"`
+	paramObj
+}
+
+func (r BrowserNewParamsViewport) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserNewParamsViewport
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserNewParamsViewport) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BrowserDeleteParams struct {
 	// Persistent browser identifier
 	PersistentID string `query:"persistent_id,required" json:"-"`
@@ -418,13 +582,13 @@ func (r BrowserDeleteParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-type BrowserUploadExtensionsParams struct {
+type BrowserLoadExtensionsParams struct {
 	// List of extensions to upload and activate
-	Extensions []BrowserUploadExtensionsParamsExtension `json:"extensions,omitzero,required"`
+	Extensions []BrowserLoadExtensionsParamsExtension `json:"extensions,omitzero,required"`
 	paramObj
 }
 
-func (r BrowserUploadExtensionsParams) MarshalMultipart() (data []byte, contentType string, err error) {
+func (r BrowserLoadExtensionsParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
 	err = apiform.MarshalRoot(r, writer)
@@ -443,7 +607,7 @@ func (r BrowserUploadExtensionsParams) MarshalMultipart() (data []byte, contentT
 }
 
 // The properties Name, ZipFile are required.
-type BrowserUploadExtensionsParamsExtension struct {
+type BrowserLoadExtensionsParamsExtension struct {
 	// Folder name to place the extension under /home/kernel/extensions/<name>
 	Name string `json:"name,required"`
 	// Zip archive containing an unpacked Chromium extension (must include
@@ -452,10 +616,10 @@ type BrowserUploadExtensionsParamsExtension struct {
 	paramObj
 }
 
-func (r BrowserUploadExtensionsParamsExtension) MarshalJSON() (data []byte, err error) {
-	type shadow BrowserUploadExtensionsParamsExtension
+func (r BrowserLoadExtensionsParamsExtension) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserLoadExtensionsParamsExtension
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *BrowserUploadExtensionsParamsExtension) UnmarshalJSON(data []byte) error {
+func (r *BrowserLoadExtensionsParamsExtension) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
