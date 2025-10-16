@@ -42,6 +42,28 @@ func NewExtensionService(opts ...option.RequestOption) (r ExtensionService) {
 	return
 }
 
+// Upload a zip file containing an unpacked browser extension. Optionally provide a
+// unique name for later reference.
+func (r *ExtensionService) New(ctx context.Context, body ExtensionNewParams, opts ...option.RequestOption) (res *ExtensionNewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "extensions"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
+// Download the extension as a ZIP archive by ID or name.
+func (r *ExtensionService) Get(ctx context.Context, idOrName string, opts ...option.RequestOption) (res *http.Response, err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
+	if idOrName == "" {
+		err = errors.New("missing required id_or_name parameter")
+		return
+	}
+	path := fmt.Sprintf("extensions/%s", idOrName)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // List extensions owned by the caller's organization.
 func (r *ExtensionService) List(ctx context.Context, opts ...option.RequestOption) (res *[]ExtensionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -63,19 +85,6 @@ func (r *ExtensionService) Delete(ctx context.Context, idOrName string, opts ...
 	return
 }
 
-// Download the extension as a ZIP archive by ID or name.
-func (r *ExtensionService) Download(ctx context.Context, idOrName string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
-	if idOrName == "" {
-		err = errors.New("missing required id_or_name parameter")
-		return
-	}
-	path := fmt.Sprintf("extensions/%s", idOrName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
 // Returns a ZIP archive containing the unpacked extension fetched from the Chrome
 // Web Store.
 func (r *ExtensionService) DownloadFromChromeStore(ctx context.Context, query ExtensionDownloadFromChromeStoreParams, opts ...option.RequestOption) (res *http.Response, err error) {
@@ -86,13 +95,35 @@ func (r *ExtensionService) DownloadFromChromeStore(ctx context.Context, query Ex
 	return
 }
 
-// Upload a zip file containing an unpacked browser extension. Optionally provide a
-// unique name for later reference.
-func (r *ExtensionService) Upload(ctx context.Context, body ExtensionUploadParams, opts ...option.RequestOption) (res *ExtensionUploadResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "extensions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+// A browser extension uploaded to Kernel.
+type ExtensionNewResponse struct {
+	// Unique identifier for the extension
+	ID string `json:"id,required"`
+	// Timestamp when the extension was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Size of the extension archive in bytes
+	SizeBytes int64 `json:"size_bytes,required"`
+	// Timestamp when the extension was last used
+	LastUsedAt time.Time `json:"last_used_at,nullable" format:"date-time"`
+	// Optional, easier-to-reference name for the extension. Must be unique within the
+	// organization.
+	Name string `json:"name,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		SizeBytes   respjson.Field
+		LastUsedAt  respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // A browser extension uploaded to Kernel.
@@ -126,35 +157,30 @@ func (r *ExtensionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A browser extension uploaded to Kernel.
-type ExtensionUploadResponse struct {
-	// Unique identifier for the extension
-	ID string `json:"id,required"`
-	// Timestamp when the extension was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Size of the extension archive in bytes
-	SizeBytes int64 `json:"size_bytes,required"`
-	// Timestamp when the extension was last used
-	LastUsedAt time.Time `json:"last_used_at,nullable" format:"date-time"`
-	// Optional, easier-to-reference name for the extension. Must be unique within the
-	// organization.
-	Name string `json:"name,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		SizeBytes   respjson.Field
-		LastUsedAt  respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
+type ExtensionNewParams struct {
+	// ZIP file containing the browser extension.
+	File io.Reader `json:"file,omitzero,required" format:"binary"`
+	// Optional unique name within the organization to reference this extension.
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
 }
 
-// Returns the unmodified JSON received from the API
-func (r ExtensionUploadResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExtensionUploadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r ExtensionNewParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err == nil {
+		err = apiform.WriteExtras(writer, r.ExtraFields())
+	}
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }
 
 type ExtensionDownloadFromChromeStoreParams struct {
@@ -184,29 +210,3 @@ const (
 	ExtensionDownloadFromChromeStoreParamsOsMac   ExtensionDownloadFromChromeStoreParamsOs = "mac"
 	ExtensionDownloadFromChromeStoreParamsOsLinux ExtensionDownloadFromChromeStoreParamsOs = "linux"
 )
-
-type ExtensionUploadParams struct {
-	// ZIP file containing the browser extension.
-	File io.Reader `json:"file,omitzero,required" format:"binary"`
-	// Optional unique name within the organization to reference this extension.
-	Name param.Opt[string] `json:"name,omitzero"`
-	paramObj
-}
-
-func (r ExtensionUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
-}
