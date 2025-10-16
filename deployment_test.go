@@ -29,13 +29,24 @@ func TestDeploymentNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Deployments.New(context.TODO(), kernel.DeploymentNewParams{
-		EntrypointRelPath: "src/app.py",
-		File:              io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		EntrypointRelPath: kernel.String("src/app.py"),
 		EnvVars: map[string]string{
-			"foo": "string",
+			"FOO": "bar",
 		},
-		Force:   kernel.Bool(false),
-		Region:  kernel.DeploymentNewParamsRegionAwsUsEast1a,
+		File:   io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		Force:  kernel.Bool(false),
+		Region: kernel.DeploymentNewParamsRegionAwsUsEast1a,
+		Source: kernel.DeploymentNewParamsSource{
+			Entrypoint: "src/index.ts",
+			Ref:        "main",
+			Type:       "github",
+			URL:        "https://github.com/org/repo",
+			Auth: kernel.DeploymentNewParamsSourceAuth{
+				Token:  "ghs_***",
+				Method: "github_token",
+			},
+			Path: kernel.String("apps/api"),
+		},
 		Version: kernel.String("1.0.0"),
 	})
 	if err != nil {
