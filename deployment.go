@@ -449,9 +449,7 @@ func (r *DeploymentFollowResponseAppVersionSummaryEvent) UnmarshalJSON(data []by
 
 type DeploymentNewParams struct {
 	// Relative path to the entrypoint of the application
-	EntrypointRelPath string `json:"entrypoint_rel_path,required"`
-	// ZIP file containing the application source directory
-	File io.Reader `json:"file,omitzero,required" format:"binary"`
+	EntrypointRelPath param.Opt[string] `json:"entrypoint_rel_path,omitzero"`
 	// Allow overwriting an existing app version
 	Force param.Opt[bool] `json:"force,omitzero"`
 	// Version of the application. Can be any string.
@@ -459,10 +457,14 @@ type DeploymentNewParams struct {
 	// Map of environment variables to set for the deployed application. Each key-value
 	// pair represents an environment variable.
 	EnvVars map[string]string `json:"env_vars,omitzero"`
+	// ZIP file containing the application source directory
+	File io.Reader `json:"file,omitzero" format:"binary"`
 	// Region for deployment. Currently we only support "aws.us-east-1a"
 	//
 	// Any of "aws.us-east-1a".
 	Region DeploymentNewParamsRegion `json:"region,omitzero"`
+	// Source from which to fetch application code.
+	Source DeploymentNewParamsSource `json:"source,omitzero"`
 	paramObj
 }
 
@@ -490,6 +492,68 @@ type DeploymentNewParamsRegion string
 const (
 	DeploymentNewParamsRegionAwsUsEast1a DeploymentNewParamsRegion = "aws.us-east-1a"
 )
+
+// Source from which to fetch application code.
+//
+// The properties Entrypoint, Ref, Type, URL are required.
+type DeploymentNewParamsSource struct {
+	// Relative path to the application entrypoint within the selected path.
+	Entrypoint string `json:"entrypoint,required"`
+	// Git ref (branch, tag, or commit SHA) to fetch.
+	Ref string `json:"ref,required"`
+	// Source type identifier.
+	//
+	// Any of "github".
+	Type string `json:"type,omitzero,required"`
+	// Base repository URL (without blob/tree suffixes).
+	URL string `json:"url,required"`
+	// Path within the repo to deploy (omit to use repo root).
+	Path param.Opt[string] `json:"path,omitzero"`
+	// Authentication for private repositories.
+	Auth DeploymentNewParamsSourceAuth `json:"auth,omitzero"`
+	paramObj
+}
+
+func (r DeploymentNewParamsSource) MarshalJSON() (data []byte, err error) {
+	type shadow DeploymentNewParamsSource
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DeploymentNewParamsSource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DeploymentNewParamsSource](
+		"type", "github",
+	)
+}
+
+// Authentication for private repositories.
+//
+// The properties Token, Method are required.
+type DeploymentNewParamsSourceAuth struct {
+	// GitHub PAT or installation access token
+	Token string `json:"token,required" format:"password"`
+	// Auth method
+	//
+	// Any of "github_token".
+	Method string `json:"method,omitzero,required"`
+	paramObj
+}
+
+func (r DeploymentNewParamsSourceAuth) MarshalJSON() (data []byte, err error) {
+	type shadow DeploymentNewParamsSourceAuth
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DeploymentNewParamsSourceAuth) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[DeploymentNewParamsSourceAuth](
+		"method", "github_token",
+	)
+}
 
 type DeploymentListParams struct {
 	// Filter results by application name.
