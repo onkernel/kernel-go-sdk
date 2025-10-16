@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.2 (2025-10-16)
+
+Full Changelog: [v0.14.1...v0.14.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.1...v0.14.2)
+
+### Features
+
+* Kiosk mode ([cd6120a](https://github.com/onkernel/kernel-go-sdk/commit/cd6120a71b58e0c539d5ba1361fca0ecd71baf1c))
+
 ## 0.14.1 (2025-10-13)
 
 Full Changelog: [v0.14.1...v0.14.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.1...v0.14.1)
