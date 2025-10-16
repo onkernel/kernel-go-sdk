@@ -205,6 +205,8 @@ type BrowserNewResponse struct {
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
+	// Whether the browser session is running in kiosk mode.
+	KioskMode bool `json:"kiosk_mode"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
@@ -229,6 +231,7 @@ type BrowserNewResponse struct {
 		Stealth            respjson.Field
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
+		KioskMode          respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
 		ProxyID            respjson.Field
@@ -292,6 +295,8 @@ type BrowserGetResponse struct {
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
+	// Whether the browser session is running in kiosk mode.
+	KioskMode bool `json:"kiosk_mode"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
@@ -316,6 +321,7 @@ type BrowserGetResponse struct {
 		Stealth            respjson.Field
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
+		KioskMode          respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
 		ProxyID            respjson.Field
@@ -379,6 +385,8 @@ type BrowserListResponse struct {
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
+	// Whether the browser session is running in kiosk mode.
+	KioskMode bool `json:"kiosk_mode"`
 	// Optional persistence configuration for the browser session.
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
@@ -403,6 +411,7 @@ type BrowserListResponse struct {
 		Stealth            respjson.Field
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
+		KioskMode          respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
 		ProxyID            respjson.Field
@@ -456,6 +465,9 @@ type BrowserNewParams struct {
 	Headless param.Opt[bool] `json:"headless,omitzero"`
 	// action invocation ID
 	InvocationID param.Opt[string] `json:"invocation_id,omitzero"`
+	// If true, launches the browser in kiosk mode to hide address bar and tabs in live
+	// view.
+	KioskMode param.Opt[bool] `json:"kiosk_mode,omitzero"`
 	// Optional proxy to associate to the browser session. Must reference a proxy
 	// belonging to the caller's org.
 	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
