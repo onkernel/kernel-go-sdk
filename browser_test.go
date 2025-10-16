@@ -35,6 +35,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		}},
 		Headless:     kernel.Bool(false),
 		InvocationID: kernel.String("rr33xuugxj9h0bkf1rdt2bet"),
+		KioskMode:    kernel.Bool(true),
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "my-awesome-browser-for-user-1234",
 		},
