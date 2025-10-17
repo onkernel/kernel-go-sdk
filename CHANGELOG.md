@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.15.0 (2025-10-17)
+
+Full Changelog: [v0.14.2...v0.15.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.2...v0.15.0)
+
+### Features
+
+* click mouse, move mouse, screenshot ([b1dcded](https://github.com/onkernel/kernel-go-sdk/commit/b1dcdedf9662f112048d27622a787b2bacb5ac84))
+* Phani/deploy with GitHub url ([5e04228](https://github.com/onkernel/kernel-go-sdk/commit/5e04228a5fdd20381b24b230c64e65761a444300))
+
 ## 0.14.2 (2025-10-16)
 
 Full Changelog: [v0.14.1...v0.14.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.1...v0.14.2)
