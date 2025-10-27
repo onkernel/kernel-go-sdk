@@ -30,7 +30,7 @@ func TestProxyNewWithOptionalParams(t *testing.T) {
 		Type: kernel.ProxyNewParamsTypeDatacenter,
 		Config: kernel.ProxyNewParamsConfigUnion{
 			OfProxyNewsConfigDatacenterProxyConfig: &kernel.ProxyNewParamsConfigDatacenterProxyConfig{
-				Country: "US",
+				Country: kernel.String("US"),
 			},
 		},
 		Name:     kernel.String("name"),
