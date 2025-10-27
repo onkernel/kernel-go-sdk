@@ -6,7 +6,7 @@ Full Changelog: [v0.16.0...v0.17.0](https://github.com/onkernel/kernel-go-sdk/co
 
 ### Features
 
-* Use ping instead of bright data for ISP proxy ([cd2a114](https://github.com/onkernel/kernel-go-sdk/commit/cd2a1144f56f7dbe8a8dce6e918eb9a311e7ec3d))
+* Make country flag optional for DC and ISP proxies ([cd2a114](https://github.com/onkernel/kernel-go-sdk/commit/cd2a1144f56f7dbe8a8dce6e918eb9a311e7ec3d))
 
 ## 0.16.0 (2025-10-27)
 
