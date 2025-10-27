@@ -31,12 +31,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewBrowserService] method instead.
 type BrowserService struct {
-	Options  []option.RequestOption
-	Replays  BrowserReplayService
-	Fs       BrowserFService
-	Process  BrowserProcessService
-	Logs     BrowserLogService
-	Computer BrowserComputerService
+	Options    []option.RequestOption
+	Replays    BrowserReplayService
+	Fs         BrowserFService
+	Process    BrowserProcessService
+	Logs       BrowserLogService
+	Computer   BrowserComputerService
+	Playwright BrowserPlaywrightService
 }
 
 // NewBrowserService generates a new service that applies the given options to each
@@ -50,6 +51,7 @@ func NewBrowserService(opts ...option.RequestOption) (r BrowserService) {
 	r.Process = NewBrowserProcessService(opts...)
 	r.Logs = NewBrowserLogService(opts...)
 	r.Computer = NewBrowserComputerService(opts...)
+	r.Playwright = NewBrowserPlaywrightService(opts...)
 	return
 }
 

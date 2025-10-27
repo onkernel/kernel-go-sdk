@@ -164,6 +164,16 @@ Methods:
 - <code title="post /browsers/{id}/computer/scroll">client.Browsers.Computer.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserComputerService.Scroll">Scroll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserComputerScrollParams">BrowserComputerScrollParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="post /browsers/{id}/computer/type">client.Browsers.Computer.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserComputerService.TypeText">TypeText</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserComputerTypeTextParams">BrowserComputerTypeTextParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
+## Playwright
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPlaywrightExecuteResponse">BrowserPlaywrightExecuteResponse</a>
+
+Methods:
+
+- <code title="post /browsers/{id}/playwright/execute">client.Browsers.Playwright.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPlaywrightService.Execute">Execute</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPlaywrightExecuteParams">BrowserPlaywrightExecuteParams</a>) (<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPlaywrightExecuteResponse">BrowserPlaywrightExecuteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Profiles
 
 Methods:

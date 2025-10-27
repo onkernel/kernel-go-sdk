@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0 (2025-10-27)
+
+Full Changelog: [v0.15.0...v0.16.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.15.0...v0.16.0)
+
+### Features
+
+* ad hoc playwright code exec AP| ([8589fb2](https://github.com/onkernel/kernel-go-sdk/commit/8589fb22265ec8ad4c5a02b7a485c78e8a5f45da))
+
 ## 0.15.0 (2025-10-17)
 
 Full Changelog: [v0.14.2...v0.15.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.14.2...v0.15.0)
