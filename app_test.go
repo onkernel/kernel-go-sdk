@@ -28,6 +28,8 @@ func TestAppListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Apps.List(context.TODO(), kernel.AppListParams{
 		AppName: kernel.String("app_name"),
+		Limit:   kernel.Int(1),
+		Offset:  kernel.Int(0),
 		Version: kernel.String("version"),
 	})
 	if err != nil {
