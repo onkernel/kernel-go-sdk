@@ -12,6 +12,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/pagination"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 	"github.com/onkernel/kernel-go-sdk/shared"
@@ -38,11 +39,26 @@ func NewAppService(opts ...option.RequestOption) (r AppService) {
 }
 
 // List applications. Optionally filter by app name and/or version label.
-func (r *AppService) List(ctx context.Context, query AppListParams, opts ...option.RequestOption) (res *[]AppListResponse, err error) {
+func (r *AppService) List(ctx context.Context, query AppListParams, opts ...option.RequestOption) (res *pagination.OffsetPagination[AppListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "apps"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List applications. Optionally filter by app name and/or version label.
+func (r *AppService) ListAutoPaging(ctx context.Context, query AppListParams, opts ...option.RequestOption) *pagination.OffsetPaginationAutoPager[AppListResponse] {
+	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Summary of an application version.
@@ -84,6 +100,10 @@ func (r *AppListResponse) UnmarshalJSON(data []byte) error {
 type AppListParams struct {
 	// Filter results by application name.
 	AppName param.Opt[string] `query:"app_name,omitzero" json:"-"`
+	// Limit the number of app to return.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset the number of app to return.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter results by version label.
 	Version param.Opt[string] `query:"version,omitzero" json:"-"`
 	paramObj
