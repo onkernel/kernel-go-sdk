@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.18.0 (2025-10-30)
+
+Full Changelog: [v0.17.0...v0.18.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.17.0...v0.18.0)
+
+### Features
+
+* apps: add offset pagination + headers ([bb1bb22](https://github.com/onkernel/kernel-go-sdk/commit/bb1bb22bab1970f1c2ef0455d3002abbfc46466b))
+
 ## 0.17.0 (2025-10-27)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.16.0...v0.17.0)
