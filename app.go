@@ -100,9 +100,9 @@ func (r *AppListResponse) UnmarshalJSON(data []byte) error {
 type AppListParams struct {
 	// Filter results by application name.
 	AppName param.Opt[string] `query:"app_name,omitzero" json:"-"`
-	// Limit the number of app to return.
+	// Limit the number of apps to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset the number of app to return.
+	// Offset the number of apps to return.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter results by version label.
 	Version param.Opt[string] `query:"version,omitzero" json:"-"`
