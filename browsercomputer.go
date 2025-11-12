@@ -13,6 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
+	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 )
 
 // BrowserComputerService contains methods and other services that help with
@@ -112,6 +113,18 @@ func (r *BrowserComputerService) Scroll(ctx context.Context, id string, body Bro
 	return
 }
 
+// Set cursor visibility
+func (r *BrowserComputerService) SetCursorVisibility(ctx context.Context, id string, body BrowserComputerSetCursorVisibilityParams, opts ...option.RequestOption) (res *BrowserComputerSetCursorVisibilityResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("browsers/%s/computer/cursor", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Type text on the browser instance
 func (r *BrowserComputerService) TypeText(ctx context.Context, id string, body BrowserComputerTypeTextParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -123,6 +136,24 @@ func (r *BrowserComputerService) TypeText(ctx context.Context, id string, body B
 	path := fmt.Sprintf("browsers/%s/computer/type", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
+}
+
+// Generic OK response.
+type BrowserComputerSetCursorVisibilityResponse struct {
+	// Indicates success.
+	Ok bool `json:"ok,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Ok          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BrowserComputerSetCursorVisibilityResponse) RawJSON() string { return r.JSON.raw }
+func (r *BrowserComputerSetCursorVisibilityResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type BrowserComputerCaptureScreenshotParams struct {
@@ -303,6 +334,20 @@ func (r BrowserComputerScrollParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserComputerScrollParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BrowserComputerSetCursorVisibilityParams struct {
+	// Whether the cursor should be hidden or visible
+	Hidden bool `json:"hidden,required"`
+	paramObj
+}
+
+func (r BrowserComputerSetCursorVisibilityParams) MarshalJSON() (data []byte, err error) {
+	type shadow BrowserComputerSetCursorVisibilityParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BrowserComputerSetCursorVisibilityParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
