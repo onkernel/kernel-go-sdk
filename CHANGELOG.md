@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.19.0 (2025-11-12)
+
+Full Changelog: [v0.18.0...v0.19.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.18.0...v0.19.0)
+
+### Features
+
+* feat hide cursor v2 ([83ccf6e](https://github.com/onkernel/kernel-go-sdk/commit/83ccf6eeaf25d7257cf6992af5b856b1c82fa8c6))
+* Remove price gating on computer endpoints ([131fda4](https://github.com/onkernel/kernel-go-sdk/commit/131fda473e619b41bf8df8a0c461e5594142b474))
+
+
+### Chores
+
+* bump gjson version ([666f492](https://github.com/onkernel/kernel-go-sdk/commit/666f4924d4ec1b8ebe5e083a8df701c19ee414be))
+* **internal:** grammar fix (it's -&gt; its) ([be376e8](https://github.com/onkernel/kernel-go-sdk/commit/be376e843484cf6aee031b8ace289f166cd181e1))
+
 ## 0.18.0 (2025-10-30)
 
 Full Changelog: [v0.17.0...v0.18.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.17.0...v0.18.0)
