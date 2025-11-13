@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.19.1 (2025-11-13)
+
+Full Changelog: [v0.19.0...v0.19.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.19.0...v0.19.1)
+
+### Features
+
+* works locally ([1305424](https://github.com/onkernel/kernel-go-sdk/commit/13054249676464251daeb156138ffb9efd895292))
+
 ## 0.19.0 (2025-11-12)
 
 Full Changelog: [v0.18.0...v0.19.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.18.0...v0.19.0)
