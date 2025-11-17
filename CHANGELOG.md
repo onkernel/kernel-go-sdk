@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.19.2 (2025-11-17)
+
+Full Changelog: [v0.19.1...v0.19.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.19.1...v0.19.2)
+
+### Features
+
+* Feat increase max timeout to 72h ([f824eae](https://github.com/onkernel/kernel-go-sdk/commit/f824eae83fecc41468817b110b7de0869f1e40be))
+
 ## 0.19.1 (2025-11-13)
 
 Full Changelog: [v0.19.0...v0.19.1](https://github.com/onkernel/kernel-go-sdk/compare/v0.19.0...v0.19.1)
