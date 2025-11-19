@@ -51,7 +51,7 @@ func (r *BrowserComputerService) CaptureScreenshot(ctx context.Context, id strin
 // Simulate a mouse click action on the browser instance
 func (r *BrowserComputerService) ClickMouse(ctx context.Context, id string, body BrowserComputerClickMouseParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -64,7 +64,7 @@ func (r *BrowserComputerService) ClickMouse(ctx context.Context, id string, body
 // Drag the mouse along a path
 func (r *BrowserComputerService) DragMouse(ctx context.Context, id string, body BrowserComputerDragMouseParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -77,7 +77,7 @@ func (r *BrowserComputerService) DragMouse(ctx context.Context, id string, body 
 // Move the mouse cursor to the specified coordinates on the browser instance
 func (r *BrowserComputerService) MoveMouse(ctx context.Context, id string, body BrowserComputerMoveMouseParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -90,7 +90,7 @@ func (r *BrowserComputerService) MoveMouse(ctx context.Context, id string, body 
 // Press one or more keys on the host computer
 func (r *BrowserComputerService) PressKey(ctx context.Context, id string, body BrowserComputerPressKeyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -103,7 +103,7 @@ func (r *BrowserComputerService) PressKey(ctx context.Context, id string, body B
 // Scroll the mouse wheel at a position on the host computer
 func (r *BrowserComputerService) Scroll(ctx context.Context, id string, body BrowserComputerScrollParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -128,7 +128,7 @@ func (r *BrowserComputerService) SetCursorVisibility(ctx context.Context, id str
 // Type text on the browser instance
 func (r *BrowserComputerService) TypeText(ctx context.Context, id string, body BrowserComputerTypeTextParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

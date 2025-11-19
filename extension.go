@@ -53,7 +53,7 @@ func (r *ExtensionService) List(ctx context.Context, opts ...option.RequestOptio
 // Delete an extension by its ID or by its name.
 func (r *ExtensionService) Delete(ctx context.Context, idOrName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if idOrName == "" {
 		err = errors.New("missing required id_or_name parameter")
 		return

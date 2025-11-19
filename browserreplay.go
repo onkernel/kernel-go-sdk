@@ -80,7 +80,7 @@ func (r *BrowserReplayService) Start(ctx context.Context, id string, body Browse
 // Stop the specified replay recording and persist the video.
 func (r *BrowserReplayService) Stop(ctx context.Context, replayID string, body BrowserReplayStopParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
