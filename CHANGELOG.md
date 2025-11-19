@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.20.0 (2025-11-19)
+
+Full Changelog: [v0.19.2...v0.20.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.19.2...v0.20.0)
+
+### Features
+
+* allow get browser to paginate soft deleted browsers ([2bebf78](https://github.com/onkernel/kernel-go-sdk/commit/2bebf78af2a6a385743700fd8342f2c4f6efd20f))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([2a95394](https://github.com/onkernel/kernel-go-sdk/commit/2a95394194865cffa351c650924f41dc6262fce8))
+
 ## 0.19.2 (2025-11-17)
 
 Full Changelog: [v0.19.1...v0.19.2](https://github.com/onkernel/kernel-go-sdk/compare/v0.19.1...v0.19.2)
