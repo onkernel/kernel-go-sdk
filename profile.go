@@ -66,7 +66,7 @@ func (r *ProfileService) List(ctx context.Context, opts ...option.RequestOption)
 // Delete a profile by its ID or by its name.
 func (r *ProfileService) Delete(ctx context.Context, idOrName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if idOrName == "" {
 		err = errors.New("missing required id_or_name parameter")
 		return

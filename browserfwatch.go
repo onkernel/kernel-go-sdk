@@ -72,7 +72,7 @@ func (r *BrowserFWatchService) Start(ctx context.Context, id string, body Browse
 // Stop watching a directory
 func (r *BrowserFWatchService) Stop(ctx context.Context, watchID string, body BrowserFWatchStopParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.ID == "" {
 		err = errors.New("missing required id parameter")
 		return
