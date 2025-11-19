@@ -20,6 +20,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/pagination"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 )
@@ -75,12 +76,29 @@ func (r *BrowserService) Get(ctx context.Context, id string, opts ...option.Requ
 	return
 }
 
-// List active browser sessions
-func (r *BrowserService) List(ctx context.Context, opts ...option.RequestOption) (res *[]BrowserListResponse, err error) {
+// List all browser sessions with pagination support. Use include_deleted=true to
+// include soft-deleted sessions in the results.
+func (r *BrowserService) List(ctx context.Context, query BrowserListParams, opts ...option.RequestOption) (res *pagination.OffsetPagination[BrowserListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "browsers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all browser sessions with pagination support. Use include_deleted=true to
+// include soft-deleted sessions in the results.
+func (r *BrowserService) ListAutoPaging(ctx context.Context, query BrowserListParams, opts ...option.RequestOption) *pagination.OffsetPaginationAutoPager[BrowserListResponse] {
+	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a persistent browser session by its persistent_id.
@@ -209,6 +227,8 @@ type BrowserNewResponse struct {
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
+	// When the browser session was soft-deleted. Only present for deleted sessions.
+	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
 	// Optional persistence configuration for the browser session.
@@ -235,6 +255,7 @@ type BrowserNewResponse struct {
 		Stealth            respjson.Field
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
+		DeletedAt          respjson.Field
 		KioskMode          respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
@@ -299,6 +320,8 @@ type BrowserGetResponse struct {
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
+	// When the browser session was soft-deleted. Only present for deleted sessions.
+	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
 	// Optional persistence configuration for the browser session.
@@ -325,6 +348,7 @@ type BrowserGetResponse struct {
 		Stealth            respjson.Field
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
+		DeletedAt          respjson.Field
 		KioskMode          respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
@@ -389,6 +413,8 @@ type BrowserListResponse struct {
 	// Remote URL for live viewing the browser session. Only available for non-headless
 	// browsers.
 	BrowserLiveViewURL string `json:"browser_live_view_url"`
+	// When the browser session was soft-deleted. Only present for deleted sessions.
+	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
 	// Optional persistence configuration for the browser session.
@@ -415,6 +441,7 @@ type BrowserListResponse struct {
 		Stealth            respjson.Field
 		TimeoutSeconds     respjson.Field
 		BrowserLiveViewURL respjson.Field
+		DeletedAt          respjson.Field
 		KioskMode          respjson.Field
 		Persistence        respjson.Field
 		Profile            respjson.Field
@@ -582,6 +609,25 @@ func (r BrowserNewParamsViewport) MarshalJSON() (data []byte, err error) {
 }
 func (r *BrowserNewParamsViewport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type BrowserListParams struct {
+	// When true, includes soft-deleted browser sessions in the results alongside
+	// active sessions.
+	IncludeDeleted param.Opt[bool] `query:"include_deleted,omitzero" json:"-"`
+	// Maximum number of results to return. Defaults to 20, maximum 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of results to skip. Defaults to 0.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BrowserListParams]'s query parameters as `url.Values`.
+func (r BrowserListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type BrowserDeleteParams struct {
