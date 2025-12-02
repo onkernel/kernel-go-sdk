@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.21.0 (2025-12-02)
+
+Full Changelog: [v0.20.0...v0.21.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.20.0...v0.21.0)
+
+### Features
+
+* Browser pools sdk release ([69dcf34](https://github.com/onkernel/kernel-go-sdk/commit/69dcf3471d1b8b7b6fb8210da6d9c0b42ab1f1e7))
+* Mason/agent auth api ([ee63aba](https://github.com/onkernel/kernel-go-sdk/commit/ee63aba391e6a3024e93eeca28d008ea93b18b58))
+
 ## 0.20.0 (2025-11-19)
 
 Full Changelog: [v0.19.2...v0.20.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.19.2...v0.20.0)

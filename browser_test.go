@@ -13,6 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk"
 	"github.com/onkernel/kernel-go-sdk/internal/testutil"
 	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/shared"
 )
 
 func TestBrowserNewWithOptionalParams(t *testing.T) {
@@ -29,7 +30,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-		Extensions: []kernel.BrowserNewParamsExtension{{
+		Extensions: []shared.BrowserExtensionParam{{
 			ID:   kernel.String("id"),
 			Name: kernel.String("name"),
 		}},
@@ -39,7 +40,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		Persistence: kernel.BrowserPersistenceParam{
 			ID: "my-awesome-browser-for-user-1234",
 		},
-		Profile: kernel.BrowserNewParamsProfile{
+		Profile: shared.BrowserProfileParam{
 			ID:          kernel.String("id"),
 			Name:        kernel.String("name"),
 			SaveChanges: kernel.Bool(true),
@@ -47,7 +48,7 @@ func TestBrowserNewWithOptionalParams(t *testing.T) {
 		ProxyID:        kernel.String("proxy_id"),
 		Stealth:        kernel.Bool(true),
 		TimeoutSeconds: kernel.Int(10),
-		Viewport: kernel.BrowserNewParamsViewport{
+		Viewport: shared.BrowserViewportParam{
 			Height:      800,
 			Width:       1280,
 			RefreshRate: kernel.Int(60),
