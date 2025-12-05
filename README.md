@@ -58,9 +58,7 @@ func main() {
 		option.WithEnvironmentDevelopment(), // defaults to option.WithEnvironmentProduction()
 	)
 	browser, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-		Persistence: kernel.BrowserPersistenceParam{
-			ID: "browser-for-user-1234",
-		},
+		Stealth: kernel.Bool(true),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -334,9 +332,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-	Persistence: kernel.BrowserPersistenceParam{
-		ID: "browser-for-user-1234",
-	},
+	Stealth: kernel.Bool(true),
 })
 if err != nil {
 	var apierr *kernel.Error
@@ -365,9 +361,7 @@ defer cancel()
 client.Browsers.New(
 	ctx,
 	kernel.BrowserNewParams{
-		Persistence: kernel.BrowserPersistenceParam{
-			ID: "browser-for-user-1234",
-		},
+		Stealth: kernel.Bool(true),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -423,9 +417,7 @@ client := kernel.NewClient(
 client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
-		Persistence: kernel.BrowserPersistenceParam{
-			ID: "browser-for-user-1234",
-		},
+		Stealth: kernel.Bool(true),
 	},
 	option.WithMaxRetries(5),
 )
@@ -442,9 +434,7 @@ var response *http.Response
 browser, err := client.Browsers.New(
 	context.TODO(),
 	kernel.BrowserNewParams{
-		Persistence: kernel.BrowserPersistenceParam{
-			ID: "browser-for-user-1234",
-		},
+		Stealth: kernel.Bool(true),
 	},
 	option.WithResponseInto(&response),
 )
