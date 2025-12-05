@@ -102,7 +102,10 @@ func (r *BrowserService) ListAutoPaging(ctx context.Context, query BrowserListPa
 	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a persistent browser session by its persistent_id.
+// DEPRECATED: Use DELETE /browsers/{id} instead. Delete a persistent browser
+// session by its persistent_id.
+//
+// Deprecated: deprecated
 func (r *BrowserService) Delete(ctx context.Context, body BrowserDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -138,9 +141,11 @@ func (r *BrowserService) LoadExtensions(ctx context.Context, id string, body Bro
 	return
 }
 
-// Optional persistence configuration for the browser session.
+// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
+//
+// Deprecated: deprecated
 type BrowserPersistence struct {
-	// Unique identifier for the persistent browser session.
+	// DEPRECATED: Unique identifier for the persistent browser session.
 	ID string `json:"id,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -165,11 +170,13 @@ func (r BrowserPersistence) ToParam() BrowserPersistenceParam {
 	return param.Override[BrowserPersistenceParam](json.RawMessage(r.RawJSON()))
 }
 
-// Optional persistence configuration for the browser session.
+// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
+//
+// Deprecated: deprecated
 //
 // The property ID is required.
 type BrowserPersistenceParam struct {
-	// Unique identifier for the persistent browser session.
+	// DEPRECATED: Unique identifier for the persistent browser session.
 	ID string `json:"id,required"`
 	paramObj
 }
@@ -232,7 +239,9 @@ type BrowserNewResponse struct {
 	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
-	// Optional persistence configuration for the browser session.
+	// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
+	//
+	// Deprecated: deprecated
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
@@ -293,7 +302,9 @@ type BrowserGetResponse struct {
 	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
-	// Optional persistence configuration for the browser session.
+	// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
+	//
+	// Deprecated: deprecated
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
@@ -354,7 +365,9 @@ type BrowserListResponse struct {
 	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
-	// Optional persistence configuration for the browser session.
+	// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
+	//
+	// Deprecated: deprecated
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
@@ -411,15 +424,14 @@ type BrowserNewParams struct {
 	// mechanisms.
 	Stealth param.Opt[bool] `json:"stealth,omitzero"`
 	// The number of seconds of inactivity before the browser session is terminated.
-	// Only applicable to non-persistent browsers. Activity includes CDP connections
-	// and live view connections. Defaults to 60 seconds. Minimum allowed is 10
-	// seconds. Maximum allowed is 259200 (72 hours). We check for inactivity every 5
-	// seconds, so the actual timeout behavior you will see is +/- 5 seconds around the
-	// specified value.
+	// Activity includes CDP connections and live view connections. Defaults to 60
+	// seconds. Minimum allowed is 10 seconds. Maximum allowed is 259200 (72 hours). We
+	// check for inactivity every 5 seconds, so the actual timeout behavior you will
+	// see is +/- 5 seconds around the specified value.
 	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
 	// List of browser extensions to load into the session. Provide each by id or name.
 	Extensions []shared.BrowserExtensionParam `json:"extensions,omitzero"`
-	// Optional persistence configuration for the browser session.
+	// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
 	Persistence BrowserPersistenceParam `json:"persistence,omitzero"`
 	// Profile selection for the browser session. Provide either id or name. If
 	// specified, the matching profile will be loaded into the browser session.
