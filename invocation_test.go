@@ -27,11 +27,12 @@ func TestInvocationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Invocations.New(context.TODO(), kernel.InvocationNewParams{
-		ActionName: "analyze",
-		AppName:    "my-app",
-		Version:    "1.0.0",
-		Async:      kernel.Bool(true),
-		Payload:    kernel.String(`{"data":"example input"}`),
+		ActionName:          "analyze",
+		AppName:             "my-app",
+		Version:             "1.0.0",
+		Async:               kernel.Bool(true),
+		AsyncTimeoutSeconds: kernel.Int(600),
+		Payload:             kernel.String(`{"data":"example input"}`),
 	})
 	if err != nil {
 		var apierr *kernel.Error

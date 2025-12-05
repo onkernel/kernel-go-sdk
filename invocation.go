@@ -517,6 +517,9 @@ type InvocationNewParams struct {
 	// If true, invoke asynchronously. When set, the API responds 202 Accepted with
 	// status "queued".
 	Async param.Opt[bool] `json:"async,omitzero"`
+	// Timeout in seconds for async invocations (min 10, max 3600). Only applies when
+	// async is true.
+	AsyncTimeoutSeconds param.Opt[int64] `json:"async_timeout_seconds,omitzero"`
 	// Input data for the action, sent as a JSON string.
 	Payload param.Opt[string] `json:"payload,omitzero"`
 	paramObj
