@@ -248,11 +248,11 @@ type BrowserNewResponse struct {
 	// ID of the proxy associated with this browser session, if any.
 	ProxyID string `json:"proxy_id"`
 	// Initial browser window size in pixels with optional refresh rate. If omitted,
-	// image defaults apply (commonly 1024x768@60). Only specific viewport
-	// configurations are supported. The server will reject unsupported combinations.
-	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
-	// 1440x900@25, 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will
-	// be automatically determined from the width and height if they match a supported
+	// image defaults apply (1920x1080@25). Only specific viewport configurations are
+	// supported. The server will reject unsupported combinations. Supported
+	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
+	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
 	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
 	// live view browser
 	Viewport shared.BrowserViewport `json:"viewport"`
@@ -311,11 +311,11 @@ type BrowserGetResponse struct {
 	// ID of the proxy associated with this browser session, if any.
 	ProxyID string `json:"proxy_id"`
 	// Initial browser window size in pixels with optional refresh rate. If omitted,
-	// image defaults apply (commonly 1024x768@60). Only specific viewport
-	// configurations are supported. The server will reject unsupported combinations.
-	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
-	// 1440x900@25, 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will
-	// be automatically determined from the width and height if they match a supported
+	// image defaults apply (1920x1080@25). Only specific viewport configurations are
+	// supported. The server will reject unsupported combinations. Supported
+	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
+	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
 	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
 	// live view browser
 	Viewport shared.BrowserViewport `json:"viewport"`
@@ -374,11 +374,11 @@ type BrowserListResponse struct {
 	// ID of the proxy associated with this browser session, if any.
 	ProxyID string `json:"proxy_id"`
 	// Initial browser window size in pixels with optional refresh rate. If omitted,
-	// image defaults apply (commonly 1024x768@60). Only specific viewport
-	// configurations are supported. The server will reject unsupported combinations.
-	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
-	// 1440x900@25, 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will
-	// be automatically determined from the width and height if they match a supported
+	// image defaults apply (1920x1080@25). Only specific viewport configurations are
+	// supported. The server will reject unsupported combinations. Supported
+	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
+	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
 	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
 	// live view browser
 	Viewport shared.BrowserViewport `json:"viewport"`
@@ -438,11 +438,11 @@ type BrowserNewParams struct {
 	// Profiles must be created beforehand.
 	Profile shared.BrowserProfileParam `json:"profile,omitzero"`
 	// Initial browser window size in pixels with optional refresh rate. If omitted,
-	// image defaults apply (commonly 1024x768@60). Only specific viewport
-	// configurations are supported. The server will reject unsupported combinations.
-	// Supported resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25,
-	// 1440x900@25, 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will
-	// be automatically determined from the width and height if they match a supported
+	// image defaults apply (1920x1080@25). Only specific viewport configurations are
+	// supported. The server will reject unsupported combinations. Supported
+	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
+	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
 	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
 	// live view browser
 	Viewport shared.BrowserViewportParam `json:"viewport,omitzero"`
