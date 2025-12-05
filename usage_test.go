@@ -25,9 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	browser, err := client.Browsers.New(context.TODO(), kernel.BrowserNewParams{
-		Persistence: kernel.BrowserPersistenceParam{
-			ID: "browser-for-user-1234",
-		},
+		Stealth: kernel.Bool(true),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())

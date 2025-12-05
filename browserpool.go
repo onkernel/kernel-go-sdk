@@ -360,7 +360,9 @@ type BrowserPoolAcquireResponse struct {
 	DeletedAt time.Time `json:"deleted_at" format:"date-time"`
 	// Whether the browser session is running in kiosk mode.
 	KioskMode bool `json:"kiosk_mode"`
-	// Optional persistence configuration for the browser session.
+	// DEPRECATED: Use timeout_seconds (up to 72 hours) and Profiles instead.
+	//
+	// Deprecated: deprecated
 	Persistence BrowserPersistence `json:"persistence"`
 	// Browser profile metadata.
 	Profile Profile `json:"profile"`
