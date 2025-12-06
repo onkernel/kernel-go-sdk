@@ -186,7 +186,7 @@ func (r *BrowserFService) UploadZip(ctx context.Context, id string, body Browser
 }
 
 // Write or create a file
-func (r *BrowserFService) WriteFile(ctx context.Context, id string, contents io.Reader, body BrowserFWriteFileParams, opts ...option.RequestOption) (err error) {
+func (r *BrowserFService) WriteFile(ctx context.Context, id string, contents io.Reader, params BrowserFWriteFileParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*"), option.WithRequestBody("application/octet-stream", contents)}, opts...)
 	if id == "" {
