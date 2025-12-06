@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.22.0 (2025-12-06)
+
+Full Changelog: [v0.21.0...v0.22.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.21.0...v0.22.0)
+
+### Features
+
+* [wip] Browser pools polish pass ([628410a](https://github.com/onkernel/kernel-go-sdk/commit/628410a6fc946e6adf5d7a9593b6ebb01385f918))
+* Add `async_timeout_seconds` to PostInvocations ([4ee4d7c](https://github.com/onkernel/kernel-go-sdk/commit/4ee4d7c60817d8d4a9e6460e7d04c19f309095d3))
+* Enhance agent authentication with optional login page URL and auth ch… ([a2fc4ac](https://github.com/onkernel/kernel-go-sdk/commit/a2fc4acfb2bf88a5cc209d5430fcfb0eee4f751b))
+
+
+### Refactors
+
+* **browser:** remove persistence option UI ([7ea9ccf](https://github.com/onkernel/kernel-go-sdk/commit/7ea9ccfb9a6c8acb3fd9d8d04b7bf8b9cfb4fef1))
+
 ## 0.21.0 (2025-12-02)
 
 Full Changelog: [v0.20.0...v0.21.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.20.0...v0.21.0)
