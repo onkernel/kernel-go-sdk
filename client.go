@@ -25,6 +25,7 @@ type Client struct {
 	Proxies      ProxyService
 	Extensions   ExtensionService
 	BrowserPools BrowserPoolService
+	Agents       AgentService
 }
 
 // DefaultClientOptions read from the environment (KERNEL_API_KEY,
@@ -57,6 +58,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Proxies = NewProxyService(opts...)
 	r.Extensions = NewExtensionService(opts...)
 	r.BrowserPools = NewBrowserPoolService(opts...)
+	r.Agents = NewAgentService(opts...)
 
 	return
 }
