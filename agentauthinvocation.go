@@ -4,12 +4,14 @@ package kernel
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"slices"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	shimjson "github.com/onkernel/kernel-go-sdk/internal/encoding/json"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
@@ -32,6 +34,16 @@ type AgentAuthInvocationService struct {
 func NewAgentAuthInvocationService(opts ...option.RequestOption) (r AgentAuthInvocationService) {
 	r = AgentAuthInvocationService{}
 	r.Options = opts
+	return
+}
+
+// Creates a new authentication invocation for the specified auth agent. This
+// starts the auth flow and returns a hosted URL for the user to complete
+// authentication.
+func (r *AgentAuthInvocationService) New(ctx context.Context, body AgentAuthInvocationNewParams, opts ...option.RequestOption) (res *AuthAgentInvocationCreateResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "agents/auth/invocations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -107,6 +119,19 @@ type AgentAuthInvocationExchangeResponse struct {
 func (r AgentAuthInvocationExchangeResponse) RawJSON() string { return r.JSON.raw }
 func (r *AgentAuthInvocationExchangeResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type AgentAuthInvocationNewParams struct {
+	// Request to create an invocation for an existing auth agent
+	AuthAgentInvocationCreateRequest AuthAgentInvocationCreateRequestParam
+	paramObj
+}
+
+func (r AgentAuthInvocationNewParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.AuthAgentInvocationCreateRequest)
+}
+func (r *AgentAuthInvocationNewParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.AuthAgentInvocationCreateRequest)
 }
 
 type AgentAuthInvocationDiscoverParams struct {
