@@ -4,15 +4,20 @@ package kernel
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
+	"github.com/onkernel/kernel-go-sdk/internal/apiquery"
+	shimjson "github.com/onkernel/kernel-go-sdk/internal/encoding/json"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
+	"github.com/onkernel/kernel-go-sdk/packages/pagination"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
 )
@@ -38,6 +43,17 @@ func NewAgentAuthService(opts ...option.RequestOption) (r AgentAuthService) {
 	return
 }
 
+// Creates a new auth agent for the specified domain and profile combination, or
+// returns an existing one if it already exists. This is idempotent - calling with
+// the same domain and profile will return the same agent. Does NOT start an
+// invocation - use POST /agents/auth/invocations to start an auth flow.
+func (r *AgentAuthService) New(ctx context.Context, body AgentAuthNewParams, opts ...option.RequestOption) (res *AuthAgent, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "agents/auth"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Retrieve an auth agent by its ID. Returns the current authentication status of
 // the managed profile.
 func (r *AgentAuthService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *AuthAgent, err error) {
@@ -51,14 +67,27 @@ func (r *AgentAuthService) Get(ctx context.Context, id string, opts ...option.Re
 	return
 }
 
-// Creates a browser session and returns a handoff code for the hosted flow. Uses
-// standard API key or JWT authentication (not the JWT returned by the exchange
-// endpoint).
-func (r *AgentAuthService) Start(ctx context.Context, body AgentAuthStartParams, opts ...option.RequestOption) (res *AgentAuthStartResponse, err error) {
+// List auth agents with optional filters for profile_name and target_domain.
+func (r *AgentAuthService) List(ctx context.Context, query AgentAuthListParams, opts ...option.RequestOption) (res *pagination.OffsetPagination[AuthAgent], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
-	path := "agents/auth/start"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "agents/auth"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List auth agents with optional filters for profile_name and target_domain.
+func (r *AgentAuthService) ListAutoPaging(ctx context.Context, query AgentAuthListParams, opts ...option.RequestOption) *pagination.OffsetPaginationAutoPager[AuthAgent] {
+	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
 // Response from discover endpoint matching AuthBlueprint schema
@@ -132,36 +161,6 @@ const (
 	AgentAuthInvocationResponseStatusExpired    AgentAuthInvocationResponseStatus = "EXPIRED"
 	AgentAuthInvocationResponseStatusCanceled   AgentAuthInvocationResponseStatus = "CANCELED"
 )
-
-// Response from starting an agent authentication invocation
-type AgentAuthStartResponse struct {
-	// Unique identifier for the auth agent managing this domain/profile
-	AuthAgentID string `json:"auth_agent_id,required"`
-	// When the handoff code expires
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
-	// One-time code for handoff
-	HandoffCode string `json:"handoff_code,required"`
-	// URL to redirect user to
-	HostedURL string `json:"hosted_url,required" format:"uri"`
-	// Unique identifier for the invocation
-	InvocationID string `json:"invocation_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AuthAgentID  respjson.Field
-		ExpiresAt    respjson.Field
-		HandoffCode  respjson.Field
-		HostedURL    respjson.Field
-		InvocationID respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AgentAuthStartResponse) RawJSON() string { return r.JSON.raw }
-func (r *AgentAuthStartResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 // Response from submit endpoint matching SubmitResult schema
 type AgentAuthSubmitResponse struct {
@@ -238,6 +237,89 @@ const (
 	AuthAgentStatusNeedsAuth     AuthAgentStatus = "NEEDS_AUTH"
 )
 
+// Request to create or find an auth agent
+//
+// The properties ProfileName, TargetDomain are required.
+type AuthAgentCreateRequestParam struct {
+	// Name of the profile to use for this auth agent
+	ProfileName string `json:"profile_name,required"`
+	// Target domain for authentication
+	TargetDomain string `json:"target_domain,required"`
+	// Optional login page URL. If provided, will be stored on the agent and used to
+	// skip discovery in future invocations.
+	LoginURL param.Opt[string] `json:"login_url,omitzero" format:"uri"`
+	// Optional proxy configuration
+	Proxy AuthAgentCreateRequestProxyParam `json:"proxy,omitzero"`
+	paramObj
+}
+
+func (r AuthAgentCreateRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow AuthAgentCreateRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AuthAgentCreateRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional proxy configuration
+type AuthAgentCreateRequestProxyParam struct {
+	// ID of the proxy to use
+	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
+	paramObj
+}
+
+func (r AuthAgentCreateRequestProxyParam) MarshalJSON() (data []byte, err error) {
+	type shadow AuthAgentCreateRequestProxyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AuthAgentCreateRequestProxyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Request to create an invocation for an existing auth agent
+//
+// The property AuthAgentID is required.
+type AuthAgentInvocationCreateRequestParam struct {
+	// ID of the auth agent to create an invocation for
+	AuthAgentID string `json:"auth_agent_id,required"`
+	paramObj
+}
+
+func (r AuthAgentInvocationCreateRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow AuthAgentInvocationCreateRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AuthAgentInvocationCreateRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response from creating an auth agent invocation
+type AuthAgentInvocationCreateResponse struct {
+	// When the handoff code expires
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	// One-time code for handoff
+	HandoffCode string `json:"handoff_code,required"`
+	// URL to redirect user to
+	HostedURL string `json:"hosted_url,required" format:"uri"`
+	// Unique identifier for the invocation
+	InvocationID string `json:"invocation_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExpiresAt    respjson.Field
+		HandoffCode  respjson.Field
+		HostedURL    respjson.Field
+		InvocationID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AuthAgentInvocationCreateResponse) RawJSON() string { return r.JSON.raw }
+func (r *AuthAgentInvocationCreateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A discovered form field
 type DiscoveredField struct {
 	// Field label
@@ -286,40 +368,35 @@ const (
 	DiscoveredFieldTypeCode     DiscoveredFieldType = "code"
 )
 
-type AgentAuthStartParams struct {
-	// Name of the profile to use for this flow
-	ProfileName string `json:"profile_name,required"`
-	// Target domain for authentication
-	TargetDomain string `json:"target_domain,required"`
-	// Optional logo URL for the application
-	AppLogoURL param.Opt[string] `json:"app_logo_url,omitzero" format:"uri"`
-	// Optional login page URL. If provided, will be stored on the agent and used to
-	// skip Phase 1 discovery in future invocations.
-	LoginURL param.Opt[string] `json:"login_url,omitzero" format:"uri"`
-	// Optional proxy configuration
-	Proxy AgentAuthStartParamsProxy `json:"proxy,omitzero"`
+type AgentAuthNewParams struct {
+	// Request to create or find an auth agent
+	AuthAgentCreateRequest AuthAgentCreateRequestParam
 	paramObj
 }
 
-func (r AgentAuthStartParams) MarshalJSON() (data []byte, err error) {
-	type shadow AgentAuthStartParams
-	return param.MarshalObject(r, (*shadow)(&r))
+func (r AgentAuthNewParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.AuthAgentCreateRequest)
 }
-func (r *AgentAuthStartParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r *AgentAuthNewParams) UnmarshalJSON(data []byte) error {
+	return json.Unmarshal(data, &r.AuthAgentCreateRequest)
 }
 
-// Optional proxy configuration
-type AgentAuthStartParamsProxy struct {
-	// ID of the proxy to use
-	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
+type AgentAuthListParams struct {
+	// Maximum number of results to return
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of results to skip
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Filter by profile name
+	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
+	// Filter by target domain
+	TargetDomain param.Opt[string] `query:"target_domain,omitzero" json:"-"`
 	paramObj
 }
 
-func (r AgentAuthStartParamsProxy) MarshalJSON() (data []byte, err error) {
-	type shadow AgentAuthStartParamsProxy
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AgentAuthStartParamsProxy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+// URLQuery serializes [AgentAuthListParams]'s query parameters as `url.Values`.
+func (r AgentAuthListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
