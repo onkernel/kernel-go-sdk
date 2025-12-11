@@ -212,14 +212,17 @@ type AuthAgent struct {
 	//
 	// Any of "AUTHENTICATED", "NEEDS_AUTH".
 	Status AuthAgentStatus `json:"status,required"`
+	// When the last authentication check was performed
+	LastAuthCheckAt time.Time `json:"last_auth_check_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Domain      respjson.Field
-		ProfileName respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID              respjson.Field
+		Domain          respjson.Field
+		ProfileName     respjson.Field
+		Status          respjson.Field
+		LastAuthCheckAt respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
