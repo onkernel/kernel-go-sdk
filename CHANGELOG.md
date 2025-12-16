@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.23.0 (2025-12-16)
+
+Full Changelog: [v0.22.0...v0.23.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.22.0...v0.23.0)
+
+### Features
+
+* **encoder:** support bracket encoding form-data object members ([7d11b85](https://github.com/onkernel/kernel-go-sdk/commit/7d11b85f517bfa5875440c516de735009fbd05a0))
+* enhance agent authentication API with new endpoints and request… ([7f2d67a](https://github.com/onkernel/kernel-go-sdk/commit/7f2d67aeba880e8d35b084ffa6f0c2364f88378a))
+* Enhance AuthAgent model with last_auth_check_at field ([a3cb1e1](https://github.com/onkernel/kernel-go-sdk/commit/a3cb1e13b7700f1ccce3393411a08f822e216d1f))
+
+
+### Bug Fixes
+
+* **client:** copy over change to params names to ExecuteNewRequeest ([92fd6c1](https://github.com/onkernel/kernel-go-sdk/commit/92fd6c10cb2c451f9381d3969c2aa80b121addfe))
+* **mcp:** correct code tool API endpoint ([563016a](https://github.com/onkernel/kernel-go-sdk/commit/563016aabd8010af7bf2d1db0b7436f31b0fd23e))
+* rename param to avoid collision ([a20c158](https://github.com/onkernel/kernel-go-sdk/commit/a20c1588a19c48cfa6503af80c0ba6ad4add76f7))
+
+
+### Chores
+
+* elide duplicate aliases ([9eb4ec3](https://github.com/onkernel/kernel-go-sdk/commit/9eb4ec3048ab55e534e84de255ca0f2d22d5f233))
+* **internal:** codegen related update ([839598d](https://github.com/onkernel/kernel-go-sdk/commit/839598d5a188b64afe16e1df16915c94f822b309))
+
 ## 0.22.0 (2025-12-06)
 
 Full Changelog: [v0.21.0...v0.22.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.21.0...v0.22.0)
