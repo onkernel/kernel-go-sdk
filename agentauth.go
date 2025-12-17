@@ -20,6 +20,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/packages/pagination"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
 	"github.com/onkernel/kernel-go-sdk/packages/respjson"
+	"github.com/onkernel/kernel-go-sdk/shared/constant"
 )
 
 // AgentAuthService contains methods and other services that help with interacting
@@ -88,6 +89,38 @@ func (r *AgentAuthService) List(ctx context.Context, query AgentAuthListParams, 
 // List auth agents with optional filters for profile_name and target_domain.
 func (r *AgentAuthService) ListAutoPaging(ctx context.Context, query AgentAuthListParams, opts ...option.RequestOption) *pagination.OffsetPaginationAutoPager[AuthAgent] {
 	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
+}
+
+// Deletes an auth agent and terminates its workflow. This will:
+//
+// - Soft delete the auth agent record
+// - Gracefully terminate the agent's Temporal workflow
+// - Cancel any in-progress invocations
+func (r *AgentAuthService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("agents/auth/%s", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
+// Triggers automatic re-authentication for an auth agent using stored credentials.
+// Requires the auth agent to have a linked credential, stored selectors, and
+// login_url. Returns immediately with status indicating whether re-auth was
+// started.
+func (r *AgentAuthService) Reauth(ctx context.Context, id string, opts ...option.RequestOption) (res *ReauthResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("agents/auth/%s/reauth", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return
 }
 
 // Response from discover endpoint matching AuthBlueprint schema
@@ -212,6 +245,15 @@ type AuthAgent struct {
 	//
 	// Any of "AUTHENTICATED", "NEEDS_AUTH".
 	Status AuthAgentStatus `json:"status,required"`
+	// Whether automatic re-authentication is possible (has credential_id, selectors,
+	// and login_url)
+	CanReauth bool `json:"can_reauth"`
+	// ID of the linked credential for automatic re-authentication
+	CredentialID string `json:"credential_id"`
+	// Name of the linked credential for automatic re-authentication
+	CredentialName string `json:"credential_name"`
+	// Whether this auth agent has stored selectors for deterministic re-authentication
+	HasSelectors bool `json:"has_selectors"`
 	// When the last authentication check was performed
 	LastAuthCheckAt time.Time `json:"last_auth_check_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -220,6 +262,10 @@ type AuthAgent struct {
 		Domain          respjson.Field
 		ProfileName     respjson.Field
 		Status          respjson.Field
+		CanReauth       respjson.Field
+		CredentialID    respjson.Field
+		CredentialName  respjson.Field
+		HasSelectors    respjson.Field
 		LastAuthCheckAt respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
@@ -248,6 +294,10 @@ type AuthAgentCreateRequestParam struct {
 	ProfileName string `json:"profile_name,required"`
 	// Target domain for authentication
 	TargetDomain string `json:"target_domain,required"`
+	// Optional name of an existing credential to use for this auth agent. If provided,
+	// the credential will be linked to the agent and its values will be used to
+	// auto-fill the login form on invocation.
+	CredentialName param.Opt[string] `json:"credential_name,omitzero"`
 	// Optional login page URL. If provided, will be stored on the agent and used to
 	// skip discovery in future invocations.
 	LoginURL param.Opt[string] `json:"login_url,omitzero" format:"uri"`
@@ -285,6 +335,10 @@ func (r *AuthAgentCreateRequestProxyParam) UnmarshalJSON(data []byte) error {
 type AuthAgentInvocationCreateRequestParam struct {
 	// ID of the auth agent to create an invocation for
 	AuthAgentID string `json:"auth_agent_id,required"`
+	// If provided, saves the submitted credentials under this name upon successful
+	// login. The credential will be linked to the auth agent for automatic
+	// re-authentication.
+	SaveCredentialAs param.Opt[string] `json:"save_credential_as,omitzero"`
 	paramObj
 }
 
@@ -296,30 +350,127 @@ func (r *AuthAgentInvocationCreateRequestParam) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response from creating an auth agent invocation
-type AuthAgentInvocationCreateResponse struct {
-	// When the handoff code expires
+// AuthAgentInvocationCreateResponseUnion contains all possible properties and
+// values from [AuthAgentInvocationCreateResponseAlreadyAuthenticated],
+// [AuthAgentInvocationCreateResponseInvocationCreated].
+//
+// Use the [AuthAgentInvocationCreateResponseUnion.AsAny] method to switch on the
+// variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type AuthAgentInvocationCreateResponseUnion struct {
+	// Any of "already_authenticated", "invocation_created".
+	Status string `json:"status"`
+	// This field is from variant [AuthAgentInvocationCreateResponseInvocationCreated].
+	ExpiresAt time.Time `json:"expires_at"`
+	// This field is from variant [AuthAgentInvocationCreateResponseInvocationCreated].
+	HandoffCode string `json:"handoff_code"`
+	// This field is from variant [AuthAgentInvocationCreateResponseInvocationCreated].
+	HostedURL string `json:"hosted_url"`
+	// This field is from variant [AuthAgentInvocationCreateResponseInvocationCreated].
+	InvocationID string `json:"invocation_id"`
+	JSON         struct {
+		Status       respjson.Field
+		ExpiresAt    respjson.Field
+		HandoffCode  respjson.Field
+		HostedURL    respjson.Field
+		InvocationID respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// anyAuthAgentInvocationCreateResponse is implemented by each variant of
+// [AuthAgentInvocationCreateResponseUnion] to add type safety for the return type
+// of [AuthAgentInvocationCreateResponseUnion.AsAny]
+type anyAuthAgentInvocationCreateResponse interface {
+	implAuthAgentInvocationCreateResponseUnion()
+}
+
+func (AuthAgentInvocationCreateResponseAlreadyAuthenticated) implAuthAgentInvocationCreateResponseUnion() {
+}
+func (AuthAgentInvocationCreateResponseInvocationCreated) implAuthAgentInvocationCreateResponseUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AuthAgentInvocationCreateResponseUnion.AsAny().(type) {
+//	case kernel.AuthAgentInvocationCreateResponseAlreadyAuthenticated:
+//	case kernel.AuthAgentInvocationCreateResponseInvocationCreated:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AuthAgentInvocationCreateResponseUnion) AsAny() anyAuthAgentInvocationCreateResponse {
+	switch u.Status {
+	case "already_authenticated":
+		return u.AsAlreadyAuthenticated()
+	case "invocation_created":
+		return u.AsInvocationCreated()
+	}
+	return nil
+}
+
+func (u AuthAgentInvocationCreateResponseUnion) AsAlreadyAuthenticated() (v AuthAgentInvocationCreateResponseAlreadyAuthenticated) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u AuthAgentInvocationCreateResponseUnion) AsInvocationCreated() (v AuthAgentInvocationCreateResponseInvocationCreated) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u AuthAgentInvocationCreateResponseUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *AuthAgentInvocationCreateResponseUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response when the agent is already authenticated.
+type AuthAgentInvocationCreateResponseAlreadyAuthenticated struct {
+	// Indicates the agent is already authenticated and no invocation was created.
+	Status constant.AlreadyAuthenticated `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AuthAgentInvocationCreateResponseAlreadyAuthenticated) RawJSON() string { return r.JSON.raw }
+func (r *AuthAgentInvocationCreateResponseAlreadyAuthenticated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response when a new invocation was created.
+type AuthAgentInvocationCreateResponseInvocationCreated struct {
+	// When the handoff code expires.
 	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
-	// One-time code for handoff
+	// One-time code for handoff.
 	HandoffCode string `json:"handoff_code,required"`
-	// URL to redirect user to
+	// URL to redirect user to.
 	HostedURL string `json:"hosted_url,required" format:"uri"`
-	// Unique identifier for the invocation
+	// Unique identifier for the invocation.
 	InvocationID string `json:"invocation_id,required"`
+	// Indicates an invocation was created.
+	Status constant.InvocationCreated `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ExpiresAt    respjson.Field
 		HandoffCode  respjson.Field
 		HostedURL    respjson.Field
 		InvocationID respjson.Field
+		Status       respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AuthAgentInvocationCreateResponse) RawJSON() string { return r.JSON.raw }
-func (r *AuthAgentInvocationCreateResponse) UnmarshalJSON(data []byte) error {
+func (r AuthAgentInvocationCreateResponseInvocationCreated) RawJSON() string { return r.JSON.raw }
+func (r *AuthAgentInvocationCreateResponseInvocationCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -369,6 +520,41 @@ const (
 	DiscoveredFieldTypeNumber   DiscoveredFieldType = "number"
 	DiscoveredFieldTypeURL      DiscoveredFieldType = "url"
 	DiscoveredFieldTypeCode     DiscoveredFieldType = "code"
+)
+
+// Response from triggering re-authentication
+type ReauthResponse struct {
+	// Result of the re-authentication attempt
+	//
+	// Any of "reauth_started", "already_authenticated", "cannot_reauth".
+	Status ReauthResponseStatus `json:"status,required"`
+	// ID of the re-auth invocation if one was created
+	InvocationID string `json:"invocation_id"`
+	// Human-readable description of the result
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Status       respjson.Field
+		InvocationID respjson.Field
+		Message      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReauthResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReauthResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Result of the re-authentication attempt
+type ReauthResponseStatus string
+
+const (
+	ReauthResponseStatusReauthStarted        ReauthResponseStatus = "reauth_started"
+	ReauthResponseStatusAlreadyAuthenticated ReauthResponseStatus = "already_authenticated"
+	ReauthResponseStatusCannotReauth         ReauthResponseStatus = "cannot_reauth"
 )
 
 type AgentAuthNewParams struct {

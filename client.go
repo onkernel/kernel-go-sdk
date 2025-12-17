@@ -26,6 +26,7 @@ type Client struct {
 	Extensions   ExtensionService
 	BrowserPools BrowserPoolService
 	Agents       AgentService
+	Credentials  CredentialService
 }
 
 // DefaultClientOptions read from the environment (KERNEL_API_KEY,
@@ -59,6 +60,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Extensions = NewExtensionService(opts...)
 	r.BrowserPools = NewBrowserPoolService(opts...)
 	r.Agents = NewAgentService(opts...)
+	r.Credentials = NewCredentialService(opts...)
 
 	return
 }
