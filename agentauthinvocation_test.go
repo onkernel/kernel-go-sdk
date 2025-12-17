@@ -13,7 +13,7 @@ import (
 	"github.com/onkernel/kernel-go-sdk/option"
 )
 
-func TestAgentAuthInvocationNew(t *testing.T) {
+func TestAgentAuthInvocationNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,7 +28,8 @@ func TestAgentAuthInvocationNew(t *testing.T) {
 	)
 	_, err := client.Agents.Auth.Invocations.New(context.TODO(), kernel.AgentAuthInvocationNewParams{
 		AuthAgentInvocationCreateRequest: kernel.AuthAgentInvocationCreateRequestParam{
-			AuthAgentID: "abc123xyz",
+			AuthAgentID:      "abc123xyz",
+			SaveCredentialAs: kernel.String("my-netflix-login"),
 		},
 	})
 	if err != nil {

@@ -40,7 +40,7 @@ func NewAgentAuthInvocationService(opts ...option.RequestOption) (r AgentAuthInv
 // Creates a new authentication invocation for the specified auth agent. This
 // starts the auth flow and returns a hosted URL for the user to complete
 // authentication.
-func (r *AgentAuthInvocationService) New(ctx context.Context, body AgentAuthInvocationNewParams, opts ...option.RequestOption) (res *AuthAgentInvocationCreateResponse, err error) {
+func (r *AgentAuthInvocationService) New(ctx context.Context, body AgentAuthInvocationNewParams, opts ...option.RequestOption) (res *AuthAgentInvocationCreateResponseUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "agents/auth/invocations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
