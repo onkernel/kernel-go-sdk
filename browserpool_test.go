@@ -28,29 +28,27 @@ func TestBrowserPoolNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.BrowserPools.New(context.TODO(), kernel.BrowserPoolNewParams{
-		BrowserPoolRequest: kernel.BrowserPoolRequestParam{
-			Size: 10,
-			Extensions: []shared.BrowserExtensionParam{{
-				ID:   kernel.String("id"),
-				Name: kernel.String("name"),
-			}},
-			FillRatePerMinute: kernel.Int(0),
-			Headless:          kernel.Bool(false),
-			KioskMode:         kernel.Bool(true),
-			Name:              kernel.String("my-pool"),
-			Profile: shared.BrowserProfileParam{
-				ID:          kernel.String("id"),
-				Name:        kernel.String("name"),
-				SaveChanges: kernel.Bool(true),
-			},
-			ProxyID:        kernel.String("proxy_id"),
-			Stealth:        kernel.Bool(true),
-			TimeoutSeconds: kernel.Int(60),
-			Viewport: shared.BrowserViewportParam{
-				Height:      800,
-				Width:       1280,
-				RefreshRate: kernel.Int(60),
-			},
+		Size: 10,
+		Extensions: []shared.BrowserExtensionParam{{
+			ID:   kernel.String("id"),
+			Name: kernel.String("name"),
+		}},
+		FillRatePerMinute: kernel.Int(0),
+		Headless:          kernel.Bool(false),
+		KioskMode:         kernel.Bool(true),
+		Name:              kernel.String("my-pool"),
+		Profile: shared.BrowserProfileParam{
+			ID:          kernel.String("id"),
+			Name:        kernel.String("name"),
+			SaveChanges: kernel.Bool(true),
+		},
+		ProxyID:        kernel.String("proxy_id"),
+		Stealth:        kernel.Bool(true),
+		TimeoutSeconds: kernel.Int(60),
+		Viewport: shared.BrowserViewportParam{
+			Height:      800,
+			Width:       1280,
+			RefreshRate: kernel.Int(60),
 		},
 	})
 	if err != nil {
@@ -102,32 +100,28 @@ func TestBrowserPoolUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id_or_name",
 		kernel.BrowserPoolUpdateParams{
-			BrowserPoolUpdateRequest: kernel.BrowserPoolUpdateRequestParam{
-				BrowserPoolRequestParam: kernel.BrowserPoolRequestParam{
-					Size: 10,
-					Extensions: []shared.BrowserExtensionParam{{
-						ID:   kernel.String("id"),
-						Name: kernel.String("name"),
-					}},
-					FillRatePerMinute: kernel.Int(0),
-					Headless:          kernel.Bool(false),
-					KioskMode:         kernel.Bool(true),
-					Name:              kernel.String("my-pool"),
-					Profile: shared.BrowserProfileParam{
-						ID:          kernel.String("id"),
-						Name:        kernel.String("name"),
-						SaveChanges: kernel.Bool(true),
-					},
-					ProxyID:        kernel.String("proxy_id"),
-					Stealth:        kernel.Bool(true),
-					TimeoutSeconds: kernel.Int(60),
-					Viewport: shared.BrowserViewportParam{
-						Height:      800,
-						Width:       1280,
-						RefreshRate: kernel.Int(60),
-					},
-				},
-				DiscardAllIdle: kernel.Bool(false),
+			Size:           10,
+			DiscardAllIdle: kernel.Bool(false),
+			Extensions: []shared.BrowserExtensionParam{{
+				ID:   kernel.String("id"),
+				Name: kernel.String("name"),
+			}},
+			FillRatePerMinute: kernel.Int(0),
+			Headless:          kernel.Bool(false),
+			KioskMode:         kernel.Bool(true),
+			Name:              kernel.String("my-pool"),
+			Profile: shared.BrowserProfileParam{
+				ID:          kernel.String("id"),
+				Name:        kernel.String("name"),
+				SaveChanges: kernel.Bool(true),
+			},
+			ProxyID:        kernel.String("proxy_id"),
+			Stealth:        kernel.Bool(true),
+			TimeoutSeconds: kernel.Int(60),
+			Viewport: shared.BrowserViewportParam{
+				Height:      800,
+				Width:       1280,
+				RefreshRate: kernel.Int(60),
 			},
 		},
 	)
@@ -209,9 +203,7 @@ func TestBrowserPoolAcquireWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id_or_name",
 		kernel.BrowserPoolAcquireParams{
-			BrowserPoolAcquireRequest: kernel.BrowserPoolAcquireRequestParam{
-				AcquireTimeoutSeconds: kernel.Int(0),
-			},
+			AcquireTimeoutSeconds: kernel.Int(0),
 		},
 	)
 	if err != nil {
@@ -263,10 +255,8 @@ func TestBrowserPoolReleaseWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id_or_name",
 		kernel.BrowserPoolReleaseParams{
-			BrowserPoolReleaseRequest: kernel.BrowserPoolReleaseRequestParam{
-				SessionID: "ts8iy3sg25ibheguyni2lg9t",
-				Reuse:     kernel.Bool(false),
-			},
+			SessionID: "ts8iy3sg25ibheguyni2lg9t",
+			Reuse:     kernel.Bool(false),
 		},
 	)
 	if err != nil {

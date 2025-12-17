@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.24.0 (2025-12-17)
+
+Full Changelog: [v0.23.0...v0.24.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.23.0...v0.24.0)
+
+### Features
+
+* Enhance AuthAgentInvocationCreateResponse to include already_authenti… ([fd4bfbd](https://github.com/onkernel/kernel-go-sdk/commit/fd4bfbd58128160ef68fd7e8fb0e6e33b92e5c35))
+* Fix browser pool sdk types ([68de230](https://github.com/onkernel/kernel-go-sdk/commit/68de23056cdb320c39f54a1b77baacd723dd2dde))
+
 ## 0.23.0 (2025-12-16)
 
 Full Changelog: [v0.22.0...v0.23.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.22.0...v0.23.0)
