@@ -4,7 +4,6 @@ package kernel
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,7 +11,6 @@ import (
 	"time"
 
 	"github.com/onkernel/kernel-go-sdk/internal/apijson"
-	shimjson "github.com/onkernel/kernel-go-sdk/internal/encoding/json"
 	"github.com/onkernel/kernel-go-sdk/internal/requestconfig"
 	"github.com/onkernel/kernel-go-sdk/option"
 	"github.com/onkernel/kernel-go-sdk/packages/param"
@@ -143,7 +141,7 @@ type BrowserPool struct {
 	// Number of browsers currently available in the pool
 	AvailableCount int64 `json:"available_count,required"`
 	// Configuration used to create all browsers in this pool
-	BrowserPoolConfig BrowserPoolRequest `json:"browser_pool_config,required"`
+	BrowserPoolConfig BrowserPoolBrowserPoolConfig `json:"browser_pool_config,required"`
 	// Timestamp when the browser pool was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Browser pool name, if set
@@ -167,46 +165,8 @@ func (r *BrowserPool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Request body for acquiring a browser from the pool.
-type BrowserPoolAcquireRequestParam struct {
-	// Maximum number of seconds to wait for a browser to be available. Defaults to the
-	// calculated time it would take to fill the pool at the currently configured fill
-	// rate.
-	AcquireTimeoutSeconds param.Opt[int64] `json:"acquire_timeout_seconds,omitzero"`
-	paramObj
-}
-
-func (r BrowserPoolAcquireRequestParam) MarshalJSON() (data []byte, err error) {
-	type shadow BrowserPoolAcquireRequestParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BrowserPoolAcquireRequestParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Request body for releasing a browser back to the pool.
-//
-// The property SessionID is required.
-type BrowserPoolReleaseRequestParam struct {
-	// Browser session ID to release back to the pool
-	SessionID string `json:"session_id,required"`
-	// Whether to reuse the browser instance or destroy it and create a new one.
-	// Defaults to true.
-	Reuse param.Opt[bool] `json:"reuse,omitzero"`
-	paramObj
-}
-
-func (r BrowserPoolReleaseRequestParam) MarshalJSON() (data []byte, err error) {
-	type shadow BrowserPoolReleaseRequestParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BrowserPoolReleaseRequestParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Parameters for creating a browser pool. All browsers in the pool will be created
-// with the same configuration.
-type BrowserPoolRequest struct {
+// Configuration used to create all browsers in this pool
+type BrowserPoolBrowserPoolConfig struct {
 	// Number of browsers to create in the pool
 	Size int64 `json:"size,required"`
 	// List of browser extensions to load into the session. Provide each by id or name.
@@ -261,83 +221,9 @@ type BrowserPoolRequest struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BrowserPoolRequest) RawJSON() string { return r.JSON.raw }
-func (r *BrowserPoolRequest) UnmarshalJSON(data []byte) error {
+func (r BrowserPoolBrowserPoolConfig) RawJSON() string { return r.JSON.raw }
+func (r *BrowserPoolBrowserPoolConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this BrowserPoolRequest to a BrowserPoolRequestParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// BrowserPoolRequestParam.Overrides()
-func (r BrowserPoolRequest) ToParam() BrowserPoolRequestParam {
-	return param.Override[BrowserPoolRequestParam](json.RawMessage(r.RawJSON()))
-}
-
-// Parameters for creating a browser pool. All browsers in the pool will be created
-// with the same configuration.
-//
-// The property Size is required.
-type BrowserPoolRequestParam struct {
-	// Number of browsers to create in the pool
-	Size int64 `json:"size,required"`
-	// Percentage of the pool to fill per minute. Defaults to 10%.
-	FillRatePerMinute param.Opt[int64] `json:"fill_rate_per_minute,omitzero"`
-	// If true, launches the browser using a headless image. Defaults to false.
-	Headless param.Opt[bool] `json:"headless,omitzero"`
-	// If true, launches the browser in kiosk mode to hide address bar and tabs in live
-	// view.
-	KioskMode param.Opt[bool] `json:"kiosk_mode,omitzero"`
-	// Optional name for the browser pool. Must be unique within the organization.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional proxy to associate to the browser session. Must reference a proxy
-	// belonging to the caller's org.
-	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
-	// If true, launches the browser in stealth mode to reduce detection by anti-bot
-	// mechanisms.
-	Stealth param.Opt[bool] `json:"stealth,omitzero"`
-	// Default idle timeout in seconds for browsers acquired from this pool before they
-	// are destroyed. Defaults to 600 seconds if not specified
-	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
-	// List of browser extensions to load into the session. Provide each by id or name.
-	Extensions []shared.BrowserExtensionParam `json:"extensions,omitzero"`
-	// Profile selection for the browser session. Provide either id or name. If
-	// specified, the matching profile will be loaded into the browser session.
-	// Profiles must be created beforehand.
-	Profile shared.BrowserProfileParam `json:"profile,omitzero"`
-	// Initial browser window size in pixels with optional refresh rate. If omitted,
-	// image defaults apply (1920x1080@25). Only specific viewport configurations are
-	// supported. The server will reject unsupported combinations. Supported
-	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
-	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
-	// automatically determined from the width and height if they match a supported
-	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
-	// live view browser
-	Viewport shared.BrowserViewportParam `json:"viewport,omitzero"`
-	paramObj
-}
-
-func (r BrowserPoolRequestParam) MarshalJSON() (data []byte, err error) {
-	type shadow BrowserPoolRequestParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BrowserPoolRequestParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Parameters for updating a browser pool. All browsers in the pool will be created
-// with the same configuration.
-type BrowserPoolUpdateRequestParam struct {
-	// Whether to discard all idle browsers and rebuild the pool immediately. Defaults
-	// to false.
-	DiscardAllIdle param.Opt[bool] `json:"discard_all_idle,omitzero"`
-	BrowserPoolRequestParam
-}
-
-func (r BrowserPoolUpdateRequestParam) MarshalJSON() (data []byte, err error) {
-	type shadow BrowserPoolUpdateRequestParam
-	return param.MarshalObject(r, (*shadow)(&r))
 }
 
 type BrowserPoolAcquireResponse struct {
@@ -404,31 +290,100 @@ func (r *BrowserPoolAcquireResponse) UnmarshalJSON(data []byte) error {
 }
 
 type BrowserPoolNewParams struct {
-	// Parameters for creating a browser pool. All browsers in the pool will be created
-	// with the same configuration.
-	BrowserPoolRequest BrowserPoolRequestParam
+	// Number of browsers to create in the pool
+	Size int64 `json:"size,required"`
+	// Percentage of the pool to fill per minute. Defaults to 10%.
+	FillRatePerMinute param.Opt[int64] `json:"fill_rate_per_minute,omitzero"`
+	// If true, launches the browser using a headless image. Defaults to false.
+	Headless param.Opt[bool] `json:"headless,omitzero"`
+	// If true, launches the browser in kiosk mode to hide address bar and tabs in live
+	// view.
+	KioskMode param.Opt[bool] `json:"kiosk_mode,omitzero"`
+	// Optional name for the browser pool. Must be unique within the organization.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional proxy to associate to the browser session. Must reference a proxy
+	// belonging to the caller's org.
+	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
+	// If true, launches the browser in stealth mode to reduce detection by anti-bot
+	// mechanisms.
+	Stealth param.Opt[bool] `json:"stealth,omitzero"`
+	// Default idle timeout in seconds for browsers acquired from this pool before they
+	// are destroyed. Defaults to 600 seconds if not specified
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// List of browser extensions to load into the session. Provide each by id or name.
+	Extensions []shared.BrowserExtensionParam `json:"extensions,omitzero"`
+	// Profile selection for the browser session. Provide either id or name. If
+	// specified, the matching profile will be loaded into the browser session.
+	// Profiles must be created beforehand.
+	Profile shared.BrowserProfileParam `json:"profile,omitzero"`
+	// Initial browser window size in pixels with optional refresh rate. If omitted,
+	// image defaults apply (1920x1080@25). Only specific viewport configurations are
+	// supported. The server will reject unsupported combinations. Supported
+	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
+	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
+	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+	// live view browser
+	Viewport shared.BrowserViewportParam `json:"viewport,omitzero"`
 	paramObj
 }
 
 func (r BrowserPoolNewParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.BrowserPoolRequest)
+	type shadow BrowserPoolNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserPoolNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.BrowserPoolRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type BrowserPoolUpdateParams struct {
-	// Parameters for updating a browser pool. All browsers in the pool will be created
-	// with the same configuration.
-	BrowserPoolUpdateRequest BrowserPoolUpdateRequestParam
+	// Number of browsers to create in the pool
+	Size int64 `json:"size,required"`
+	// Whether to discard all idle browsers and rebuild the pool immediately. Defaults
+	// to false.
+	DiscardAllIdle param.Opt[bool] `json:"discard_all_idle,omitzero"`
+	// Percentage of the pool to fill per minute. Defaults to 10%.
+	FillRatePerMinute param.Opt[int64] `json:"fill_rate_per_minute,omitzero"`
+	// If true, launches the browser using a headless image. Defaults to false.
+	Headless param.Opt[bool] `json:"headless,omitzero"`
+	// If true, launches the browser in kiosk mode to hide address bar and tabs in live
+	// view.
+	KioskMode param.Opt[bool] `json:"kiosk_mode,omitzero"`
+	// Optional name for the browser pool. Must be unique within the organization.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Optional proxy to associate to the browser session. Must reference a proxy
+	// belonging to the caller's org.
+	ProxyID param.Opt[string] `json:"proxy_id,omitzero"`
+	// If true, launches the browser in stealth mode to reduce detection by anti-bot
+	// mechanisms.
+	Stealth param.Opt[bool] `json:"stealth,omitzero"`
+	// Default idle timeout in seconds for browsers acquired from this pool before they
+	// are destroyed. Defaults to 600 seconds if not specified
+	TimeoutSeconds param.Opt[int64] `json:"timeout_seconds,omitzero"`
+	// List of browser extensions to load into the session. Provide each by id or name.
+	Extensions []shared.BrowserExtensionParam `json:"extensions,omitzero"`
+	// Profile selection for the browser session. Provide either id or name. If
+	// specified, the matching profile will be loaded into the browser session.
+	// Profiles must be created beforehand.
+	Profile shared.BrowserProfileParam `json:"profile,omitzero"`
+	// Initial browser window size in pixels with optional refresh rate. If omitted,
+	// image defaults apply (1920x1080@25). Only specific viewport configurations are
+	// supported. The server will reject unsupported combinations. Supported
+	// resolutions are: 2560x1440@10, 1920x1080@25, 1920x1200@25, 1440x900@25,
+	// 1024x768@60, 1200x800@60 If refresh_rate is not provided, it will be
+	// automatically determined from the width and height if they match a supported
+	// configuration exactly. Note: Higher resolutions may affect the responsiveness of
+	// live view browser
+	Viewport shared.BrowserViewportParam `json:"viewport,omitzero"`
 	paramObj
 }
 
 func (r BrowserPoolUpdateParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.BrowserPoolUpdateRequest)
+	type shadow BrowserPoolUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserPoolUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.BrowserPoolUpdateRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type BrowserPoolDeleteParams struct {
@@ -447,27 +402,34 @@ func (r *BrowserPoolDeleteParams) UnmarshalJSON(data []byte) error {
 }
 
 type BrowserPoolAcquireParams struct {
-	// Request body for acquiring a browser from the pool.
-	BrowserPoolAcquireRequest BrowserPoolAcquireRequestParam
+	// Maximum number of seconds to wait for a browser to be available. Defaults to the
+	// calculated time it would take to fill the pool at the currently configured fill
+	// rate.
+	AcquireTimeoutSeconds param.Opt[int64] `json:"acquire_timeout_seconds,omitzero"`
 	paramObj
 }
 
 func (r BrowserPoolAcquireParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.BrowserPoolAcquireRequest)
+	type shadow BrowserPoolAcquireParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserPoolAcquireParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.BrowserPoolAcquireRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type BrowserPoolReleaseParams struct {
-	// Request body for releasing a browser back to the pool.
-	BrowserPoolReleaseRequest BrowserPoolReleaseRequestParam
+	// Browser session ID to release back to the pool
+	SessionID string `json:"session_id,required"`
+	// Whether to reuse the browser instance or destroy it and create a new one.
+	// Defaults to true.
+	Reuse param.Opt[bool] `json:"reuse,omitzero"`
 	paramObj
 }
 
 func (r BrowserPoolReleaseParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.BrowserPoolReleaseRequest)
+	type shadow BrowserPoolReleaseParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BrowserPoolReleaseParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.BrowserPoolReleaseRequest)
+	return apijson.UnmarshalRoot(data, r)
 }

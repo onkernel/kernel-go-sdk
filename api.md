@@ -230,17 +230,9 @@ Methods:
 
 # BrowserPools
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPoolAcquireRequestParam">BrowserPoolAcquireRequestParam</a>
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPoolReleaseRequestParam">BrowserPoolReleaseRequestParam</a>
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPoolRequestParam">BrowserPoolRequestParam</a>
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPoolUpdateRequestParam">BrowserPoolUpdateRequestParam</a>
-
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPool">BrowserPool</a>
-- <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPoolRequest">BrowserPoolRequest</a>
 - <a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/onkernel/kernel-go-sdk#BrowserPoolAcquireResponse">BrowserPoolAcquireResponse</a>
 
 Methods:
