@@ -47,8 +47,8 @@ func (r *AgentAuthInvocationService) New(ctx context.Context, body AgentAuthInvo
 	return
 }
 
-// Returns invocation details including app_name and target_domain. Uses the JWT
-// returned by the exchange endpoint, or standard API key or JWT authentication.
+// Returns invocation details including status, app_name, and target_domain.
+// Supports both API key and JWT (from exchange endpoint) authentication.
 func (r *AgentAuthInvocationService) Get(ctx context.Context, invocationID string, opts ...option.RequestOption) (res *AgentAuthInvocationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if invocationID == "" {
@@ -62,7 +62,7 @@ func (r *AgentAuthInvocationService) Get(ctx context.Context, invocationID strin
 
 // Inspects the target site to detect logged-in state or discover required fields.
 // Returns 200 with success: true when fields are found, or 4xx/5xx for failures.
-// Requires the JWT returned by the exchange endpoint.
+// Supports both API key and JWT (from exchange endpoint) authentication.
 func (r *AgentAuthInvocationService) Discover(ctx context.Context, invocationID string, body AgentAuthInvocationDiscoverParams, opts ...option.RequestOption) (res *AgentAuthDiscoverResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if invocationID == "" {
@@ -88,7 +88,8 @@ func (r *AgentAuthInvocationService) Exchange(ctx context.Context, invocationID 
 }
 
 // Submits field values for the discovered login form and may return additional
-// auth fields or success. Requires the JWT returned by the exchange endpoint.
+// auth fields or success. Supports both API key and JWT (from exchange endpoint)
+// authentication.
 func (r *AgentAuthInvocationService) Submit(ctx context.Context, invocationID string, body AgentAuthInvocationSubmitParams, opts ...option.RequestOption) (res *AgentAuthSubmitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if invocationID == "" {
