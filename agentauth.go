@@ -166,6 +166,11 @@ type AgentAuthInvocationResponse struct {
 	//
 	// Any of "IN_PROGRESS", "SUCCESS", "EXPIRED", "CANCELED".
 	Status AgentAuthInvocationResponseStatus `json:"status,required"`
+	// Current step in the invocation workflow
+	//
+	// Any of "initialized", "discovering", "awaiting_input", "submitting",
+	// "completed", "expired".
+	Step AgentAuthInvocationResponseStep `json:"step,required"`
 	// Target domain for authentication
 	TargetDomain string `json:"target_domain,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -173,6 +178,7 @@ type AgentAuthInvocationResponse struct {
 		AppName      respjson.Field
 		ExpiresAt    respjson.Field
 		Status       respjson.Field
+		Step         respjson.Field
 		TargetDomain respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -193,6 +199,18 @@ const (
 	AgentAuthInvocationResponseStatusSuccess    AgentAuthInvocationResponseStatus = "SUCCESS"
 	AgentAuthInvocationResponseStatusExpired    AgentAuthInvocationResponseStatus = "EXPIRED"
 	AgentAuthInvocationResponseStatusCanceled   AgentAuthInvocationResponseStatus = "CANCELED"
+)
+
+// Current step in the invocation workflow
+type AgentAuthInvocationResponseStep string
+
+const (
+	AgentAuthInvocationResponseStepInitialized   AgentAuthInvocationResponseStep = "initialized"
+	AgentAuthInvocationResponseStepDiscovering   AgentAuthInvocationResponseStep = "discovering"
+	AgentAuthInvocationResponseStepAwaitingInput AgentAuthInvocationResponseStep = "awaiting_input"
+	AgentAuthInvocationResponseStepSubmitting    AgentAuthInvocationResponseStep = "submitting"
+	AgentAuthInvocationResponseStepCompleted     AgentAuthInvocationResponseStep = "completed"
+	AgentAuthInvocationResponseStepExpired       AgentAuthInvocationResponseStep = "expired"
 )
 
 // Response from submit endpoint matching SubmitResult schema
@@ -359,7 +377,7 @@ func (r *AuthAgentInvocationCreateRequestParam) UnmarshalJSON(data []byte) error
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AuthAgentInvocationCreateResponseUnion struct {
-	// Any of "already_authenticated", "invocation_created".
+	// Any of "ALREADY_AUTHENTICATED", "INVOCATION_CREATED".
 	Status string `json:"status"`
 	// This field is from variant [AuthAgentInvocationCreateResponseInvocationCreated].
 	ExpiresAt time.Time `json:"expires_at"`
@@ -401,9 +419,9 @@ func (AuthAgentInvocationCreateResponseInvocationCreated) implAuthAgentInvocatio
 //	}
 func (u AuthAgentInvocationCreateResponseUnion) AsAny() anyAuthAgentInvocationCreateResponse {
 	switch u.Status {
-	case "already_authenticated":
+	case "ALREADY_AUTHENTICATED":
 		return u.AsAlreadyAuthenticated()
-	case "invocation_created":
+	case "INVOCATION_CREATED":
 		return u.AsInvocationCreated()
 	}
 	return nil
@@ -526,7 +544,7 @@ const (
 type ReauthResponse struct {
 	// Result of the re-authentication attempt
 	//
-	// Any of "reauth_started", "already_authenticated", "cannot_reauth".
+	// Any of "REAUTH_STARTED", "ALREADY_AUTHENTICATED", "CANNOT_REAUTH".
 	Status ReauthResponseStatus `json:"status,required"`
 	// ID of the re-auth invocation if one was created
 	InvocationID string `json:"invocation_id"`
@@ -552,9 +570,9 @@ func (r *ReauthResponse) UnmarshalJSON(data []byte) error {
 type ReauthResponseStatus string
 
 const (
-	ReauthResponseStatusReauthStarted        ReauthResponseStatus = "reauth_started"
-	ReauthResponseStatusAlreadyAuthenticated ReauthResponseStatus = "already_authenticated"
-	ReauthResponseStatusCannotReauth         ReauthResponseStatus = "cannot_reauth"
+	ReauthResponseStatusReauthStarted        ReauthResponseStatus = "REAUTH_STARTED"
+	ReauthResponseStatusAlreadyAuthenticated ReauthResponseStatus = "ALREADY_AUTHENTICATED"
+	ReauthResponseStatusCannotReauth         ReauthResponseStatus = "CANNOT_REAUTH"
 )
 
 type AgentAuthNewParams struct {
