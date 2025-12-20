@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.25.0 (2025-12-20)
+
+Full Changelog: [v0.24.0...v0.25.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.24.0...v0.25.0)
+
+### Features
+
+* Enhance AuthAgentInvocation with step and last activity tracking ([ccb1425](https://github.com/onkernel/kernel-go-sdk/commit/ccb1425ea205fbb18129f341ae36bfc55c70ca64))
+
+
+### Bug Fixes
+
+* skip usage tests that don't work with Prism ([8872193](https://github.com/onkernel/kernel-go-sdk/commit/88721930052bff16639f371a9a7e46e7e34e7ff4))
+
+
+### Chores
+
+* add float64 to valid types for RegisterFieldValidator ([1e23b39](https://github.com/onkernel/kernel-go-sdk/commit/1e23b39aca94dd1a98d6ec6669d2c8b87f8ccf02))
+* **internal:** codegen related update ([0320876](https://github.com/onkernel/kernel-go-sdk/commit/0320876c8f64185768a3ad562b9656f96ab7e935))
+
 ## 0.24.0 (2025-12-17)
 
 Full Changelog: [v0.23.0...v0.24.0](https://github.com/onkernel/kernel-go-sdk/compare/v0.23.0...v0.24.0)
