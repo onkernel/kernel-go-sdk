@@ -18,22 +18,22 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type AlreadyAuthenticated string // Always "already_authenticated"
+type AlreadyAuthenticated string // Always "ALREADY_AUTHENTICATED"
 type AppVersionSummary string    // Always "app_version_summary"
 type AwsUsEast1a string          // Always "aws.us-east-1a"
 type DeploymentState string      // Always "deployment_state"
 type Error string                // Always "error"
-type InvocationCreated string    // Always "invocation_created"
+type InvocationCreated string    // Always "INVOCATION_CREATED"
 type InvocationState string      // Always "invocation_state"
 type Log string                  // Always "log"
 type SseHeartbeat string         // Always "sse_heartbeat"
 
-func (c AlreadyAuthenticated) Default() AlreadyAuthenticated { return "already_authenticated" }
+func (c AlreadyAuthenticated) Default() AlreadyAuthenticated { return "ALREADY_AUTHENTICATED" }
 func (c AppVersionSummary) Default() AppVersionSummary       { return "app_version_summary" }
 func (c AwsUsEast1a) Default() AwsUsEast1a                   { return "aws.us-east-1a" }
 func (c DeploymentState) Default() DeploymentState           { return "deployment_state" }
 func (c Error) Default() Error                               { return "error" }
-func (c InvocationCreated) Default() InvocationCreated       { return "invocation_created" }
+func (c InvocationCreated) Default() InvocationCreated       { return "INVOCATION_CREATED" }
 func (c InvocationState) Default() InvocationState           { return "invocation_state" }
 func (c Log) Default() Log                                   { return "log" }
 func (c SseHeartbeat) Default() SseHeartbeat                 { return "sse_heartbeat" }
