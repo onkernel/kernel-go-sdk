@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.100.0](https://github.com/kernel/kernel-go-sdk/compare/v0.99.0...v0.100.0) (2026-09-04)
+
+
+### Features
+
+* Fix vault provider errors and remove test card mode ([6ec0643](https://github.com/kernel/kernel-go-sdk/commit/6ec0643c8bd44f8f615c5789760ed4b3d1071c0d))
+
+## [0.99.0](https://github.com/kernel/kernel-go-sdk/compare/v0.98.0...v0.99.0) (2026-09-04)
+
+
+### Features
+
+* Expose OTLP destination delivery health ([7a377c7](https://github.com/kernel/kernel-go-sdk/commit/7a377c78440a30f919ba811712b06e929e8223a2))
+* Repair Vault SDK custom-code seals ([31c5fee](https://github.com/kernel/kernel-go-sdk/commit/31c5fee384421d8c66f9c8bb5e5ef0c0ac7e194a))
+
 ## [0.98.0](https://github.com/kernel/kernel-go-sdk/compare/v0.97.0...v0.98.0) (2026-09-02)
 
 
