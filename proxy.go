@@ -287,7 +287,8 @@ func (r *ProxyNewResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyNewResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -565,7 +566,8 @@ func (r *ProxyGetResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyGetResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -843,7 +845,8 @@ func (r *ProxyUpdateResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyUpdateResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1121,7 +1124,8 @@ func (r *ProxyListResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyListResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1399,7 +1403,8 @@ func (r *ProxyCheckResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyCheckResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1715,7 +1720,8 @@ func (r *ProxyNewParamsConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyNewParamsConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country param.Opt[string] `json:"country,omitzero"`
 	paramObj
 }
