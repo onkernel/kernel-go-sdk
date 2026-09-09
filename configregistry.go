@@ -95,19 +95,22 @@ type Analysis struct {
 	ID string `json:"id" api:"required"`
 	// Time the analysis was created.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Present for failed or canceled analyses. Messages contain safe retry guidance
-	// rather than internal workflow errors.
+	// Deadline after which a still-running analysis becomes expired.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// Present for failed, canceled, or expired analyses. Messages contain safe retry
+	// guidance rather than internal workflow errors.
 	Failure shared.ErrorModel `json:"failure" api:"required"`
 	// Time the analysis reached a terminal status. Null while it is running.
 	FinishedAt time.Time `json:"finished_at" api:"required" format:"date-time"`
 	// Lifecycle status of a background analysis.
 	//
-	// Any of "running", "completed", "failed", "canceled".
+	// Any of "running", "completed", "failed", "canceled", "expired".
 	Status AnalysisStatus `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
+		ExpiresAt   respjson.Field
 		Failure     respjson.Field
 		FinishedAt  respjson.Field
 		Status      respjson.Field
@@ -130,6 +133,7 @@ const (
 	AnalysisStatusCompleted AnalysisStatus = "completed"
 	AnalysisStatusFailed    AnalysisStatus = "failed"
 	AnalysisStatusCanceled  AnalysisStatus = "canceled"
+	AnalysisStatusExpired   AnalysisStatus = "expired"
 )
 
 type AnalysisSummary struct {
@@ -801,7 +805,7 @@ type RecommendationSummary struct {
 	AnalysisID string `json:"analysis_id" api:"required"`
 	// Lifecycle status of the most recently requested analysis for this exact target.
 	//
-	// Any of "running", "completed", "failed", "canceled".
+	// Any of "running", "completed", "failed", "canceled", "expired".
 	AnalysisStatus RecommendationSummaryAnalysisStatus `json:"analysis_status" api:"required"`
 	// Most recent time the selected project requested an analysis for this exact
 	// target.
@@ -845,6 +849,7 @@ const (
 	RecommendationSummaryAnalysisStatusCompleted RecommendationSummaryAnalysisStatus = "completed"
 	RecommendationSummaryAnalysisStatusFailed    RecommendationSummaryAnalysisStatus = "failed"
 	RecommendationSummaryAnalysisStatusCanceled  RecommendationSummaryAnalysisStatus = "canceled"
+	RecommendationSummaryAnalysisStatusExpired   RecommendationSummaryAnalysisStatus = "expired"
 )
 
 // The property URL is required.
