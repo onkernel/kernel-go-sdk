@@ -5110,12 +5110,13 @@ type BrowserProxyErrorEventData struct {
 	// Proxy-layer error code: the X-Kernel-Proxy-Error response header value from a
 	// branded 5xx error page served by the metro egress host-proxy. Values mirror what
 	// the proxy emits: destination_blocked, provider_blacklisted,
-	// provider_unreachable, proxy_unavailable, upstream_timeout, upstream_dns_failure,
-	// upstream_connect_failed. Unknown header values are dropped.
+	// provider_unreachable, provider_rejected, origin_tls_timeout, proxy_unavailable,
+	// upstream_timeout, upstream_dns_failure, upstream_connect_failed. Unknown header
+	// values are dropped.
 	//
 	// Any of "destination_blocked", "provider_blacklisted", "provider_unreachable",
-	// "proxy_unavailable", "upstream_timeout", "upstream_dns_failure",
-	// "upstream_connect_failed".
+	// "provider_rejected", "origin_tls_timeout", "proxy_unavailable",
+	// "upstream_timeout", "upstream_dns_failure", "upstream_connect_failed".
 	Code string `json:"code" api:"required"`
 	// CDP request identifier matching the originating request.
 	RequestID string `json:"request_id" api:"required"`
