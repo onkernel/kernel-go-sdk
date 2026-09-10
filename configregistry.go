@@ -572,7 +572,8 @@ type ProxyManagedCreateConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
@@ -607,7 +608,8 @@ func (r *ProxyManagedCreateConfigResidential) UnmarshalJSON(data []byte) error {
 type ProxyManagedCreateConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City string `json:"city"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State string `json:"state"`
