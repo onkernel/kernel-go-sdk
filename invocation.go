@@ -188,12 +188,18 @@ type InvocationStateEventInvocation struct {
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at" api:"nullable" format:"date-time"`
-	// Output produced by the action, rendered as a JSON string. This could be: string,
-	// number, boolean, array, object, or null.
+	// The action result or detailed failure output. Often a JSON-encoded value, but
+	// failures may contain plain text. May contain sensitive application data.
 	Output string `json:"output"`
 	// Payload provided to the invocation. This is a string that can be parsed as JSON.
 	Payload string `json:"payload"`
-	// Status reason
+	// A nonempty, customer-safe summary of the recorded failure output, always present
+	// when status is failed and omitted otherwise, including in the first failed
+	// invocation_state event. Recognized messages receive a specific summary; other
+	// failures receive a generic summary. Message matching does not establish whether
+	// the failure originated in the platform or action code. Does not include raw
+	// action output or internal error details. Available for historical invocations as
+	// well. Human-readable text, not a stable identifier for retry logic.
 	StatusReason string `json:"status_reason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -227,10 +233,15 @@ type InvocationNewResponse struct {
 	//
 	// Any of "queued", "running", "succeeded", "failed".
 	Status InvocationNewResponseStatus `json:"status" api:"required"`
-	// The return value of the action that was invoked, rendered as a JSON string. This
-	// could be: string, number, boolean, array, object, or null.
+	// The action result or detailed failure output. Often a JSON-encoded value, but
+	// failures may contain plain text. May contain sensitive application data.
 	Output string `json:"output"`
-	// Status reason
+	// A nonempty, customer-safe summary of the recorded failure output, always present
+	// when status is failed and omitted otherwise. Recognized messages receive a
+	// specific summary; other failures receive a generic summary. Message matching
+	// does not establish whether the failure originated in the platform or action
+	// code. Does not include raw action output or internal error details.
+	// Human-readable text, not a stable identifier for retry logic.
 	StatusReason string `json:"status_reason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -278,12 +289,18 @@ type InvocationGetResponse struct {
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at" api:"nullable" format:"date-time"`
-	// Output produced by the action, rendered as a JSON string. This could be: string,
-	// number, boolean, array, object, or null.
+	// The action result or detailed failure output. Often a JSON-encoded value, but
+	// failures may contain plain text. May contain sensitive application data.
 	Output string `json:"output"`
 	// Payload provided to the invocation. This is a string that can be parsed as JSON.
 	Payload string `json:"payload"`
-	// Status reason
+	// A nonempty, customer-safe summary of the recorded failure output, always present
+	// when status is failed and omitted otherwise, including in the first failed
+	// invocation_state event. Recognized messages receive a specific summary; other
+	// failures receive a generic summary. Message matching does not establish whether
+	// the failure originated in the platform or action code. Does not include raw
+	// action output or internal error details. Available for historical invocations as
+	// well. Human-readable text, not a stable identifier for retry logic.
 	StatusReason string `json:"status_reason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -336,12 +353,18 @@ type InvocationUpdateResponse struct {
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at" api:"nullable" format:"date-time"`
-	// Output produced by the action, rendered as a JSON string. This could be: string,
-	// number, boolean, array, object, or null.
+	// The action result or detailed failure output. Often a JSON-encoded value, but
+	// failures may contain plain text. May contain sensitive application data.
 	Output string `json:"output"`
 	// Payload provided to the invocation. This is a string that can be parsed as JSON.
 	Payload string `json:"payload"`
-	// Status reason
+	// A nonempty, customer-safe summary of the recorded failure output, always present
+	// when status is failed and omitted otherwise, including in the first failed
+	// invocation_state event. Recognized messages receive a specific summary; other
+	// failures receive a generic summary. Message matching does not establish whether
+	// the failure originated in the platform or action code. Does not include raw
+	// action output or internal error details. Available for historical invocations as
+	// well. Human-readable text, not a stable identifier for retry logic.
 	StatusReason string `json:"status_reason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -394,12 +417,18 @@ type InvocationListResponse struct {
 	// RFC 3339 Nanoseconds timestamp when the invocation finished (null if still
 	// running)
 	FinishedAt time.Time `json:"finished_at" api:"nullable" format:"date-time"`
-	// Output produced by the action, rendered as a JSON string. This could be: string,
-	// number, boolean, array, object, or null.
+	// The action result or detailed failure output. Often a JSON-encoded value, but
+	// failures may contain plain text. May contain sensitive application data.
 	Output string `json:"output"`
 	// Payload provided to the invocation. This is a string that can be parsed as JSON.
 	Payload string `json:"payload"`
-	// Status reason
+	// A nonempty, customer-safe summary of the recorded failure output, always present
+	// when status is failed and omitted otherwise, including in the first failed
+	// invocation_state event. Recognized messages receive a specific summary; other
+	// failures receive a generic summary. Message matching does not establish whether
+	// the failure originated in the platform or action code. Does not include raw
+	// action output or internal error details. Available for historical invocations as
+	// well. Human-readable text, not a stable identifier for retry logic.
 	StatusReason string `json:"status_reason"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
