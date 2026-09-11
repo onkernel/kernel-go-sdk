@@ -94,9 +94,11 @@ func (r *VaultItemService) List(ctx context.Context, idOrName string, opts ...op
 	return res, err
 }
 
-// Unresolved payment operations block deletion, including operations on child
-// cards of a wallet. Reconcile the original attempt with the provider or support
-// first; deleting or recreating an item is not proof that a payment did not occur.
+// Unresolved payment operations normally block deletion, including operations on
+// child cards of a wallet. An AgentCard checkout whose create response returned no
+// authorization ID may be explicitly abandoned by deleting that card directly;
+// deleting its wallet or vault remains blocked. Deleting or recreating an item is
+// not proof that a payment did not occur.
 func (r *VaultItemService) Delete(ctx context.Context, key string, body VaultItemDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -947,10 +949,12 @@ func (r *CardVaultItemStateLinkMasks) UnmarshalJSON(data []byte) error {
 
 type CardVaultItemStateAgentcard struct {
 	Provider constant.Agentcard `json:"provider" default:"agentcard"`
-	// recovery_required means the original checkout outcome is unresolved. Do not
-	// retry, delete, or replace it. Known authorization IDs may be reconciled through
-	// provider observations; otherwise contact the provider or support for manual
-	// reconciliation. It does not mean declined or expired.
+	// recovery_required means the original checkout outcome is unresolved. Automatic
+	// reuse is blocked. Known authorization IDs must be reconciled through provider
+	// observations or support. When no authorization ID was returned, an explicitly
+	// confirmed item deletion may abandon the unresolved attempt so the caller can
+	// create a replacement; deletion does not prove that the original attempt failed.
+	// It does not mean declined or expired.
 	//
 	// Any of "requested", "ready", "pending_approval", "degraded",
 	// "recovery_required".
