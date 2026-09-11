@@ -76,7 +76,9 @@ func (r *VaultService) ListAutoPaging(ctx context.Context, query VaultListParams
 	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a vault and invalidate its items
+// Unresolved payment operations block deletion. Reconcile the original attempt
+// with the provider or support first; deleting or recreating an item is not proof
+// that a payment did not occur.
 func (r *VaultService) Delete(ctx context.Context, idOrName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

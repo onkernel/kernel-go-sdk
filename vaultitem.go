@@ -60,7 +60,13 @@ func (r *VaultItemService) Get(ctx context.Context, key string, params VaultItem
 	return res, err
 }
 
-// Update a card specification before or between authorizations
+// Requested cards accept a replacement specification. Pending issuance requests
+// may update provider-supported fields on their existing request, subject to
+// atomic provider approval checks; omitted optional fields remain unchanged and
+// explicit empty lists clear them. Wallet/provider binding and unsupported fields
+// cannot change after authorization starts. An uncertain update enters
+// recovery_required and must not be retried. Checkout cards may be edited between
+// authorizations.
 func (r *VaultItemService) Update(ctx context.Context, key string, params VaultItemUpdateParams, opts ...option.RequestOption) (res *VaultItemUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.IDOrName == "" {
@@ -88,7 +94,9 @@ func (r *VaultItemService) List(ctx context.Context, idOrName string, opts ...op
 	return res, err
 }
 
-// Delete a vault item and invalidate its secret value
+// Unresolved payment operations block deletion, including operations on child
+// cards of a wallet. Reconcile the original attempt with the provider or support
+// first; deleting or recreating an item is not proof that a payment did not occur.
 func (r *VaultItemService) Delete(ctx context.Context, key string, body VaultItemDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -123,8 +131,10 @@ func (r *VaultItemService) Events(ctx context.Context, key string, params VaultI
 
 // Retrieve the item first and invoke only an operation listed in
 // `available_operations`, following its natural-language description. Operations
-// may call an external provider and can return the item's updated state. If the
-// provider rate limits spend-request creation, returns HTTP 429 with code
+// may call an external provider and return updated state. Link cards advertise
+// authorize. AgentCard cards are created with PUT and request approval when their
+// aliases are used at checkout; they do not expose this operation. If
+// spend-request creation is rate limited, returns HTTP 429 with code
 // `spend_request_rate_limited`; stop and back off before retrying.
 func (r *VaultItemService) PerformOperation(ctx context.Context, key string, params VaultItemPerformOperationParams, opts ...option.RequestOption) (res *VaultItemUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -141,7 +151,12 @@ func (r *VaultItemService) PerformOperation(ctx context.Context, key string, par
 	return res, err
 }
 
-// Create or retrieve an identical vault item by immutable key
+// Create an item under a key unique within its vault, or retrieve the existing
+// item when its specification matches. An identical card PUT returns the existing
+// card in any lifecycle state without polling the provider, reauthorizing,
+// replacing aliases, or resetting recovery. Conflicting specifications return 409.
+// Provider-specific authorization requirements and retry behavior are described in
+// the item's request schema.
 func (r *VaultItemService) Upsert(ctx context.Context, key string, params VaultItemUpsertParams, opts ...option.RequestOption) (res *VaultItemUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if params.IDOrName == "" {
@@ -879,8 +894,14 @@ func (r *CardVaultItemStateUnionMasks) UnmarshalJSON(data []byte) error {
 
 type CardVaultItemStateLink struct {
 	Provider constant.Link `json:"provider" default:"link"`
+	// recovery_required means an original provider operation has an unresolved
+	// outcome. Do not retry, delete, or replace it. Known references may be observed
+	// safely, but unknown creation without an ID and uncertain card-material retrieval
+	// require manual reconciliation with the provider or support. There is no reset or
+	// caller-asserted reconciliation operation.
+	//
 	// Any of "requested", "pending_authorization", "ready", "consumed", "expired",
-	// "declined".
+	// "declined", "recovery_required".
 	Status       string                      `json:"status" api:"required"`
 	Aliases      VaultCardAliases            `json:"aliases"`
 	Domains      []string                    `json:"domains"`
@@ -926,7 +947,13 @@ func (r *CardVaultItemStateLinkMasks) UnmarshalJSON(data []byte) error {
 
 type CardVaultItemStateAgentcard struct {
 	Provider constant.Agentcard `json:"provider" default:"agentcard"`
-	// Any of "requested", "ready", "pending_approval", "degraded".
+	// recovery_required means the original checkout outcome is unresolved. Do not
+	// retry, delete, or replace it. Known authorization IDs may be reconciled through
+	// provider observations; otherwise contact the provider or support for manual
+	// reconciliation. It does not mean declined or expired.
+	//
+	// Any of "requested", "ready", "pending_approval", "degraded",
+	// "recovery_required".
 	Status  string           `json:"status" api:"required"`
 	Aliases VaultCardAliases `json:"aliases"`
 	// The in-flight or most recent checkout authorization. Present while a checkout is
@@ -1150,6 +1177,8 @@ type VaultItemUnionSpec struct {
 	Authorization WalletVaultItemSpecLinkAuthorization `json:"authorization"`
 	Provider      string                               `json:"provider"`
 	// This field is from variant [WalletVaultItemSpecUnion].
+	ProviderConfig WalletVaultItemSpecAgentcardProviderConfig `json:"provider_config"`
+	// This field is from variant [WalletVaultItemSpecUnion].
 	UserID string `json:"user_id"`
 	Amount int64  `json:"amount"`
 	// This field is from variant [CardVaultItemSpecUnion].
@@ -1177,6 +1206,7 @@ type VaultItemUnionSpec struct {
 	JSON   struct {
 		Authorization   respjson.Field
 		Provider        respjson.Field
+		ProviderConfig  respjson.Field
 		UserID          respjson.Field
 		Amount          respjson.Field
 		Context         respjson.Field
@@ -1264,9 +1294,12 @@ type VaultItemWallet struct {
 	CreatedAt           time.Time                           `json:"created_at" api:"required" format:"date-time"`
 	// Immutable item key assigned when the item is created.
 	Key string `json:"key" api:"required"`
-	// AgentCard wallet. Mode (sandbox vs live) is fixed by the deployment's AgentCard
-	// credential; there is no per-item test flag. user_id may only reference a user
-	// already enrolled by a wallet in this organization.
+	// AgentCard wallet. Omit provider_config to use Kernel-managed credentials, or
+	// select a customer-owned configuration. Mode (sandbox vs live) is determined by
+	// the selected credential; there is no per-item test flag. Without user_id,
+	// creation returns a hosted enrollment action and Kernel polls until the user
+	// connects. user_id may only reference a user already enrolled by a wallet in this
+	// organization under the same configuration.
 	Spec      WalletVaultItemSpecUnion  `json:"spec" api:"required"`
 	State     WalletVaultItemStateUnion `json:"state" api:"required"`
 	Type      constant.Wallet           `json:"type" default:"wallet"`
@@ -1789,12 +1822,15 @@ type WalletVaultItemSpecUnion struct {
 	// Any of "link", "agentcard".
 	Provider string `json:"provider"`
 	// This field is from variant [WalletVaultItemSpecAgentcard].
+	ProviderConfig WalletVaultItemSpecAgentcardProviderConfig `json:"provider_config"`
+	// This field is from variant [WalletVaultItemSpecAgentcard].
 	UserID string `json:"user_id"`
 	JSON   struct {
-		Authorization respjson.Field
-		Provider      respjson.Field
-		UserID        respjson.Field
-		raw           string
+		Authorization  respjson.Field
+		Provider       respjson.Field
+		ProviderConfig respjson.Field
+		UserID         respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -1843,16 +1879,6 @@ func (r *WalletVaultItemSpecUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// ToParam converts this WalletVaultItemSpecUnion to a
-// WalletVaultItemSpecUnionParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// WalletVaultItemSpecUnionParam.Overrides()
-func (r WalletVaultItemSpecUnion) ToParam() WalletVaultItemSpecUnionParam {
-	return param.Override[WalletVaultItemSpecUnionParam](json.RawMessage(r.RawJSON()))
-}
-
 type WalletVaultItemSpecLink struct {
 	Authorization WalletVaultItemSpecLinkAuthorization `json:"authorization" api:"required"`
 	Provider      constant.Link                        `json:"provider" default:"link"`
@@ -1872,7 +1898,7 @@ func (r *WalletVaultItemSpecLink) UnmarshalJSON(data []byte) error {
 }
 
 type WalletVaultItemSpecLinkAuthorization struct {
-	Client WalletVaultItemSpecLinkAuthorizationClient `json:"client" api:"required"`
+	Client WalletVaultItemSpecLinkAuthorizationClientUnion `json:"client" api:"required"`
 	// Any of "oauth".
 	Method string `json:"method" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1890,9 +1916,76 @@ func (r *WalletVaultItemSpecLinkAuthorization) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WalletVaultItemSpecLinkAuthorizationClient struct {
-	// Any of "kernel_managed".
-	Type string `json:"type" api:"required"`
+// WalletVaultItemSpecLinkAuthorizationClientUnion contains all possible properties
+// and values from [WalletVaultItemSpecLinkAuthorizationClientKernelManaged],
+// [WalletVaultItemSpecLinkAuthorizationClientCustomerManaged].
+//
+// Use the [WalletVaultItemSpecLinkAuthorizationClientUnion.AsAny] method to switch
+// on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type WalletVaultItemSpecLinkAuthorizationClientUnion struct {
+	// Any of "kernel_managed", "customer_managed".
+	Type string `json:"type"`
+	// This field is from variant
+	// [WalletVaultItemSpecLinkAuthorizationClientCustomerManaged].
+	ProviderConfig WalletVaultItemSpecLinkAuthorizationClientCustomerManagedProviderConfig `json:"provider_config"`
+	JSON           struct {
+		Type           respjson.Field
+		ProviderConfig respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// anyWalletVaultItemSpecLinkAuthorizationClient is implemented by each variant of
+// [WalletVaultItemSpecLinkAuthorizationClientUnion] to add type safety for the
+// return type of [WalletVaultItemSpecLinkAuthorizationClientUnion.AsAny]
+type anyWalletVaultItemSpecLinkAuthorizationClient interface {
+	implWalletVaultItemSpecLinkAuthorizationClientUnion()
+}
+
+func (WalletVaultItemSpecLinkAuthorizationClientKernelManaged) implWalletVaultItemSpecLinkAuthorizationClientUnion() {
+}
+func (WalletVaultItemSpecLinkAuthorizationClientCustomerManaged) implWalletVaultItemSpecLinkAuthorizationClientUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := WalletVaultItemSpecLinkAuthorizationClientUnion.AsAny().(type) {
+//	case kernel.WalletVaultItemSpecLinkAuthorizationClientKernelManaged:
+//	case kernel.WalletVaultItemSpecLinkAuthorizationClientCustomerManaged:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u WalletVaultItemSpecLinkAuthorizationClientUnion) AsAny() anyWalletVaultItemSpecLinkAuthorizationClient {
+	switch u.Type {
+	case "kernel_managed":
+		return u.AsKernelManaged()
+	case "customer_managed":
+		return u.AsCustomerManaged()
+	}
+	return nil
+}
+
+func (u WalletVaultItemSpecLinkAuthorizationClientUnion) AsKernelManaged() (v WalletVaultItemSpecLinkAuthorizationClientKernelManaged) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u WalletVaultItemSpecLinkAuthorizationClientUnion) AsCustomerManaged() (v WalletVaultItemSpecLinkAuthorizationClientCustomerManaged) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u WalletVaultItemSpecLinkAuthorizationClientUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *WalletVaultItemSpecLinkAuthorizationClientUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WalletVaultItemSpecLinkAuthorizationClientKernelManaged struct {
+	Type constant.KernelManaged `json:"type" default:"kernel_managed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -1902,23 +1995,76 @@ type WalletVaultItemSpecLinkAuthorizationClient struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WalletVaultItemSpecLinkAuthorizationClient) RawJSON() string { return r.JSON.raw }
-func (r *WalletVaultItemSpecLinkAuthorizationClient) UnmarshalJSON(data []byte) error {
+func (r WalletVaultItemSpecLinkAuthorizationClientKernelManaged) RawJSON() string { return r.JSON.raw }
+func (r *WalletVaultItemSpecLinkAuthorizationClientKernelManaged) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// AgentCard wallet. Mode (sandbox vs live) is fixed by the deployment's AgentCard
-// credential; there is no per-item test flag. user_id may only reference a user
-// already enrolled by a wallet in this organization.
-type WalletVaultItemSpecAgentcard struct {
-	Provider constant.Agentcard `json:"provider" default:"agentcard"`
-	UserID   string             `json:"user_id"`
+type WalletVaultItemSpecLinkAuthorizationClientCustomerManaged struct {
+	// Select a provider config by ID or name. Responses return the ID. Renaming a
+	// config does not change existing wallet bindings; a wallet cannot switch to a
+	// different config after creation.
+	ProviderConfig WalletVaultItemSpecLinkAuthorizationClientCustomerManagedProviderConfig `json:"provider_config" api:"required"`
+	Type           constant.CustomerManaged                                                `json:"type" default:"customer_managed"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Provider    respjson.Field
-		UserID      respjson.Field
+		ProviderConfig respjson.Field
+		Type           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WalletVaultItemSpecLinkAuthorizationClientCustomerManaged) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WalletVaultItemSpecLinkAuthorizationClientCustomerManaged) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Select a provider config by ID or name. Responses return the ID. Renaming a
+// config does not change existing wallet bindings; a wallet cannot switch to a
+// different config after creation.
+type WalletVaultItemSpecLinkAuthorizationClientCustomerManagedProviderConfig struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WalletVaultItemSpecLinkAuthorizationClientCustomerManagedProviderConfig) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WalletVaultItemSpecLinkAuthorizationClientCustomerManagedProviderConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AgentCard wallet. Omit provider_config to use Kernel-managed credentials, or
+// select a customer-owned configuration. Mode (sandbox vs live) is determined by
+// the selected credential; there is no per-item test flag. Without user_id,
+// creation returns a hosted enrollment action and Kernel polls until the user
+// connects. user_id may only reference a user already enrolled by a wallet in this
+// organization under the same configuration.
+type WalletVaultItemSpecAgentcard struct {
+	Provider constant.Agentcard `json:"provider" default:"agentcard"`
+	// Select an AgentCard configuration. The wallet's configuration cannot be changed
+	// after creation.
+	ProviderConfig WalletVaultItemSpecAgentcardProviderConfig `json:"provider_config"`
+	UserID         string                                     `json:"user_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Provider       respjson.Field
+		ProviderConfig respjson.Field
+		UserID         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -1928,147 +2074,23 @@ func (r *WalletVaultItemSpecAgentcard) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func WalletVaultItemSpecParamOfLink(authorization WalletVaultItemSpecLinkAuthorizationParam) WalletVaultItemSpecUnionParam {
-	var link WalletVaultItemSpecLinkParam
-	link.Authorization = authorization
-	return WalletVaultItemSpecUnionParam{OfLink: &link}
+// Select an AgentCard configuration. The wallet's configuration cannot be changed
+// after creation.
+type WalletVaultItemSpecAgentcardProviderConfig struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type WalletVaultItemSpecUnionParam struct {
-	OfLink      *WalletVaultItemSpecLinkParam      `json:",omitzero,inline"`
-	OfAgentcard *WalletVaultItemSpecAgentcardParam `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u WalletVaultItemSpecUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfLink, u.OfAgentcard)
-}
-func (u *WalletVaultItemSpecUnionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *WalletVaultItemSpecUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfLink) {
-		return u.OfLink
-	} else if !param.IsOmitted(u.OfAgentcard) {
-		return u.OfAgentcard
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u WalletVaultItemSpecUnionParam) GetAuthorization() *WalletVaultItemSpecLinkAuthorizationParam {
-	if vt := u.OfLink; vt != nil {
-		return &vt.Authorization
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u WalletVaultItemSpecUnionParam) GetUserID() *string {
-	if vt := u.OfAgentcard; vt != nil && vt.UserID.Valid() {
-		return &vt.UserID.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u WalletVaultItemSpecUnionParam) GetProvider() *string {
-	if vt := u.OfLink; vt != nil {
-		return (*string)(&vt.Provider)
-	} else if vt := u.OfAgentcard; vt != nil {
-		return (*string)(&vt.Provider)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[WalletVaultItemSpecUnionParam](
-		"provider",
-		apijson.Discriminator[WalletVaultItemSpecLinkParam]("link"),
-		apijson.Discriminator[WalletVaultItemSpecAgentcardParam]("agentcard"),
-	)
-}
-
-// The properties Authorization, Provider are required.
-type WalletVaultItemSpecLinkParam struct {
-	Authorization WalletVaultItemSpecLinkAuthorizationParam `json:"authorization,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as "link".
-	Provider constant.Link `json:"provider" default:"link"`
-	paramObj
-}
-
-func (r WalletVaultItemSpecLinkParam) MarshalJSON() (data []byte, err error) {
-	type shadow WalletVaultItemSpecLinkParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WalletVaultItemSpecLinkParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Client, Method are required.
-type WalletVaultItemSpecLinkAuthorizationParam struct {
-	Client WalletVaultItemSpecLinkAuthorizationClientParam `json:"client,omitzero" api:"required"`
-	// Any of "oauth".
-	Method string `json:"method,omitzero" api:"required"`
-	paramObj
-}
-
-func (r WalletVaultItemSpecLinkAuthorizationParam) MarshalJSON() (data []byte, err error) {
-	type shadow WalletVaultItemSpecLinkAuthorizationParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WalletVaultItemSpecLinkAuthorizationParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WalletVaultItemSpecLinkAuthorizationParam](
-		"method", "oauth",
-	)
-}
-
-// The property Type is required.
-type WalletVaultItemSpecLinkAuthorizationClientParam struct {
-	// Any of "kernel_managed".
-	Type string `json:"type,omitzero" api:"required"`
-	paramObj
-}
-
-func (r WalletVaultItemSpecLinkAuthorizationClientParam) MarshalJSON() (data []byte, err error) {
-	type shadow WalletVaultItemSpecLinkAuthorizationClientParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WalletVaultItemSpecLinkAuthorizationClientParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[WalletVaultItemSpecLinkAuthorizationClientParam](
-		"type", "kernel_managed",
-	)
-}
-
-// AgentCard wallet. Mode (sandbox vs live) is fixed by the deployment's AgentCard
-// credential; there is no per-item test flag. user_id may only reference a user
-// already enrolled by a wallet in this organization.
-//
-// The property Provider is required.
-type WalletVaultItemSpecAgentcardParam struct {
-	UserID param.Opt[string] `json:"user_id,omitzero"`
-	// This field can be elided, and will marshal its zero value as "agentcard".
-	Provider constant.Agentcard `json:"provider" default:"agentcard"`
-	paramObj
-}
-
-func (r WalletVaultItemSpecAgentcardParam) MarshalJSON() (data []byte, err error) {
-	type shadow WalletVaultItemSpecAgentcardParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *WalletVaultItemSpecAgentcardParam) UnmarshalJSON(data []byte) error {
+// Returns the unmodified JSON received from the API
+func (r WalletVaultItemSpecAgentcardProviderConfig) RawJSON() string { return r.JSON.raw }
+func (r *WalletVaultItemSpecAgentcardProviderConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2287,10 +2309,13 @@ func (r *VaultItemUpsertParams) UnmarshalJSON(data []byte) error {
 
 // The properties Spec, Type are required.
 type VaultItemUpsertParamsBodyWallet struct {
-	// AgentCard wallet. Mode (sandbox vs live) is fixed by the deployment's AgentCard
-	// credential; there is no per-item test flag. user_id may only reference a user
-	// already enrolled by a wallet in this organization.
-	Spec WalletVaultItemSpecUnionParam `json:"spec,omitzero" api:"required"`
+	// AgentCard wallet. Omit provider_config to use Kernel-managed credentials, or
+	// select a customer-owned configuration. Mode (sandbox vs live) is determined by
+	// the selected credential; there is no per-item test flag. Without user_id,
+	// creation returns a hosted enrollment action and Kernel polls until the user
+	// connects. user_id may only reference a user already enrolled by a wallet in this
+	// organization under the same configuration.
+	Spec VaultItemUpsertParamsBodyWalletSpecUnion `json:"spec,omitzero" api:"required"`
 	// This field can be elided, and will marshal its zero value as "wallet".
 	Type constant.Wallet `json:"type" default:"wallet"`
 	paramObj
@@ -2301,6 +2326,385 @@ func (r VaultItemUpsertParamsBodyWallet) MarshalJSON() (data []byte, err error) 
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *VaultItemUpsertParamsBodyWallet) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type VaultItemUpsertParamsBodyWalletSpecUnion struct {
+	OfLink      *VaultItemUpsertParamsBodyWalletSpecLink      `json:",omitzero,inline"`
+	OfAgentcard *VaultItemUpsertParamsBodyWalletSpecAgentcard `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u VaultItemUpsertParamsBodyWalletSpecUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfLink, u.OfAgentcard)
+}
+func (u *VaultItemUpsertParamsBodyWalletSpecUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *VaultItemUpsertParamsBodyWalletSpecUnion) asAny() any {
+	if !param.IsOmitted(u.OfLink) {
+		return u.OfLink
+	} else if !param.IsOmitted(u.OfAgentcard) {
+		return u.OfAgentcard
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VaultItemUpsertParamsBodyWalletSpecUnion) GetAuthorization() *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion {
+	if vt := u.OfLink; vt != nil {
+		return &vt.Authorization
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VaultItemUpsertParamsBodyWalletSpecUnion) GetProviderConfig() *VaultItemUpsertParamsBodyWalletSpecAgentcardProviderConfig {
+	if vt := u.OfAgentcard; vt != nil {
+		return &vt.ProviderConfig
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VaultItemUpsertParamsBodyWalletSpecUnion) GetUserID() *string {
+	if vt := u.OfAgentcard; vt != nil && vt.UserID.Valid() {
+		return &vt.UserID.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VaultItemUpsertParamsBodyWalletSpecUnion) GetProvider() *string {
+	if vt := u.OfLink; vt != nil {
+		return (*string)(&vt.Provider)
+	} else if vt := u.OfAgentcard; vt != nil {
+		return (*string)(&vt.Provider)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[VaultItemUpsertParamsBodyWalletSpecUnion](
+		"provider",
+		apijson.Discriminator[VaultItemUpsertParamsBodyWalletSpecLink]("link"),
+		apijson.Discriminator[VaultItemUpsertParamsBodyWalletSpecAgentcard]("agentcard"),
+	)
+}
+
+// The properties Authorization, Provider are required.
+type VaultItemUpsertParamsBodyWalletSpecLink struct {
+	// Kernel starts and completes the user's Link authorization flow.
+	Authorization VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion `json:"authorization,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "link".
+	Provider constant.Link `json:"provider" default:"link"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLink) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLink
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLink) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion struct {
+	OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput `json:",omitzero,inline"`
+	OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput      *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput      `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput, u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput)
+}
+func (u *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion) asAny() any {
+	if !param.IsOmitted(u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput) {
+		return u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput
+	} else if !param.IsOmitted(u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput) {
+		return u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion) GetTokens() *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputTokens {
+	if vt := u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput; vt != nil {
+		return &vt.Tokens
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion) GetMethod() *string {
+	if vt := u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput; vt != nil {
+		return (*string)(&vt.Method)
+	} else if vt := u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput; vt != nil {
+		return (*string)(&vt.Method)
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnion) GetClient() (res vaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnionClient) {
+	if vt := u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput; vt != nil {
+		res.any = &vt.Client
+	} else if vt := u.OfVaultItemUpsertsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput; vt != nil {
+		res.any = &vt.Client
+	}
+	return
+}
+
+// Can have the runtime types
+// [*VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient],
+// [*VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient]
+type vaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnionClient struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *kernel.VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient:
+//	case *kernel.VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u vaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnionClient) AsAny() any { return u.any }
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u vaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnionClient) GetProviderConfig() *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClientProviderConfig {
+	switch vt := u.any.(type) {
+	case *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient:
+		return &vt.ProviderConfig
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u vaultItemUpsertParamsBodyWalletSpecLinkAuthorizationUnionClient) GetType() *string {
+	switch vt := u.any.(type) {
+	case *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient:
+		return (*string)(&vt.Type)
+	case *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient:
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Kernel starts and completes the user's Link authorization flow.
+//
+// The properties Client, Method are required.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput struct {
+	Client VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient `json:"client,omitzero" api:"required"`
+	// Any of "oauth".
+	Method string `json:"method,omitzero" api:"required"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInput](
+		"method", "oauth",
+	)
+}
+
+// The property Type is required.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient struct {
+	// Any of "kernel_managed".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationKernelManagedLinkAuthorizationInputClient](
+		"type", "kernel_managed",
+	)
+}
+
+// The customer's backend completes Link OAuth and supplies the resulting tokens.
+// For a new wallet, Kernel verifies the access token can access Link payment
+// methods without consuming or rotating the refresh token. Valid access creates a
+// wallet with state.status=connected. An expired, invalid, revoked, or
+// insufficiently scoped access token returns 400 and no wallet is created. Refresh
+// expired tokens in your backend before importing them. A failed import does not
+// modify existing wallets. After successful import, Kernel owns subsequent
+// refresh-token rotation; the customer must stop refreshing this grant. Import
+// does not verify the refresh token: if it or the configured client credentials
+// are rejected during a later refresh, the imported wallet becomes degraded. An
+// unknown refresh outcome also leaves it degraded; Kernel does not retry a refresh
+// token that may already have been consumed. There is no in-place reauthorization
+// operation for an imported wallet. If this imported wallet's credentials become
+// unusable, obtain a fresh Link OAuth grant in your backend and create a wallet
+// under a NEW wallet key. Use the new wallet for NEW cards and payments, not to
+// retry an old payment whose outcome is uncertain. This does not replace the old
+// grant, rebind existing cards, or resolve their payment outcomes. Retain the old
+// wallet and its cards while reconciling any uncertain payments with the provider
+// or support. Do not repeat an uncertain payment on the new wallet, and do not
+// treat deletion as evidence that it did not execute. Deletion of the old wallet
+// can remain blocked by unresolved child cards. Repeating a create for the same
+// item key and non-secret spec returns the existing wallet without replacing
+// tokens, even if they have rotated or the wallet needs reconnection. ID and name
+// references resolving to the same config are equivalent. A different config or
+// non-secret spec returns 409. This create operation does not replace an existing
+// grant.
+//
+// The properties Client, Method, Tokens are required.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput struct {
+	Client VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient `json:"client,omitzero" api:"required"`
+	// Any of "oauth".
+	Method string `json:"method,omitzero" api:"required"`
+	// Send the token pair from your backend. Both tokens must be from the same Link
+	// grant under the referenced client. Supply a currently valid access token. Kernel
+	// refreshes when needed after import and uses the expiry returned by Link for
+	// subsequent tokens. Tokens are never returned in wallet responses, events, or
+	// logs.
+	Tokens VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputTokens `json:"tokens,omitzero" api:"required"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInput](
+		"method", "oauth",
+	)
+}
+
+// The properties ProviderConfig, Type are required.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient struct {
+	// Select a provider config by ID or name. Responses return the ID. Renaming a
+	// config does not change existing wallet bindings; a wallet cannot switch to a
+	// different config after creation.
+	ProviderConfig VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClientProviderConfig `json:"provider_config,omitzero" api:"required"`
+	// Any of "customer_managed".
+	Type string `json:"type,omitzero" api:"required"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClient](
+		"type", "customer_managed",
+	)
+}
+
+// Select a provider config by ID or name. Responses return the ID. Renaming a
+// config does not change existing wallet bindings; a wallet cannot switch to a
+// different config after creation.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClientProviderConfig struct {
+	ID   param.Opt[string] `json:"id,omitzero"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClientProviderConfig) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClientProviderConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputClientProviderConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Send the token pair from your backend. Both tokens must be from the same Link
+// grant under the referenced client. Supply a currently valid access token. Kernel
+// refreshes when needed after import and uses the expiry returned by Link for
+// subsequent tokens. Tokens are never returned in wallet responses, events, or
+// logs.
+//
+// The properties AccessToken, RefreshToken are required.
+type VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputTokens struct {
+	AccessToken  string `json:"access_token" api:"required"`
+	RefreshToken string `json:"refresh_token" api:"required"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputTokens) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputTokens
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecLinkAuthorizationImportedLinkAuthorizationInputTokens) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// AgentCard wallet. Omit provider_config to use Kernel-managed credentials, or
+// select a customer-owned configuration. Mode (sandbox vs live) is determined by
+// the selected credential; there is no per-item test flag. Without user_id,
+// creation returns a hosted enrollment action and Kernel polls until the user
+// connects. user_id may only reference a user already enrolled by a wallet in this
+// organization under the same configuration.
+//
+// The property Provider is required.
+type VaultItemUpsertParamsBodyWalletSpecAgentcard struct {
+	UserID param.Opt[string] `json:"user_id,omitzero"`
+	// Select an AgentCard configuration. The wallet's configuration cannot be changed
+	// after creation.
+	ProviderConfig VaultItemUpsertParamsBodyWalletSpecAgentcardProviderConfig `json:"provider_config,omitzero"`
+	// This field can be elided, and will marshal its zero value as "agentcard".
+	Provider constant.Agentcard `json:"provider" default:"agentcard"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecAgentcard) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecAgentcard
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecAgentcard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Select an AgentCard configuration. The wallet's configuration cannot be changed
+// after creation.
+type VaultItemUpsertParamsBodyWalletSpecAgentcardProviderConfig struct {
+	ID   param.Opt[string] `json:"id,omitzero"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	paramObj
+}
+
+func (r VaultItemUpsertParamsBodyWalletSpecAgentcardProviderConfig) MarshalJSON() (data []byte, err error) {
+	type shadow VaultItemUpsertParamsBodyWalletSpecAgentcardProviderConfig
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VaultItemUpsertParamsBodyWalletSpecAgentcardProviderConfig) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

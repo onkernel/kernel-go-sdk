@@ -42,6 +42,7 @@ type Console string                         // Always "console"
 type ConsoleError string                    // Always "console_error"
 type ConsoleLog string                      // Always "console_log"
 type Control string                         // Always "control"
+type CustomerManaged string                 // Always "customer_managed"
 type DeploymentState string                 // Always "deployment_state"
 type Direct string                          // Always "direct"
 type DomFocus string                        // Always "DOM.focus"
@@ -65,6 +66,7 @@ type InteractionClick string                // Always "interaction_click"
 type InteractionKey string                  // Always "interaction_key"
 type InteractionScrollSettled string        // Always "interaction_scroll_settled"
 type InvocationState string                 // Always "invocation_state"
+type KernelManaged string                   // Always "kernel_managed"
 type Link string                            // Always "link"
 type LinkOAuth string                       // Always "link_oauth"
 type LiveViewConnect string                 // Always "live_view_connect"
@@ -151,6 +153,7 @@ func (c Console) Default() Console                               { return "conso
 func (c ConsoleError) Default() ConsoleError                     { return "console_error" }
 func (c ConsoleLog) Default() ConsoleLog                         { return "console_log" }
 func (c Control) Default() Control                               { return "control" }
+func (c CustomerManaged) Default() CustomerManaged               { return "customer_managed" }
 func (c DeploymentState) Default() DeploymentState               { return "deployment_state" }
 func (c Direct) Default() Direct                                 { return "direct" }
 func (c DomFocus) Default() DomFocus                             { return "DOM.focus" }
@@ -186,6 +189,7 @@ func (c InteractionScrollSettled) Default() InteractionScrollSettled {
 	return "interaction_scroll_settled"
 }
 func (c InvocationState) Default() InvocationState               { return "invocation_state" }
+func (c KernelManaged) Default() KernelManaged                   { return "kernel_managed" }
 func (c Link) Default() Link                                     { return "link" }
 func (c LinkOAuth) Default() LinkOAuth                           { return "link_oauth" }
 func (c LiveViewConnect) Default() LiveViewConnect               { return "live_view_connect" }
@@ -282,6 +286,7 @@ func (c Console) MarshalJSON() ([]byte, error)                         { return 
 func (c ConsoleError) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c ConsoleLog) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Control) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
+func (c CustomerManaged) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c DeploymentState) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Direct) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c DomFocus) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
@@ -305,6 +310,7 @@ func (c InteractionClick) MarshalJSON() ([]byte, error)                { return 
 func (c InteractionKey) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c InteractionScrollSettled) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c InvocationState) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c KernelManaged) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Link) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c LinkOAuth) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c LiveViewConnect) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
