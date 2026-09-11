@@ -64,13 +64,13 @@ func TestVaultItemUpdateWithOptionalParams(t *testing.T) {
 			IDOrName: "id_or_name",
 			Spec: kernel.CardVaultItemSpecUnionParam{
 				OfLink: &kernel.CardVaultItemSpecLinkParam{
-					Amount:          1,
-					Context:         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-					Currency:        "bFx",
-					MerchantName:    "x",
-					MerchantURL:     "https://example.com",
-					PaymentMethodID: "x",
-					Wallet:          "wallet",
+					Amount:          3000,
+					Context:         "The order total changed to USD 30.00 including shipping and taxes for one notebook. Update this unapproved request rather than creating a second payment.",
+					Currency:        "usd",
+					MerchantName:    "Example Store",
+					MerchantURL:     "https://store.example.com",
+					PaymentMethodID: "pm_example",
+					Wallet:          "link-wallet",
 					ExpiresAt:       kernel.Int(0),
 					LineItems: []kernel.CardVaultItemSpecLinkLineItemParam{{
 						Name:        "name",
@@ -239,15 +239,40 @@ func TestVaultItemUpsertWithOptionalParams(t *testing.T) {
 		"x",
 		kernel.VaultItemUpsertParams{
 			IDOrName: "id_or_name",
-			OfWallet: &kernel.VaultItemUpsertParamsBodyWallet{
-				Spec: kernel.WalletVaultItemSpecUnionParam{
-					OfLink: &kernel.WalletVaultItemSpecLinkParam{
-						Authorization: kernel.WalletVaultItemSpecLinkAuthorizationParam{
-							Client: kernel.WalletVaultItemSpecLinkAuthorizationClientParam{
-								Type: "kernel_managed",
-							},
-							Method: "oauth",
+			OfCard: &kernel.VaultItemUpsertParamsBodyCard{
+				Spec: kernel.CardVaultItemSpecUnionParam{
+					OfLink: &kernel.CardVaultItemSpecLinkParam{
+						Amount:          2599,
+						Context:         "Purchase one notebook for USD 25.99 including shipping and taxes. This is a new order at Example Store, not a retry of an earlier payment.",
+						Currency:        "usd",
+						MerchantName:    "Example Store",
+						MerchantURL:     "https://store.example.com",
+						PaymentMethodID: "pm_example",
+						Wallet:          "link-wallet",
+						ExpiresAt:       kernel.Int(0),
+						LineItems: []kernel.CardVaultItemSpecLinkLineItemParam{{
+							Name:        "name",
+							Description: kernel.String("description"),
+							ImageURL:    kernel.String("image_url"),
+							ProductURL:  kernel.String("product_url"),
+							Quantity:    kernel.Int(1),
+							SKU:         kernel.String("sku"),
+							Totals: []kernel.CardVaultItemSpecLinkLineItemTotalParam{{
+								Amount:      0,
+								DisplayText: "display_text",
+								Type:        "type",
+							}},
+							UnitAmount: kernel.Int(0),
+							URL:        kernel.String("url"),
+						}},
+						Metadata: map[string]string{
+							"foo": "string",
 						},
+						Totals: []kernel.CardVaultItemSpecLinkTotalParam{{
+							Amount:      0,
+							DisplayText: "display_text",
+							Type:        "type",
+						}},
 					},
 				},
 			},

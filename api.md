@@ -461,6 +461,20 @@ Methods:
 - <code title="post /browser_pools/{id_or_name}/flush">client.BrowserPools.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#BrowserPoolService.Flush">Flush</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="post /browser_pools/{id_or_name}/release">client.BrowserPools.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#BrowserPoolService.Release">Release</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#BrowserPoolReleaseParams">BrowserPoolReleaseParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
+# VaultProviderConfigs
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigUnion">VaultProviderConfigUnion</a>
+
+Methods:
+
+- <code title="post /vault-provider-configs">client.VaultProviderConfigs.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigNewParams">VaultProviderConfigNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigUnion">VaultProviderConfigUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /vault-provider-configs/{id_or_name}">client.VaultProviderConfigs.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigUnion">VaultProviderConfigUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /vault-provider-configs/{id_or_name}">client.VaultProviderConfigs.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigUpdateParams">VaultProviderConfigUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigUnion">VaultProviderConfigUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /vault-provider-configs">client.VaultProviderConfigs.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigListParams">VaultProviderConfigListParams</a>) (\*<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk/packages/pagination#OffsetPagination">OffsetPagination</a>[<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigUnion">VaultProviderConfigUnion</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /vault-provider-configs/{id_or_name}">client.VaultProviderConfigs.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#VaultProviderConfigService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, idOrName <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
 # Vaults
 
 Response Types:
@@ -479,7 +493,6 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#CardVaultItemSpecUnionParam">CardVaultItemSpecUnionParam</a>
-- <a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk">kernel</a>.<a href="https://pkg.go.dev/github.com/kernel/kernel-go-sdk#WalletVaultItemSpecUnionParam">WalletVaultItemSpecUnionParam</a>
 
 Response Types:
 

@@ -287,7 +287,8 @@ func (r *ProxyNewResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyNewResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -310,7 +311,8 @@ type ProxyNewResponseConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
@@ -345,7 +347,8 @@ func (r *ProxyNewResponseConfigResidential) UnmarshalJSON(data []byte) error {
 type ProxyNewResponseConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City string `json:"city"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State string `json:"state"`
@@ -565,7 +568,8 @@ func (r *ProxyGetResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyGetResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -588,7 +592,8 @@ type ProxyGetResponseConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
@@ -623,7 +628,8 @@ func (r *ProxyGetResponseConfigResidential) UnmarshalJSON(data []byte) error {
 type ProxyGetResponseConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City string `json:"city"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State string `json:"state"`
@@ -843,7 +849,8 @@ func (r *ProxyUpdateResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyUpdateResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -866,7 +873,8 @@ type ProxyUpdateResponseConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
@@ -901,7 +909,8 @@ func (r *ProxyUpdateResponseConfigResidential) UnmarshalJSON(data []byte) error 
 type ProxyUpdateResponseConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City string `json:"city"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State string `json:"state"`
@@ -1121,7 +1130,8 @@ func (r *ProxyListResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyListResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1144,7 +1154,8 @@ type ProxyListResponseConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
@@ -1179,7 +1190,8 @@ func (r *ProxyListResponseConfigResidential) UnmarshalJSON(data []byte) error {
 type ProxyListResponseConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City string `json:"city"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State string `json:"state"`
@@ -1399,7 +1411,8 @@ func (r *ProxyCheckResponseConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyCheckResponseConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country string `json:"country"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1422,7 +1435,8 @@ type ProxyCheckResponseConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City string `json:"city"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// Operating system of the residential device.
 	//
@@ -1457,7 +1471,8 @@ func (r *ProxyCheckResponseConfigResidential) UnmarshalJSON(data []byte) error {
 type ProxyCheckResponseConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City string `json:"city"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country string `json:"country"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State string `json:"state"`
@@ -1715,7 +1730,8 @@ func (r *ProxyNewParamsConfigDatacenter) UnmarshalJSON(data []byte) error {
 
 // Configuration for an ISP proxy.
 type ProxyNewParamsConfigIsp struct {
-	// ISO 3166 country code. Defaults to US if not provided.
+	// ISO 3166 country code. Supported countries are US, GB, FR, DE, and SG. Defaults
+	// to US if not provided.
 	Country param.Opt[string] `json:"country,omitzero"`
 	paramObj
 }
@@ -1735,7 +1751,8 @@ type ProxyNewParamsConfigResidential struct {
 	// City name (no spaces, e.g. `sanfrancisco`). If provided, `country` must also be
 	// provided.
 	City param.Opt[string] `json:"city,omitzero"`
-	// ISO 3166 country code.
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country param.Opt[string] `json:"country,omitzero"`
 	// Two-letter state code.
 	State param.Opt[string] `json:"state,omitzero"`
@@ -1768,7 +1785,8 @@ func init() {
 type ProxyNewParamsConfigMobile struct {
 	// Provider city alias. Mobile carrier routing can make observed geo vary.
 	City param.Opt[string] `json:"city,omitzero"`
-	// ISO 3166 country code
+	// ISO 3166 country code. If omitted, the proxy uses the global pool without
+	// country targeting.
 	Country param.Opt[string] `json:"country,omitzero"`
 	// US-only state code. Mobile carrier routing can make observed geo vary.
 	State param.Opt[string] `json:"state,omitzero"`

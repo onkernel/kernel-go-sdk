@@ -76,7 +76,9 @@ func (r *VaultService) ListAutoPaging(ctx context.Context, query VaultListParams
 	return pagination.NewOffsetPaginationAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a vault and invalidate its items
+// Unresolved payment operations block deletion. Reconcile the original attempt
+// with the provider or support first; deleting or recreating an item is not proof
+// that a payment did not occur.
 func (r *VaultService) Delete(ctx context.Context, idOrName string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -89,7 +91,9 @@ func (r *VaultService) Delete(ctx context.Context, idOrName string, opts ...opti
 	return err
 }
 
-// Create or retrieve a vault by immutable name
+// Free organizations can store up to 3 non-deleted vaults across all projects.
+// Paid plans and active trials have no vault cap. Retrieving an existing vault by
+// name succeeds even at the limit.
 func (r *VaultService) Upsert(ctx context.Context, body VaultUpsertParams, opts ...option.RequestOption) (res *Vault, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "vaults"

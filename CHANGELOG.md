@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.101.0](https://github.com/kernel/kernel-go-sdk/compare/v0.100.0...v0.101.0) (2026-09-11)
+
+
+### Features
+
+* Add config analysis lifecycle guarantees ([19b510c](https://github.com/kernel/kernel-go-sdk/commit/19b510c645d0f6d85485b86e939c46b840f1cf9b))
+* Brand origin TLS timeouts and classify provider failures ([f0c6e4b](https://github.com/kernel/kernel-go-sdk/commit/f0c6e4b86ab55c6875468e65a69ccc68ac35285b))
+* Clarify proxy country defaults ([f3dcf5a](https://github.com/kernel/kernel-go-sdk/commit/f3dcf5af3a44792574cef8092aa7ca17fdb17a69))
+* Expose vault access in organization entitlements ([4b985af](https://github.com/kernel/kernel-go-sdk/commit/4b985afe0962cb38ec029b0b7769411c0632bd79))
+* Integrate configurable vault providers across API and checkout ([cd47c64](https://github.com/kernel/kernel-go-sdk/commit/cd47c643d93814b964e996f74b59cb09544877b1))
+* Limit free organizations to three vaults ([8abbe5e](https://github.com/kernel/kernel-go-sdk/commit/8abbe5e87d792f63c11f20c9c3ebe8046457ad4a))
+* Populate safe failure reasons on invocation responses ([a65bb49](https://github.com/kernel/kernel-go-sdk/commit/a65bb49b82ad9371bdf7a9af01b7f298c86803e8))
+* Return vendor guidance with config registry recommendations ([e3ea91d](https://github.com/kernel/kernel-go-sdk/commit/e3ea91dfaa854364133b99e1bfe38e788de48dad))
+* Revert vendor guidance recommendations ([9d9ffcf](https://github.com/kernel/kernel-go-sdk/commit/9d9ffcf0053d49b8fbed8a5cc12bc8256699ce9b))
+* Support international ISP proxy countries ([f8ec7e1](https://github.com/kernel/kernel-go-sdk/commit/f8ec7e14e93e45c2e0740e89726f094671e19787))
+
 ## [0.100.0](https://github.com/kernel/kernel-go-sdk/compare/v0.99.0...v0.100.0) (2026-09-04)
 
 
