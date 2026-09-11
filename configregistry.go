@@ -274,8 +274,9 @@ func (r *LookupRequestParam) UnmarshalJSON(data []byte) error {
 }
 
 type LookupResponse struct {
-	Recommendation Recommendation `json:"recommendation" api:"required"`
-	Target         Target         `json:"target" api:"required"`
+	// A recommendation or a structured no-recommendation result.
+	Recommendation RecommendationResultUnion `json:"recommendation" api:"required"`
+	Target         Target                    `json:"target" api:"required"`
 	// Short advisory markdown to facilitate navigating this target. Returned even when
 	// no configuration reached the target, since knowing what prevented success is
 	// useful without a configuration. Not verified against this target. Null when
